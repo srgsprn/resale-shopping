@@ -51,17 +51,8 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
       />
 
       <div className="mb-10 md:mb-14 lg:mb-16">
-        <motion.h2
-          className="text-center text-[11px] font-medium uppercase tracking-[0.38em] text-zinc-500 md:text-left"
-          initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.55, ease: easeOut }}
-        >
-          Специальные цены
-        </motion.h2>
         <motion.p
-          className="font-display mt-3 text-center text-[clamp(1.85rem,5vw,2.65rem)] font-normal leading-none tracking-[0.02em] text-zinc-900 md:text-left"
+          className="font-display text-center text-[clamp(1.85rem,5vw,2.65rem)] font-normal leading-none tracking-[0.02em] text-zinc-900 md:text-left"
           initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
