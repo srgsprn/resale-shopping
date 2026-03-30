@@ -65,6 +65,26 @@ cd ~/resale-shopping && git pull && sudo bash scripts/vps-autofix-and-deploy.sh
 
 Скрипт сам вычистит мусор, пропишет нормальный `postgresql://...`, применит миграции и соберёт проект.
 
+## Домен + HTTPS (nginx + Let’s Encrypt)
+
+1. В DNS у регистратора создай **A-запись**: имя `@` (или корень домена) → **IP VPS**. Для `www` — отдельная **A** на тот же IP или **CNAME** `www` → основной домен (если не делаешь www — см. ниже).
+2. Дождись обновления DNS (часто 5–30 минут).
+3. На **VPS** (под root / sudo), подставь свой домен и почту для Let’s Encrypt:
+
+```bash
+cd ~/resale-shopping && git pull
+DOMAIN=resale-shopping.ru CERTBOT_EMAIL=твоя@почта.ru bash scripts/vps-nginx-ssl.sh
+```
+
+Без `www` в сертификате (если нет записи для www):
+
+```bash
+INCLUDE_WWW=0 DOMAIN=resale-shopping.ru CERTBOT_EMAIL=твоя@почта.ru bash scripts/vps-nginx-ssl.sh
+```
+
+4. В `.env` на сервере: `NEXT_PUBLIC_SITE_URL="https://resale-shopping.ru"`, перезапуск приложения (`pm2 restart resale-shopping`).
+5. В Stripe webhook укажи: `https://resale-shopping.ru/api/stripe/webhook`.
+
 Ручной вариант по шагам: `scripts/vps-postgres-install.sh` + `scripts/vps-deploy.sh`.
 
 ## Required env vars
