@@ -31,11 +31,11 @@ export function HeaderCategoryNav() {
         className="-mx-3 border-t border-[#d9d2c8]/50 px-3 pb-2.5 pt-1 md:-mx-8 md:px-8"
         aria-label="Категории"
       >
-        <div className="flex gap-2 overflow-hidden py-2">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid w-full grid-cols-5 gap-x-1 py-2 md:gap-x-2">
+          {Array.from({ length: 5 }).map((_, i) => (
             <span
               key={i}
-              className="h-3 w-14 shrink-0 animate-pulse rounded bg-zinc-200/80 md:w-20"
+              className="mx-auto h-3 w-full max-w-[4.5rem] animate-pulse rounded bg-zinc-200/80 md:max-w-none"
               aria-hidden
             />
           ))}
@@ -68,19 +68,19 @@ export function HeaderCategoryNav() {
 
   return (
     <nav
-      className="-mx-3 flex gap-0 border-t border-[#d9d2c8]/50 px-3 pb-2.5 pt-1 md:-mx-8 md:px-8"
+      className="-mx-3 border-t border-[#d9d2c8]/50 px-3 pb-2.5 pt-1 md:-mx-8 md:px-8"
       aria-label="Категории"
     >
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-2 [&::-webkit-scrollbar]:hidden">
+      <div className="grid w-full grid-cols-5 gap-x-1 pb-1 md:gap-x-2">
         {navItems.map((item) => (
           <Link
             key={item.label}
             href={item.href}
-            className="group relative shrink-0 whitespace-nowrap px-2.5 py-2 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-500 transition-colors duration-200 hover:text-zinc-900 md:px-3 md:text-[11px] md:tracking-[0.18em]"
+            className="group relative flex min-h-[2.75rem] items-center justify-center px-0.5 py-2 text-center text-[9px] font-medium uppercase leading-snug tracking-[0.12em] text-zinc-500 transition-colors duration-200 hover:text-zinc-900 sm:text-[10px] sm:tracking-[0.14em] md:min-h-0 md:px-1 md:text-[11px] md:tracking-[0.18em]"
           >
-            <span className="relative z-10">{item.label}</span>
+            <span className="relative z-10 text-balance">{item.label}</span>
             <span
-              className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px origin-left scale-x-0 bg-zinc-800/70 transition-transform duration-300 ease-out group-hover:scale-x-100 md:inset-x-3"
+              className="pointer-events-none absolute inset-x-1 bottom-1.5 h-px origin-left scale-x-0 bg-zinc-800/70 transition-transform duration-300 ease-out group-hover:scale-x-100 sm:inset-x-2 md:inset-x-3"
               aria-hidden
             />
           </Link>
