@@ -57,6 +57,14 @@ sudo bash scripts/vps-one-shot.sh
 
 Потом в `.env` добавь Stripe и Resend/SMTP (оплата и почта).
 
+Если в `.env` случайно остался `prisma+postgres://` (с Mac), на VPS **один раз**:
+
+```bash
+cd ~/resale-shopping && git pull && sudo bash scripts/vps-autofix-and-deploy.sh
+```
+
+Скрипт сам вычистит мусор, пропишет нормальный `postgresql://...`, применит миграции и соберёт проект.
+
 Ручной вариант по шагам: `scripts/vps-postgres-install.sh` + `scripts/vps-deploy.sh`.
 
 ## Required env vars

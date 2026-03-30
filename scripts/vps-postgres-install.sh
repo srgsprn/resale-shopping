@@ -5,10 +5,18 @@ set -euo pipefail
 
 DB_NAME="${DB_NAME:-resale_shopping}"
 DB_USER="${DB_USER:-resale_app}"
+PASSWORD_FILE="${RESALE_DB_PASSWORD_FILE:-/root/.resale-shopping-db-password}"
 
 if [[ -z "${DB_PASSWORD:-}" ]]; then
-  DB_PASSWORD="$(openssl rand -base64 24 | tr -d '/+=' | head -c 32)"
-  echo "Generated DB_PASSWORD (save it): ${DB_PASSWORD}"
+  if [[ -f "$PASSWORD_FILE" ]]; then
+    DB_PASSWORD="$(tr -d '\n\r' < "$PASSWORD_FILE")"
+  else
+    DB_PASSWORD="$(openssl rand -base64 24 | tr -d '/+=' | head -c 32)"
+    umask 077
+    printf '%s\n' "$DB_PASSWORD" > "$PASSWORD_FILE"
+    chmod 600 "$PASSWORD_FILE"
+    echo "New DB password saved to ${PASSWORD_FILE} (keep this file; do not commit)."
+  fi
 fi
 
 export DEBIAN_FRONTEND=noninteractive
