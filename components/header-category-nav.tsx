@@ -51,7 +51,7 @@ export function HeaderCategoryNav() {
       className="-mx-3 flex gap-0 border-t border-[#d9d2c8]/50 px-3 pb-2.5 pt-1 md:-mx-8 md:px-8"
       aria-label="Категории"
     >
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-2 [&::-webkit-scrollbar]:hidden">
+      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-2 md:overflow-x-visible md:pb-2 md:flex-wrap [&::-webkit-scrollbar]:hidden">
         {categories.map((c) => (
           <Link
             key={c.id}

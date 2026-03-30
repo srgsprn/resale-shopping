@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 function cartCount(): number {
   try {
@@ -17,10 +18,20 @@ function cartCount(): number {
 
 export function HeaderCartBadge() {
   const [count, setCount] = useState(0);
+  const prev = useRef(0);
+  const [popKey, setPopKey] = useState(0);
 
   useEffect(() => {
-    setCount(cartCount());
-    const onUpdate = () => setCount(cartCount());
+    const initial = cartCount();
+    prev.current = initial;
+    setCount(initial);
+
+    const onUpdate = () => {
+      const next = cartCount();
+      if (next > prev.current) setPopKey((k) => k + 1);
+      prev.current = next;
+      setCount(next);
+    };
     window.addEventListener("resale-cart-updated", onUpdate);
     window.addEventListener("storage", onUpdate);
     return () => {
@@ -29,16 +40,44 @@ export function HeaderCartBadge() {
     };
   }, []);
 
+  const cartIcon = useMemo(
+    () => (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5">
+        <path
+          d="M6.5 9.2h14l-1.2 11H7.7L6.5 9.2Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M6.5 9.2 5.5 5.8H2.8"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+    [],
+  );
+
   return (
     <Link
       href="/cart"
-      className="relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-1.5 py-1 transition hover:bg-zinc-900/5 hover:text-zinc-900"
+      className="relative inline-flex items-center justify-center rounded-md px-2 py-1 text-zinc-600 transition hover:bg-zinc-900/5 hover:text-zinc-900"
     >
-      <span aria-hidden>Корзина</span>
+      <span className="sr-only">Корзина</span>
+      {cartIcon}
+
       {count > 0 ? (
-        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-900 px-1.5 text-[10px] font-semibold text-[#f6f3ef]">
+        <motion.span
+          key={popKey}
+          className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-900 px-1.5 text-[10px] font-semibold text-[#f6f3ef]"
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.25 }}
+        >
           {count > 99 ? "99+" : count}
-        </span>
+        </motion.span>
       ) : null}
     </Link>
   );

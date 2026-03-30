@@ -45,13 +45,51 @@ export function Footer() {
             <li><a href="mailto:help@resale-shopping.ru">help@resale-shopping.ru</a></li>
             <li><a href="tel:+74950050186">8 495 005 01 86</a></li>
             <li><a href="https://wa.me/79260050186" target="_blank" rel="noreferrer">WhatsApp</a></li>
-            <li><a href="https://t.me/alfa_resale" target="_blank" rel="noreferrer">Telegram</a></li>
+            <li>
+              <a
+                href="https://t.me/alfa_resale"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Telegram"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-[#f6f3ef] transition hover:bg-zinc-800"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5">
+                  <path
+                    d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z"
+                    fill="currentColor"
+                    opacity="0.95"
+                  />
+                  <path
+                    d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </li>
           </ul>
         </div>
         <div>
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em]">Telegram</h3>
           <p className="mb-3 text-sm text-zinc-700">Подписчики канала первыми видят новые лоты.</p>
-          <a href="https://t.me/alfa_resale" target="_blank" rel="noreferrer" className="inline-block rounded-full bg-zinc-900 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white">
+          <a
+            href="https://t.me/alfa_resale"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-4 py-2 text-xs uppercase tracking-[0.14em] text-white transition hover:bg-zinc-800"
+          >
+            <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
+                <path
+                  d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z"
+                  fill="currentColor"
+                  opacity="0.95"
+                />
+                <path
+                  d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
             Подписаться
           </a>
         </div>

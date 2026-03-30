@@ -39,7 +39,7 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
       onClick={onClick}
       className="rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
     >
-      {added ? "Добавлено" : "Добавить в корзину"}
+      {added ? "Спасибо" : "Добавить в корзину"}
     </button>
   );
 }
