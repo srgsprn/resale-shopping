@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 
 import { HeaderCartBadge } from "@/components/header-cart-badge";
 import { HeaderCategoryNav } from "@/components/header-category-nav";
@@ -12,23 +12,16 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-3 md:px-8">
         <div className="flex items-center gap-3 py-3 md:gap-4">
           <Link
-            href="/prodaja"
-            className="hidden rounded-full border border-zinc-900 bg-zinc-900 px-3.5 py-2 text-[10px] font-medium uppercase tracking-[0.14em] text-[#f6f3ef] transition hover:bg-zinc-800 md:inline-flex"
-          >
-            Продать
-          </Link>
-
-          <Link
             href="/"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl transition hover:bg-zinc-900/5"
+            className="flex h-14 w-16 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5"
             aria-label="Главная"
           >
             <Image
               src="/resale-icon.png"
               alt="Resale shopping"
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-2xl object-contain"
+              width={56}
+              height={56}
+              className="h-14 w-16 rounded-3xl object-contain"
               priority
             />
           </Link>

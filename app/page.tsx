@@ -67,13 +67,13 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="overflow-hidden rounded-[24px] border border-[#d4a8a0] bg-white px-5 py-9 text-balance shadow-sm md:rounded-[28px] md:px-10 md:py-10">
+      <section className="overflow-hidden rounded-[24px] border border-[#dfb3ad] bg-white px-5 py-9 text-balance shadow-sm md:rounded-[28px] md:px-10 md:py-10">
         <div className="grid gap-8 md:grid-cols-[1fr_320px] md:items-center">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-[#b45a53] md:text-xs">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-[#c57b86] md:text-xs">
               Личный ассистент
             </p>
-            <h2 className="mt-3 text-xl font-semibold tracking-tight text-[#b45a53] md:text-2xl">
+            <h2 className="mt-3 text-xl font-semibold tracking-tight text-[#c57b86] md:text-2xl">
               Консьерж сервис
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-700 md:text-base">
@@ -81,21 +81,21 @@ export default async function HomePage() {
             </p>
             <Link
               href="/about"
-              className="mt-6 inline-block rounded-full border border-[#b45a53]/45 bg-[#dfd4c5] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-[#6a2a24] transition hover:bg-white"
+              className="mt-6 inline-block rounded-full border border-[#c57b86]/45 bg-[#dfd4c5] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-[#7c2e3a] transition hover:bg-white"
             >
               Подробнее
             </Link>
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-br from-[#b45a53]/20 to-[#dfd4c5]/10 blur-2xl" aria-hidden />
+            <div className="absolute -inset-4 bg-gradient-to-br from-[#c57b86]/20 to-[#dfd4c5]/10 blur-2xl" aria-hidden />
             <div className="relative overflow-hidden rounded-[22px] border border-[#d9d2c8] bg-[#f6f3ef]">
               <Image
                 src={CONCIERGE_IMAGE}
                 alt={CONCIERGE_IMAGE_ALT}
                 width={520}
                 height={620}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover object-[center_30%]"
                 sizes="320px"
                 priority={false}
               />
