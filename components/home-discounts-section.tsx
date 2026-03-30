@@ -83,11 +83,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
             key={product.id}
             variants={item}
             className="group"
-            whileHover={
-              reduce
-                ? undefined
-                : { y: -3, transition: { duration: 0.45, ease: easeOut } }
-            }
+            style={{ willChange: "transform" }}
           >
             <Link href={`/product/${product.slug}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f3ef]">
               <div className="relative overflow-hidden rounded-md bg-[#e8e4df] sm:rounded-lg md:rounded-xl">
@@ -96,7 +92,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
                   <img
                     src={product.images[0]?.url || "https://placehold.co/800x1000/f4f4f5/18181b?text=Resale"}
                     alt={product.images[0]?.alt || product.name}
-                    className="h-full w-full object-cover transition-[transform,filter] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035] group-hover:filter group-hover:brightness-[1.02]"
+                    className="h-full w-full object-cover transition-[transform,filter] duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:filter group-hover:brightness-[1.02]"
                     loading="lazy"
                   />
                 </div>

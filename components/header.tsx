@@ -3,6 +3,7 @@ import Link from "next/link";
 import { HeaderCartBadge } from "@/components/header-cart-badge";
 import { HeaderCategoryNav } from "@/components/header-category-nav";
 import { HeaderMainLinks } from "@/components/header-main-links";
+import { HeaderTelegramSubscribeButton } from "@/components/header-telegram-subscribe";
 
 export function Header() {
   return (
@@ -23,6 +24,7 @@ export function Header() {
           <div className="ml-auto flex items-center gap-2">
             <HeaderMainLinks />
             <HeaderCartBadge />
+            <HeaderTelegramSubscribeButton />
           </div>
         </div>
 

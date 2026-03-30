@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HomeDiscountsSection } from "@/components/home-discounts-section";
 import { ProductCard } from "@/components/product-card";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
+import { CONCIERGE_IMAGE, CONCIERGE_IMAGE_ALT } from "@/lib/concierge-assets";
 import { prisma } from "@/lib/prisma";
 
 export default async function HomePage() {
@@ -37,12 +38,6 @@ export default async function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
               <Link
-                href="/catalog"
-                className="rounded-full border border-zinc-800/85 bg-[#ebe6df] px-6 py-3 text-xs font-medium uppercase tracking-[0.14em] text-zinc-900 shadow-sm transition hover:bg-white"
-              >
-                В каталог
-              </Link>
-              <Link
                 href="/about"
                 className="rounded-full border border-zinc-800/50 bg-transparent px-6 py-3 text-xs font-medium uppercase tracking-[0.14em] text-zinc-900 transition hover:border-zinc-800 hover:bg-white/40"
               >
@@ -72,17 +67,41 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="rounded-[24px] border border-[#d9d2c8] bg-white px-5 py-9 text-balance shadow-sm md:rounded-[28px] md:px-10 md:py-10">
-        <h2 className="text-xl font-semibold tracking-tight md:text-2xl">Консьерж сервис</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-700 md:text-base">
-          Абсолютно новые вещи из Европы. Ваши самые желанные лоты с персональным сопровождением менеджера.
-        </p>
-        <Link
-          href="/about"
-          className="mt-5 inline-block rounded-full border border-zinc-800/80 bg-[#f8f6f2] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-zinc-900 transition hover:bg-white"
-        >
-          Подробнее
-        </Link>
+      <section className="overflow-hidden rounded-[24px] border border-[#d4a8a0] bg-white px-5 py-9 text-balance shadow-sm md:rounded-[28px] md:px-10 md:py-10">
+        <div className="grid gap-8 md:grid-cols-[1fr_320px] md:items-center">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-[#b45a53] md:text-xs">
+              Личный ассистент
+            </p>
+            <h2 className="mt-3 text-xl font-semibold tracking-tight text-[#b45a53] md:text-2xl">
+              Консьерж сервис
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-700 md:text-base">
+              Тихий подбор, аккуратные детали и сопровождение на каждом шаге — чтобы вы получили идеальный лот без лишних действий.
+            </p>
+            <Link
+              href="/about"
+              className="mt-6 inline-block rounded-full border border-[#b45a53]/45 bg-[#dfd4c5] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-[#6a2a24] transition hover:bg-white"
+            >
+              Подробнее
+            </Link>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-4 bg-gradient-to-br from-[#b45a53]/20 to-[#dfd4c5]/10 blur-2xl" aria-hidden />
+            <div className="relative overflow-hidden rounded-[22px] border border-[#d9d2c8] bg-[#f6f3ef]">
+              <Image
+                src={CONCIERGE_IMAGE}
+                alt={CONCIERGE_IMAGE_ALT}
+                width={520}
+                height={620}
+                className="h-full w-full object-cover"
+                sizes="320px"
+                priority={false}
+              />
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="px-0.5">

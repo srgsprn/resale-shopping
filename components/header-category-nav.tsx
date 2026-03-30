@@ -46,25 +46,37 @@ export function HeaderCategoryNav() {
 
   if (categories.length === 0) return null;
 
+  const jewelry = categories.find((c) => /ювелир/i.test(c.name));
+
+  const items: Array<{ label: string; href: string }> = [
+    { label: "Бренды", href: "/brands" },
+    { label: "Каталог", href: "/catalog?sort=newest" },
+    { label: "Новинки", href: "/catalog?sort=newest" },
+    { label: "Ювелирные изделия", href: jewelry ? `/catalog?category=${encodeURIComponent(jewelry.slug)}` : "/catalog?sort=newest" },
+    { label: "Подарочные карты", href: "/gift-cards" },
+  ];
+
   return (
     <nav
-      className="-mx-3 flex gap-0 border-t border-[#d9d2c8]/50 px-3 pb-2.5 pt-1 md:-mx-8 md:px-8"
-      aria-label="Категории"
+      className="w-full border-t border-[#d9d2c8]/50"
+      aria-label="Навигация"
     >
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-2 md:overflow-x-visible md:pb-2 md:flex-wrap [&::-webkit-scrollbar]:hidden">
-        {categories.map((c) => (
-          <Link
-            key={c.id}
-            href={`/catalog?category=${encodeURIComponent(c.slug)}`}
-            className="group relative shrink-0 whitespace-nowrap px-2.5 py-2 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-500 transition-colors duration-200 hover:text-zinc-900 md:px-3 md:text-[11px] md:tracking-[0.18em]"
-          >
-            <span className="relative z-10">{c.name}</span>
-            <span
-              className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px origin-left scale-x-0 bg-zinc-800/70 transition-transform duration-300 ease-out group-hover:scale-x-100 md:inset-x-3"
-              aria-hidden
-            />
-          </Link>
-        ))}
+      <div className="mx-auto max-w-7xl px-3 md:px-8">
+        <div className="flex w-full items-center justify-between gap-1 overflow-x-auto overscroll-x-contain pb-2 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-2 [&::-webkit-scrollbar]:hidden">
+          {items.map((it) => (
+            <Link
+              key={it.label}
+              href={it.href}
+              className="group relative whitespace-nowrap px-2.5 py-2 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-500 transition-colors duration-200 hover:text-zinc-900 md:px-3 md:text-[11px] md:tracking-[0.18em]"
+            >
+              <span className="relative z-10">{it.label}</span>
+              <span
+                className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px origin-left scale-x-0 bg-zinc-800/70 transition-transform duration-300 ease-out group-hover:scale-x-100 md:inset-x-3"
+                aria-hidden
+              />
+            </Link>
+          ))}
+        </div>
       </div>
     </nav>
   );
