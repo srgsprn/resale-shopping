@@ -57,66 +57,22 @@ export function SiteSplash() {
           exit={{ opacity: 0 }}
           transition={{ duration: fast ? 0.15 : 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="flex flex-col items-center px-6 text-center text-[#1c1917]">
-            <motion.p
-              className="mb-6 text-[10px] font-medium uppercase tracking-[0.45em] text-[#3f3a36]/80"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: fast ? 0.05 : 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Премиальный бутик
-            </motion.p>
-
+          <div className="px-6 text-center text-[#1c1917]">
             <div className="overflow-hidden">
               <motion.h1
-                className="text-[clamp(1.75rem,6vw,2.75rem)] font-normal tracking-[0.22em] md:tracking-[0.28em]"
+                className="text-[clamp(2.1rem,7vw,3.4rem)] font-normal leading-[1.05] tracking-[0.2em] md:tracking-[0.28em]"
                 style={{ fontFamily: "var(--font-display)" }}
                 initial={{ opacity: 0, y: "100%" }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: fast ? 0.05 : 0.85,
-                  delay: fast ? 0 : 0.12,
+                  duration: fast ? 0.05 : 1.0,
+                  delay: fast ? 0 : 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                RESALE
+                RESALE SHOPPING
               </motion.h1>
             </div>
-            <div className="overflow-hidden">
-              <motion.h1
-                className="mt-1 text-[clamp(1.75rem,6vw,2.75rem)] font-normal tracking-[0.22em] md:tracking-[0.28em]"
-                style={{ fontFamily: "var(--font-display)" }}
-                initial={{ opacity: 0, y: "100%" }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: fast ? 0.05 : 0.85,
-                  delay: fast ? 0 : 0.28,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                SHOPPING
-              </motion.h1>
-            </div>
-
-            <motion.div
-              className="mt-8 h-px w-[min(12rem,50vw)] origin-center bg-[#1c1917]/25"
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{
-                duration: fast ? 0.05 : 0.9,
-                delay: fast ? 0 : 0.55,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            />
-
-            <motion.p
-              className="mt-6 max-w-xs text-xs leading-relaxed tracking-wide text-[#3f3a36]/75"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: fast ? 0 : 0.95, duration: fast ? 0.05 : 0.6 }}
-            >
-              resale-shopping.ru
-            </motion.p>
           </div>
         </motion.div>
       ) : null}
