@@ -30,7 +30,10 @@ export function HeaderCartBadge() {
   }, []);
 
   return (
-    <Link href="/cart" className="relative inline-flex items-center gap-1.5 whitespace-nowrap hover:text-zinc-900">
+    <Link
+      href="/cart"
+      className="relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-1.5 py-1 transition hover:bg-zinc-900/5 hover:text-zinc-900"
+    >
       <span aria-hidden>Корзина</span>
       {count > 0 ? (
         <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-900 px-1.5 text-[10px] font-semibold text-[#f6f3ef]">

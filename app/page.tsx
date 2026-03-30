@@ -7,14 +7,13 @@ import { ProductCard } from "@/components/product-card";
 import { prisma } from "@/lib/prisma";
 
 export default async function HomePage() {
-  const [featured, categories, latest] = await Promise.all([
+  const [featured, latest] = await Promise.all([
     prisma.product.findMany({
       where: { status: "ACTIVE" },
       include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
       take: 8,
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     }),
-    prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, take: 6 }),
     prisma.product.findMany({
       where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
       include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
@@ -43,21 +42,6 @@ export default async function HomePage() {
           >
             Подробнее
           </Link>
-        </div>
-      </section>
-
-      <section className="px-0.5">
-        <h2 className="mb-4 px-0.5 text-xl font-semibold tracking-tight md:mb-5 md:text-2xl">Категории</h2>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-6">
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              href={`/catalog?category=${c.slug}`}
-              className="rounded-2xl border border-[#d9d2c8] bg-[#f8f6f2] px-3 py-4 text-center text-[11px] font-medium uppercase leading-snug tracking-[0.08em] text-zinc-900 transition hover:border-zinc-400 hover:bg-white md:px-4 md:py-5 md:text-sm md:tracking-[0.1em]"
-            >
-              {c.name}
-            </Link>
-          ))}
         </div>
       </section>
 
