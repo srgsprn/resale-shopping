@@ -9,23 +9,23 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[#d9d2c8]/80 bg-[#f6f3ef]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#f6f3ef]/80">
       <div className="mx-auto max-w-7xl px-3 md:px-8">
-        <div className="flex items-center gap-3 py-3 md:gap-4">
+        <div className="flex items-end gap-3 py-2 md:gap-4 md:py-3">
           <Link
             href="/"
-            className="flex h-14 w-16 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5 md:h-28 md:w-32"
+            className="flex h-12 w-20 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5 md:h-20 md:w-36"
             aria-label="Главная"
           >
             <Image
               src="/resale-icon.png"
               alt="Resale shopping"
-              width={112}
-              height={112}
-              className="h-14 w-16 rounded-3xl object-contain md:h-28 md:w-32"
+              width={144}
+              height={80}
+              className="h-12 w-20 rounded-3xl object-contain md:h-20 md:w-36"
               priority
             />
           </Link>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2 pb-0.5 md:gap-3 md:pb-1">
             <HeaderMainLinks />
             <HeaderCartBadge />
           </div>
