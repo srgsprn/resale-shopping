@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
   const host = request.headers.get("host") || "";
 
+  /* Редирект со старого домена на новый (технический хостнейм). */
   if (host.includes("alfa-resale.ru")) {
     const url = new URL(request.url);
     url.host = "resale-shopping.ru";

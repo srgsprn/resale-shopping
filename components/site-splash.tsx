@@ -64,7 +64,7 @@ export function SiteSplash() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: fast ? 0.05 : 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              Premium resale
+              Премиальный бутик
             </motion.p>
 
             <div className="overflow-hidden">

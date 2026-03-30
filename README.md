@@ -13,9 +13,9 @@ npm run db:seed
 npm run dev
 ```
 
-## Automatic migration from alfa-resale.ru
+## Automatic catalog sync (public WordPress API)
 
-If you do not have original CSV/images, run automatic sync from public WordPress endpoints:
+If you do not have original CSV/images, run automatic sync from public WordPress endpoints (see `scripts/scrape-alfa-export.mjs` source URL):
 
 ```bash
 npm run db:sync:alfa

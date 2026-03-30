@@ -100,7 +100,7 @@ export default function CheckoutPage() {
       <section>
         <h1 className="mb-2 text-3xl font-semibold tracking-tight">Данные для заказа</h1>
         <p className="mb-8 text-sm text-zinc-600">
-          Как на alfa-resale: сначала контакты и состав заказа, затем переход к безопасной оплате (если настроен Stripe).
+          Сначала контакты и состав заказа, затем безопасная оплата (если на сервере настроен Stripe).
         </p>
         <form onSubmit={onSubmit} className="max-w-xl space-y-5">
           <div>
