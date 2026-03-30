@@ -46,8 +46,16 @@ ENC_PASS="$(
     || DB_PASSWORD="$DB_PASSWORD" node -e 'console.log(encodeURIComponent(process.env.DB_PASSWORD))'
 )"
 
+FULL_URL="postgresql://${DB_USER}:${ENC_PASS}@127.0.0.1:5432/${DB_NAME}"
+
+if [[ -n "${RESALE_DB_URL_FILE:-}" ]]; then
+  umask 077
+  printf 'DATABASE_URL="%s"\n' "$FULL_URL" > "$RESALE_DB_URL_FILE"
+  echo "Wrote DATABASE_URL to ${RESALE_DB_URL_FILE}"
+fi
+
 echo ""
 echo "=== Add to .env on this server ==="
-echo "DATABASE_URL=\"postgresql://${DB_USER}:${ENC_PASS}@127.0.0.1:5432/${DB_NAME}\""
+echo "DATABASE_URL=\"${FULL_URL}\""
 echo "==================================="
 echo "(If password has special chars, URL-encode it in DATABASE_URL)"

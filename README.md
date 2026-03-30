@@ -39,28 +39,25 @@ What it does:
 npm run db:import:woo -- data/woocommerce-products.csv
 ```
 
-## VPS (Timeweb / любой Ubuntu): Postgres на сервере
+## VPS: один скрипт (проще всего)
 
-На VPS **один раз** (под `root` или `sudo`):
-
-```bash
-git clone <твой-репо> resale-shopping && cd resale-shopping
-sudo bash scripts/vps-postgres-install.sh
-```
-
-Скопируй выведенный `DATABASE_URL` в `.env` (создай из `.env.example`).
-
-Дальше деплой приложения на **этой же** машине:
+На **Ubuntu/Debian VPS** после `ssh` (с поднятым интернетом):
 
 ```bash
-cp .env.example .env
-# заполни DATABASE_URL, NEXT_PUBLIC_SITE_URL, Stripe, Resend/SMTP
-bash scripts/vps-deploy.sh
+curl -fsSL https://raw.githubusercontent.com/srgsprn/resale-shopping/main/scripts/vps-one-shot.sh | sudo bash
 ```
 
-Скрипт выполнит: `npm ci`, миграции Prisma, импорт `data/alfa-products.json` + `data/alfa-pages.json`, `next build`.
+Или уже в клоне репозитория:
 
-Запуск: `npm run start` (порт 3000) или оберни в PM2/systemd + nginx.
+```bash
+sudo bash scripts/vps-one-shot.sh
+```
+
+Скрипт: Node 20 → PostgreSQL → `.env` с `DATABASE_URL` → миграции → импорт каталога → `next build` → PM2.
+
+Потом в `.env` добавь Stripe и Resend/SMTP (оплата и почта).
+
+Ручной вариант по шагам: `scripts/vps-postgres-install.sh` + `scripts/vps-deploy.sh`.
 
 ## Required env vars
 
