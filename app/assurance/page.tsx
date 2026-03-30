@@ -1,0 +1,1 @@
+export default function AssurancePage() { return <section className="rounded-2xl border border-zinc-200 bg-white p-6"><h1 className="text-2xl font-semibold">Гарантия подлинности</h1><p className="mt-2 text-zinc-700">Каждый товар проходит многоступенчатую проверку командой экспертов.</p></section>; }

@@ -1,0 +1,541 @@
+{
+  "generatedAt": "2026-03-30T17:08:16.419Z",
+  "redirects": [
+    {
+      "from": "https://alfa-resale.ru",
+      "to": "https://resale-shopping.ru"
+    },
+    {
+      "from": "https://alfa-resale.ru/catalog",
+      "to": "https://resale-shopping.ru/catalog"
+    },
+    {
+      "from": "https://alfa-resale.ru/about",
+      "to": "https://resale-shopping.ru/about"
+    },
+    {
+      "from": "https://alfa-resale.ru/prodaja",
+      "to": "https://resale-shopping.ru/prodaja"
+    },
+    {
+      "from": "https://alfa-resale.ru/pokupka",
+      "to": "https://resale-shopping.ru/pokupka"
+    },
+    {
+      "from": "https://alfa-resale.ru/delivery",
+      "to": "https://resale-shopping.ru/delivery"
+    },
+    {
+      "from": "https://alfa-resale.ru/assurance",
+      "to": "https://resale-shopping.ru/assurance"
+    },
+    {
+      "from": "https://alfa-resale.ru/brands",
+      "to": "https://resale-shopping.ru/brands"
+    },
+    {
+      "from": "https://alfa-resale.ru/koncepcia",
+      "to": "https://resale-shopping.ru/koncepcia"
+    },
+    {
+      "from": "https://alfa-resale.ru/rassrochka",
+      "to": "https://resale-shopping.ru/rassrochka"
+    },
+    {
+      "from": "https://alfa-resale.ru/oferta",
+      "to": "https://resale-shopping.ru/oferta"
+    },
+    {
+      "from": "https://alfa-resale.ru/prodat",
+      "to": "https://resale-shopping.ru/prodat"
+    },
+    {
+      "from": "https://alfa-resale.ru/wishlist",
+      "to": "https://resale-shopping.ru/wishlist"
+    },
+    {
+      "from": "https://alfa-resale.ru/cart",
+      "to": "https://resale-shopping.ru/cart"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/cartier-juste-un-clou-4/",
+      "to": "https://resale-shopping.ru/product/cartier-juste-un-clou-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-belt/",
+      "to": "https://resale-shopping.ru/product/gucci-belt"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/goyard-anjou-3/",
+      "to": "https://resale-shopping.ru/product/goyard-anjou-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-ophidia-12/",
+      "to": "https://resale-shopping.ru/product/gucci-ophidia-12"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/balenciaga-rodeo-5/",
+      "to": "https://resale-shopping.ru/product/balenciaga-rodeo-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/bottega-veneta-andiamo-8/",
+      "to": "https://resale-shopping.ru/product/bottega-veneta-andiamo-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/miu-miu-beau-4/",
+      "to": "https://resale-shopping.ru/product/miu-miu-beau-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-run-away-2/",
+      "to": "https://resale-shopping.ru/product/lv-run-away-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-bum-bag-2/",
+      "to": "https://resale-shopping.ru/product/lv-bum-bag-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-jackie-1961-2/",
+      "to": "https://resale-shopping.ru/product/gucci-jackie-1961-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-carry-all/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-carry-all"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-empire/",
+      "to": "https://resale-shopping.ru/product/hermes-empire"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/balenciaga-rodeo-4/",
+      "to": "https://resale-shopping.ru/product/balenciaga-rodeo-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-birkin-25-3/",
+      "to": "https://resale-shopping.ru/product/hermes-birkin-25-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-birkin-30-5/",
+      "to": "https://resale-shopping.ru/product/hermes-birkin-30-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-oran/",
+      "to": "https://resale-shopping.ru/product/hermes-oran"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-le-5-a-7-5/",
+      "to": "https://resale-shopping.ru/product/ysl-le-5-a-7-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-birkin-cargo/",
+      "to": "https://resale-shopping.ru/product/hermes-birkin-cargo"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-bundle/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-bundle"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-lady-dior-8/",
+      "to": "https://resale-shopping.ru/product/christian-dior-lady-dior-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/fendi-peekaboo-4/",
+      "to": "https://resale-shopping.ru/product/fendi-peekaboo-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-evelyne-16-3/",
+      "to": "https://resale-shopping.ru/product/hermes-evelyne-16-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-ophidia-11/",
+      "to": "https://resale-shopping.ru/product/gucci-ophidia-11"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-small-31/",
+      "to": "https://resale-shopping.ru/product/chanel-small-31"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-herbag-31-9/",
+      "to": "https://resale-shopping.ru/product/hermes-herbag-31-9"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-boy-medium/",
+      "to": "https://resale-shopping.ru/product/chanel-boy-medium"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-petit-palais/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-petit-palais"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-bolide-3/",
+      "to": "https://resale-shopping.ru/product/hermes-bolide-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/alaia-le-coeur-2/",
+      "to": "https://resale-shopping.ru/product/alaia-le-coeur-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-pochette-5/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-pochette-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-loulou-medium/",
+      "to": "https://resale-shopping.ru/product/ysl-loulou-medium"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/alaia-le-teckel-2/",
+      "to": "https://resale-shopping.ru/product/alaia-le-teckel-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/prada-loafers/",
+      "to": "https://resale-shopping.ru/product/prada-loafers"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-keepall-50/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-keepall-50"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-neverfull-4/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-neverfull-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-saddle-6/",
+      "to": "https://resale-shopping.ru/product/christian-dior-saddle-6"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/cartier-love-8/",
+      "to": "https://resale-shopping.ru/product/cartier-love-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-capucines-3/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-capucines-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-bobby-3/",
+      "to": "https://resale-shopping.ru/product/christian-dior-bobby-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/cartier-juste-un-clou-3/",
+      "to": "https://resale-shopping.ru/product/cartier-juste-un-clou-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-petite-malle/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-petite-malle"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ferragamo-hug-4/",
+      "to": "https://resale-shopping.ru/product/ferragamo-hug-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-kelly-2/",
+      "to": "https://resale-shopping.ru/product/hermes-kelly-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-twist-2/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-twist-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/loro-piana-summer-walk-5/",
+      "to": "https://resale-shopping.ru/product/loro-piana-summer-walk-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-niki-large/",
+      "to": "https://resale-shopping.ru/product/ysl-niki-large"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-circle/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-circle"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-book-tote-8/",
+      "to": "https://resale-shopping.ru/product/christian-dior-book-tote-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/goyard-saint-louis-2/",
+      "to": "https://resale-shopping.ru/product/goyard-saint-louis-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-passy-2/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-passy-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-alma-2/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-alma-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/the-row-margaux-shoulder-12/",
+      "to": "https://resale-shopping.ru/product/the-row-margaux-shoulder-12"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-speedy/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-speedy"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/bottega-veneta-andiamo-7/",
+      "to": "https://resale-shopping.ru/product/bottega-veneta-andiamo-7"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-capucines-mini-2/",
+      "to": "https://resale-shopping.ru/product/lv-capucines-mini-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-2-55-3/",
+      "to": "https://resale-shopping.ru/product/chanel-2-55-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-mary-jane-3/",
+      "to": "https://resale-shopping.ru/product/chanel-mary-jane-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-birkin-30-4/",
+      "to": "https://resale-shopping.ru/product/hermes-birkin-30-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-gg-marmont-10/",
+      "to": "https://resale-shopping.ru/product/gucci-gg-marmont-10"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-monogram/",
+      "to": "https://resale-shopping.ru/product/lv-monogram"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-voltaire-2/",
+      "to": "https://resale-shopping.ru/product/ysl-voltaire-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-farandole/",
+      "to": "https://resale-shopping.ru/product/hermes-farandole"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-bouncing-2/",
+      "to": "https://resale-shopping.ru/product/hermes-bouncing-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-herbag-31-8/",
+      "to": "https://resale-shopping.ru/product/hermes-herbag-31-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-gg-embossed/",
+      "to": "https://resale-shopping.ru/product/gucci-gg-embossed"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-jamie-large/",
+      "to": "https://resale-shopping.ru/product/ysl-jamie-large"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-neverfull-3/",
+      "to": "https://resale-shopping.ru/product/lv-neverfull-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-opyum-85/",
+      "to": "https://resale-shopping.ru/product/ysl-opyum-85"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-book-tote-7/",
+      "to": "https://resale-shopping.ru/product/christian-dior-book-tote-7"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/miu-miu-aventure-2/",
+      "to": "https://resale-shopping.ru/product/miu-miu-aventure-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-classic-rain-boots/",
+      "to": "https://resale-shopping.ru/product/chanel-classic-rain-boots"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/the-row-margaux-15-4/",
+      "to": "https://resale-shopping.ru/product/the-row-margaux-15-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-jackie-1961/",
+      "to": "https://resale-shopping.ru/product/gucci-jackie-1961"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-lady-dior-7/",
+      "to": "https://resale-shopping.ru/product/christian-dior-lady-dior-7"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/dolce-gabbana-sicily-medium/",
+      "to": "https://resale-shopping.ru/product/dolce-gabbana-sicily-medium"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-garden-party-30/",
+      "to": "https://resale-shopping.ru/product/hermes-garden-party-30"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-saddle-5/",
+      "to": "https://resale-shopping.ru/product/christian-dior-saddle-5"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-le-loafer/",
+      "to": "https://resale-shopping.ru/product/ysl-le-loafer"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-ophidia-10/",
+      "to": "https://resale-shopping.ru/product/gucci-ophidia-10"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/maison-margiela-tabi-4/",
+      "to": "https://resale-shopping.ru/product/maison-margiela-tabi-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-boy-2/",
+      "to": "https://resale-shopping.ru/product/chanel-boy-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-bolide-2/",
+      "to": "https://resale-shopping.ru/product/hermes-bolide-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-kelly-mini/",
+      "to": "https://resale-shopping.ru/product/hermes-kelly-mini"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-alma-bb-2/",
+      "to": "https://resale-shopping.ru/product/lv-alma-bb-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-woc-2/",
+      "to": "https://resale-shopping.ru/product/chanel-woc-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-gg-marmont-9/",
+      "to": "https://resale-shopping.ru/product/gucci-gg-marmont-9"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/loro-piana-summer-walk-4/",
+      "to": "https://resale-shopping.ru/product/loro-piana-summer-walk-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-handbag/",
+      "to": "https://resale-shopping.ru/product/chanel-handbag"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/balenciaga-monaco-2/",
+      "to": "https://resale-shopping.ru/product/balenciaga-monaco-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-30-montaigne/",
+      "to": "https://resale-shopping.ru/product/christian-dior-30-montaigne"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-cassandre-2/",
+      "to": "https://resale-shopping.ru/product/ysl-cassandre-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/schiaparelli-mini-bijoux-secret/",
+      "to": "https://resale-shopping.ru/product/schiaparelli-mini-bijoux-secret"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-book-tote-6/",
+      "to": "https://resale-shopping.ru/product/christian-dior-book-tote-6"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-grand-shopping-2/",
+      "to": "https://resale-shopping.ru/product/chanel-grand-shopping-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-capucines-mini/",
+      "to": "https://resale-shopping.ru/product/lv-capucines-mini"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-neverfull-2/",
+      "to": "https://resale-shopping.ru/product/lv-neverfull-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/hermes-constance-18-2/",
+      "to": "https://resale-shopping.ru/product/hermes-constance-18-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-lofery/",
+      "to": "https://resale-shopping.ru/product/gucci-lofery"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-le-5-a-7-4/",
+      "to": "https://resale-shopping.ru/product/ysl-le-5-a-7-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-slingback-2/",
+      "to": "https://resale-shopping.ru/product/chanel-slingback-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-diane/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-diane"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/goyard-senat-mgm/",
+      "to": "https://resale-shopping.ru/product/goyard-senat-mgm"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/bottega-veneta-dustbag/",
+      "to": "https://resale-shopping.ru/product/bottega-veneta-dustbag"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-gg-marmont-8/",
+      "to": "https://resale-shopping.ru/product/gucci-gg-marmont-8"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/chanel-ballet-3/",
+      "to": "https://resale-shopping.ru/product/chanel-ballet-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/prada-galleria-small/",
+      "to": "https://resale-shopping.ru/product/prada-galleria-small"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/prada-monolith-4/",
+      "to": "https://resale-shopping.ru/product/prada-monolith-4"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/ysl-crossbody-2/",
+      "to": "https://resale-shopping.ru/product/ysl-crossbody-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-horsebit-chain/",
+      "to": "https://resale-shopping.ru/product/gucci-horsebit-chain"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/loro-piana-summer-walk-3/",
+      "to": "https://resale-shopping.ru/product/loro-piana-summer-walk-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/gucci-ophidia-9/",
+      "to": "https://resale-shopping.ru/product/gucci-ophidia-9"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-bobby-2/",
+      "to": "https://resale-shopping.ru/product/christian-dior-bobby-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-speedy-25-2/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-speedy-25-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/lv-neonoe-3/",
+      "to": "https://resale-shopping.ru/product/lv-neonoe-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-metis-east-west/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-metis-east-west"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/loewe-puzzle-small/",
+      "to": "https://resale-shopping.ru/product/loewe-puzzle-small"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/louis-vuitton-toiletry-bag/",
+      "to": "https://resale-shopping.ru/product/louis-vuitton-toiletry-bag"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/balenciaga-crush-3/",
+      "to": "https://resale-shopping.ru/product/balenciaga-crush-3"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/fendi-sunshine-2/",
+      "to": "https://resale-shopping.ru/product/fendi-sunshine-2"
+    },
+    {
+      "from": "https://alfa-resale.ru/product/christian-dior-saddle-4/",
+      "to": "https://resale-shopping.ru/product/christian-dior-saddle-4"
+    }
+  ]
+}

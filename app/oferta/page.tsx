@@ -1,0 +1,1 @@
+export default function OfertaPage() { return <section className="rounded-2xl border border-zinc-200 bg-white p-6"><h1 className="text-2xl font-semibold">Оферта</h1><p className="mt-2 text-zinc-700">Публичная оферта и юридическая информация размещаются в полном тексте после миграции контента.</p></section>; }

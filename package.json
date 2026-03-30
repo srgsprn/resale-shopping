@@ -1,0 +1,44 @@
+{
+  "name": "resale-shopping",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "node prisma/seed.js",
+    "db:import:woo": "node scripts/import-woocommerce.cjs",
+    "db:sync:alfa": "node scripts/sync-alfa-site.mjs",
+    "scrape:alfa": "node scripts/scrape-alfa-export.mjs",
+    "db:import:alfa-json": "node scripts/import-alfa-json.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@stripe/stripe-js": "^9.0.0",
+    "clsx": "^2.1.1",
+    "csv-parse": "^6.2.1",
+    "next": "16.2.1",
+    "nodemailer": "^8.0.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "resend": "^6.9.4",
+    "stripe": "^21.0.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
