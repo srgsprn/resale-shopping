@@ -4,7 +4,6 @@ import Image from "next/image";
 import { HeaderCartBadge } from "@/components/header-cart-badge";
 import { HeaderCategoryNav } from "@/components/header-category-nav";
 import { HeaderMainLinks } from "@/components/header-main-links";
-import { HeaderTelegramSubscribeButton } from "@/components/header-telegram-subscribe";
 
 export function Header() {
   return (
@@ -13,15 +12,15 @@ export function Header() {
         <div className="flex items-center gap-3 py-3 md:gap-4">
           <Link
             href="/"
-            className="flex h-14 w-16 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5"
+            className="flex h-14 w-16 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5 md:h-28 md:w-32"
             aria-label="Главная"
           >
             <Image
               src="/resale-icon.png"
               alt="Resale shopping"
-              width={56}
-              height={56}
-              className="h-14 w-16 rounded-3xl object-contain"
+              width={112}
+              height={112}
+              className="h-14 w-16 rounded-3xl object-contain md:h-28 md:w-32"
               priority
             />
           </Link>
@@ -29,7 +28,6 @@ export function Header() {
           <div className="ml-auto flex items-center gap-2">
             <HeaderMainLinks />
             <HeaderCartBadge />
-            <HeaderTelegramSubscribeButton />
           </div>
         </div>
 
