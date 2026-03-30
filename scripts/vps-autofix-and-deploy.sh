@@ -4,6 +4,11 @@
 # запускает миграции и деплой от пользователя, который вызвал sudo.
 set -euo pipefail
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  echo "Запускай только на Linux VPS после ssh. На Mac: ssh user@IP сервера, затем cd ~/resale-shopping && sudo bash scripts/vps-autofix-and-deploy.sh" >&2
+  exit 1
+fi
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 

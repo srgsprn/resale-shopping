@@ -10,6 +10,11 @@
 #
 set -euo pipefail
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  echo "Только для Linux VPS. На Mac открой ssh на сервер и запусти там." >&2
+  exit 1
+fi
+
 REPO_URL="${REPO_URL:-https://github.com/srgsprn/resale-shopping.git}"
 INSTALL_DIR="${INSTALL_DIR:-/var/www/resale-shopping}"
 WITH_PM2="${WITH_PM2:-1}"

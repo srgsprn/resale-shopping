@@ -3,6 +3,11 @@
 # Installs PostgreSQL, creates DB and app user, prints DATABASE_URL.
 set -euo pipefail
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  echo "Этот скрипт только для Linux VPS (Ubuntu/Debian). На Mac не запускай — зайди по ssh на сервер и выполни там." >&2
+  exit 1
+fi
+
 DB_NAME="${DB_NAME:-resale_shopping}"
 DB_USER="${DB_USER:-resale_app}"
 PASSWORD_FILE="${RESALE_DB_PASSWORD_FILE:-/root/.resale-shopping-db-password}"
@@ -13,6 +18,7 @@ if [[ -z "${DB_PASSWORD:-}" ]]; then
   else
     DB_PASSWORD="$(openssl rand -base64 24 | tr -d '/+=' | head -c 32)"
     umask 077
+    mkdir -p "$(dirname "$PASSWORD_FILE")"
     printf '%s\n' "$DB_PASSWORD" > "$PASSWORD_FILE"
     chmod 600 "$PASSWORD_FILE"
     echo "New DB password saved to ${PASSWORD_FILE} (keep this file; do not commit)."
