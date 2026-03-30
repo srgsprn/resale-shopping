@@ -37,6 +37,10 @@ apt-get install -y -qq nginx certbot python3-certbot-nginx curl
 
 UPSTREAM="127.0.0.1:${UPSTREAM_PORT}"
 CONF="/etc/nginx/sites-available/resale-shopping"
+WEBROOT="/var/www/certbot"
+
+mkdir -p "$WEBROOT/.well-known/acme-challenge"
+chown -R www-data:www-data "$WEBROOT" 2>/dev/null || true
 
 if [[ "$INCLUDE_WWW" == "1" ]]; then
   SERVER_NAMES="${DOMAIN} www.${DOMAIN}"
@@ -49,6 +53,12 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name ${SERVER_NAMES};
+
+    location ^~ /.well-known/acme-challenge/ {
+        root ${WEBROOT};
+        default_type "text/plain";
+        try_files \$uri =404;
+    }
 
     location / {
         proxy_pass http://${UPSTREAM};
@@ -83,14 +93,24 @@ fi
 
 CERTBOT_OK=0
 if [[ "$INCLUDE_WWW" == "1" ]]; then
-  if certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
-    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect; then
+  if certbot certonly --webroot -w "$WEBROOT" -d "$DOMAIN" -d "www.$DOMAIN" \
+    --non-interactive --agree-tos -m "$CERTBOT_EMAIL"; then
     CERTBOT_OK=1
   fi
 else
-  if certbot --nginx -d "$DOMAIN" \
-    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect; then
+  if certbot certonly --webroot -w "$WEBROOT" -d "$DOMAIN" \
+    --non-interactive --agree-tos -m "$CERTBOT_EMAIL"; then
     CERTBOT_OK=1
+  fi
+fi
+
+if [[ "$CERTBOT_OK" -eq 1 ]]; then
+  if [[ "$INCLUDE_WWW" == "1" ]]; then
+    certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
+      --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect || true
+  else
+    certbot --nginx -d "$DOMAIN" \
+      --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect || true
   fi
 fi
 

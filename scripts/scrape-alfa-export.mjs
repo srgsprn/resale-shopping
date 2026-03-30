@@ -65,8 +65,14 @@ async function main() {
 
   const exported = [];
 
-  const limit = Number(process.env.ALFA_SCRAPE_LIMIT || "120");
-  const selected = products.slice(0, limit);
+  const limitRaw = process.env.ALFA_SCRAPE_LIMIT;
+  let selected = products;
+  if (limitRaw !== undefined && limitRaw !== "" && limitRaw !== "0") {
+    const n = Number(limitRaw);
+    if (Number.isFinite(n) && n > 0) {
+      selected = products.slice(0, n);
+    }
+  }
 
   for (const [idx, p] of selected.entries()) {
     let html = "";

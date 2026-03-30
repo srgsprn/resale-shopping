@@ -14,7 +14,8 @@
     "db:import:woo": "node scripts/import-woocommerce.cjs",
     "db:sync:alfa": "node scripts/sync-alfa-site.mjs",
     "scrape:alfa": "node scripts/scrape-alfa-export.mjs",
-    "db:import:alfa-json": "node scripts/import-alfa-json.mjs"
+    "db:import:alfa-json": "node scripts/import-alfa-json.mjs",
+    "catalog:sync": "node scripts/sync-catalog.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

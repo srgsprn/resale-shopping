@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { dispatchCartUpdated } from "@/lib/cart-events";
+
 type CartProduct = {
   id: string;
   slug: string;
@@ -26,6 +28,7 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
     }
 
     localStorage.setItem("cart", JSON.stringify(current));
+    dispatchCartUpdated();
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
   };
