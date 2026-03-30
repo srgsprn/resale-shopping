@@ -1,4 +1,4 @@
-/** Редакционное фото (Unsplash) — городская мода, сумки и аксессуары, без логотипов брендов. */
+/** Редакционное фото с Unsplash (лицензия: https://unsplash.com/license). */
 export const HOME_HERO_IMAGE =
   "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=88";
 
