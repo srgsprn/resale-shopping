@@ -45,8 +45,8 @@ fi
 
 cat >"$CONF" <<NGINX
 server {
-    listen 80;
-    listen [::]:80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
     server_name ${SERVER_NAMES};
 
     location / {
@@ -80,15 +80,30 @@ if command -v ufw >/dev/null 2>&1; then
   ufw --force enable >/dev/null 2>&1 || true
 fi
 
+CERTBOT_OK=0
 if [[ "$INCLUDE_WWW" == "1" ]]; then
-  certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
-    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect
+  if certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
+    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect; then
+    CERTBOT_OK=1
+  fi
 else
-  certbot --nginx -d "$DOMAIN" \
-    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect
+  if certbot --nginx -d "$DOMAIN" \
+    --non-interactive --agree-tos -m "$CERTBOT_EMAIL" --redirect; then
+    CERTBOT_OK=1
+  fi
 fi
 
 echo ""
-echo "Готово: https://${DOMAIN}"
+if [[ "$CERTBOT_OK" -eq 1 ]]; then
+  echo "Готово: https://${DOMAIN}"
+else
+  echo "HTTP-прокси на порту 80 уже настроен. HTTPS не выдался (часто DNS или порт 80)."
+  echo "Проверь: dig +short ${DOMAIN} A  →  IP VPS. Потом вручную:"
+  if [[ "$INCLUDE_WWW" == "1" ]]; then
+    echo "  certbot --nginx -d ${DOMAIN} -d www.${DOMAIN} --agree-tos -m ${CERTBOT_EMAIL} --redirect"
+  else
+    echo "  certbot --nginx -d ${DOMAIN} --agree-tos -m ${CERTBOT_EMAIL} --redirect"
+  fi
+fi
 echo "Убедись, что приложение слушает ${UPSTREAM} (pm2: resale-shopping)."
-echo "В .env на сервере выставь: NEXT_PUBLIC_SITE_URL=\"https://${DOMAIN}\""
+echo "В .env: NEXT_PUBLIC_SITE_URL=\"https://${DOMAIN}\" (или http:// пока нет SSL)"
