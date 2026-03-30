@@ -9,9 +9,10 @@ if [[ ! -f .env ]]; then
   exit 1
 fi
 
-export NODE_ENV="${NODE_ENV:-production}"
+# Tailwind/PostCSS в devDependencies — для next build на VPS нужны все пакеты
+npm ci --include=dev
 
-npm ci
+export NODE_ENV="${NODE_ENV:-production}"
 npm run db:generate
 npx prisma migrate deploy
 npm run db:import:alfa-json
