@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { HeaderCartBadge } from "@/components/header-cart-badge";
@@ -17,8 +18,19 @@ export function Header() {
             Продать
           </Link>
 
-          <Link href="/" className="min-w-0 text-[15px] font-semibold tracking-[0.06em] text-zinc-900 md:text-lg">
-            <span className="truncate">RESALE SHOPPING</span>
+          <Link
+            href="/"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl transition hover:bg-zinc-900/5"
+            aria-label="Главная"
+          >
+            <Image
+              src="/resale-icon.png"
+              alt="Resale shopping"
+              width={44}
+              height={44}
+              className="h-11 w-11 rounded-2xl object-contain"
+              priority
+            />
           </Link>
 
           <div className="ml-auto flex items-center gap-2">
