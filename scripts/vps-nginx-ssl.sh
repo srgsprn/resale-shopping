@@ -17,12 +17,13 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 fi
 
 if [[ "${EUID:-0}" -ne 0 ]]; then
-  exec sudo env DOMAIN="${DOMAIN:-}" CERTBOT_EMAIL="${CERTBOT_EMAIL:-}" INCLUDE_WWW="${INCLUDE_WWW:-1}" bash "$0" "$@"
+  exec sudo env DOMAIN="${DOMAIN:-}" CERTBOT_EMAIL="${CERTBOT_EMAIL:-}" INCLUDE_WWW="${INCLUDE_WWW:-1}" UPSTREAM_PORT="${UPSTREAM_PORT:-3000}" bash "$0" "$@"
 fi
 
 DOMAIN="${DOMAIN:-}"
 CERTBOT_EMAIL="${CERTBOT_EMAIL:-}"
 INCLUDE_WWW="${INCLUDE_WWW:-1}"
+UPSTREAM_PORT="${UPSTREAM_PORT:-3000}"
 
 if [[ -z "$DOMAIN" || -z "$CERTBOT_EMAIL" ]]; then
   echo "Задай переменные, например:" >&2
@@ -34,7 +35,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get install -y -qq nginx certbot python3-certbot-nginx curl
 
-UPSTREAM="127.0.0.1:3000"
+UPSTREAM="127.0.0.1:${UPSTREAM_PORT}"
 CONF="/etc/nginx/sites-available/resale-shopping"
 
 if [[ "$INCLUDE_WWW" == "1" ]]; then
@@ -105,5 +106,5 @@ else
     echo "  certbot --nginx -d ${DOMAIN} --agree-tos -m ${CERTBOT_EMAIL} --redirect"
   fi
 fi
-echo "Убедись, что приложение слушает ${UPSTREAM} (pm2: resale-shopping)."
+echo "Убедись, что приложение слушает ${UPSTREAM} (PORT=${UPSTREAM_PORT}, pm2: resale-shopping)."
 echo "В .env: NEXT_PUBLIC_SITE_URL=\"https://${DOMAIN}\" (или http:// пока нет SSL)"
