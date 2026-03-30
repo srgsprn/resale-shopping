@@ -8,11 +8,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
     ],
   },
-  async redirects() {
-    return [
-      { source: "/checkout", destination: "/cart", permanent: true },
-    ];
-  },
 };
 
 export default nextConfig;

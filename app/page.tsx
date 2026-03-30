@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 
+import { HomeDiscountsSection } from "@/components/home-discounts-section";
 import { ProductCard } from "@/components/product-card";
 import { prisma } from "@/lib/prisma";
 
@@ -60,14 +61,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="px-0.5">
-        <h2 className="mb-4 px-0.5 text-xl font-semibold tracking-tight md:mb-5 md:text-2xl">Скидки</h2>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          {featured.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      <div className="px-0.5">
+        <HomeDiscountsSection products={featured} />
+      </div>
 
       <section className="rounded-[24px] border border-[#d9d2c8] bg-white px-5 py-9 text-balance shadow-sm md:rounded-[28px] md:px-10 md:py-10">
         <h2 className="text-xl font-semibold tracking-tight md:text-2xl">Консьерж сервис</h2>
