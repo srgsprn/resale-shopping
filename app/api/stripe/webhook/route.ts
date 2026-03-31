@@ -70,14 +70,18 @@ export async function POST(request: Request) {
       const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const summary = updated.items.map((i) => `${i.productBrand || ""} ${i.productTitle}`.trim()).join(", ");
 
-      await sendOrderConfirmationEmail({
-        name: updated.customer.fullName,
-        email: updated.customer.email,
-        orderNumber: updated.orderNumber,
-        summary,
-        totalMinor: updated.totalMinor,
-        orderLink: `${site}/api/orders/${updated.orderNumber}`,
-      });
+      try {
+        await sendOrderConfirmationEmail({
+          name: updated.customer.fullName,
+          email: updated.customer.email,
+          orderNumber: updated.orderNumber,
+          summary,
+          totalMinor: updated.totalMinor,
+          orderLink: `${site}/api/orders/${updated.orderNumber}`,
+        });
+      } catch (err) {
+        console.error("Order email failed in stripe webhook", err);
+      }
     }
   }
 
