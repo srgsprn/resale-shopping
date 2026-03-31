@@ -33,7 +33,7 @@ export default async function HomePage() {
               Магазин брендовых сумок, одежды и аксессуаров с премиальной ресейл-эстетикой
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-zinc-700 md:text-base">
-              Отобранные лоты, бережная подача и внимание к деталям.
+              Отобранные лоты, бережная подача и внимание к деталям — как в лучших онлайн-бутиках.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
               <Link
@@ -75,11 +75,11 @@ export default async function HomePage() {
             Консьерж сервис
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-700 md:text-base">
-            Твой личный байер от Resale Shopping. Привезем новые лоты из Европы и США всего за 14 дней.
+            Тихий подбор, аккуратные детали и сопровождение на каждом шаге — чтобы вы получили идеальный лот без лишних действий.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              href="/conserj"
+              href="/about"
               className="inline-flex items-center justify-center rounded-full border border-[#d9d2c8] bg-[#dfd4c5] px-6 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-zinc-900 transition hover:bg-white"
             >
               Подробнее

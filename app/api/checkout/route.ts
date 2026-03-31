@@ -99,26 +99,6 @@ export async function POST(request: Request) {
       data: { stripeCheckoutSessionId: session.id },
     });
 
-    const full = await prisma.order.findUnique({
-      where: { id: order.id },
-      include: { items: true, customer: true },
-    });
-    if (full?.customer.email && !full.customer.email.endsWith("@example.com")) {
-      const summary = full.items.map((i) => `${i.productBrand || ""} ${i.productTitle}`.trim()).join(", ");
-      try {
-        await sendOrderConfirmationEmail({
-          name: full.customer.fullName,
-          email: full.customer.email,
-          orderNumber: full.orderNumber,
-          summary,
-          totalMinor: full.totalMinor,
-          orderLink: `${origin}/api/orders/${full.orderNumber}`,
-        });
-      } catch (err) {
-        console.error("Order email failed in checkout route", err);
-      }
-    }
-
     return NextResponse.json({ url: session.url });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Checkout error";

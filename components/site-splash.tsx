@@ -7,15 +7,19 @@ const STORAGE_KEY = "resale-splash-seen";
 
 export function SiteSplash() {
   const reduceMotion = useReducedMotion();
-  const [allowRender, setAllowRender] = useState(() => {
-    if (typeof window === "undefined") return false;
+  const [allowRender, setAllowRender] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     try {
-      return sessionStorage.getItem(STORAGE_KEY) !== "1";
+      if (sessionStorage.getItem(STORAGE_KEY) === "1") return;
     } catch {
-      return true;
+      /* private mode */
     }
-  });
-  const [open, setOpen] = useState(allowRender);
+    setAllowRender(true);
+    setOpen(true);
+  }, []);
 
   useEffect(() => {
     if (!allowRender) return;
@@ -24,7 +28,7 @@ export function SiteSplash() {
 
   useEffect(() => {
     if (!open) return;
-    const ms = reduceMotion ? 700 : 3000;
+    const ms = reduceMotion ? 500 : 2600;
     const t = window.setTimeout(() => setOpen(false), ms);
     return () => window.clearTimeout(t);
   }, [open, reduceMotion]);
@@ -54,23 +58,6 @@ export function SiteSplash() {
           transition={{ duration: fast ? 0.15 : 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="px-6 text-center text-[#1c1917]">
-            <motion.div
-              className="mx-auto mb-7 h-1 w-[min(72vw,320px)] overflow-hidden rounded-full bg-[#1c1917]/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: fast ? 0.1 : 0.25 }}
-            >
-              <motion.div
-                className="h-full rounded-full bg-[#1c1917]"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{
-                  duration: fast ? 0.5 : 1.15,
-                  delay: fast ? 0.02 : 0.15,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              />
-            </motion.div>
             <div className="overflow-hidden">
               <motion.h1
                 className="text-[clamp(2.1rem,7vw,3.4rem)] font-normal leading-[1.05] tracking-[0.2em] md:tracking-[0.28em]"
@@ -78,8 +65,8 @@ export function SiteSplash() {
                 initial={{ opacity: 0, y: "100%" }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: fast ? 0.12 : 0.9,
-                  delay: fast ? 0.08 : 1.05,
+                  duration: fast ? 0.05 : 1.0,
+                  delay: fast ? 0 : 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >

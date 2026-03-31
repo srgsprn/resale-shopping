@@ -95,15 +95,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
                 <h3 className="font-display text-[15px] font-normal leading-snug tracking-tight text-zinc-900 md:text-[1.05rem]">
                   {product.name}
                 </h3>
-                <div className="flex items-center gap-2">
-                  <p className="text-sm tabular-nums tracking-tight text-zinc-500 line-through">
-                    {formatMoney(product.priceMinor, product.currency)}
-                  </p>
-                  <p className="text-sm tabular-nums font-medium tracking-tight text-zinc-800">
-                    {formatMoney(Math.round(product.priceMinor * 0.9), product.currency)}
-                  </p>
-                  <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-semibold text-white">-10%</span>
-                </div>
+                <p className="text-sm tabular-nums tracking-tight text-zinc-700">{formatMoney(product.priceMinor, product.currency)}</p>
                 {product.status === "SOLD_OUT" ? (
                   <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400">Нет в наличии</p>
                 ) : null}
