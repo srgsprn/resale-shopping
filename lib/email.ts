@@ -32,7 +32,7 @@ export const ORDER_EMAIL_TEMPLATES: Record<TemplateKey, { subject: string; body:
 const DEFAULT_TEMPLATE: TemplateKey = "premium-resale";
 
 export async function sendOrderConfirmationEmail(payload: OrderEmailPayload) {
-  const from = process.env.ORDER_FROM_EMAIL || "orders@resale-shopping.ru";
+  const from = process.env.ORDER_FROM_EMAIL || process.env.SMTP_USER || "orders@resale-shopping.ru";
   const template = ORDER_EMAIL_TEMPLATES[DEFAULT_TEMPLATE];
   const text = template.body(payload);
 
@@ -64,5 +64,8 @@ export async function sendOrderConfirmationEmail(payload: OrderEmailPayload) {
       subject: template.subject,
       text,
     });
+    return;
   }
+
+  throw new Error("Email provider is not configured: set RESEND_API_KEY or SMTP_* env vars");
 }

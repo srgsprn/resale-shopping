@@ -72,8 +72,8 @@ export async function POST(request: Request) {
             totalMinor: full.totalMinor,
             orderLink: `${origin}/api/orders/${full.orderNumber}`,
           });
-        } catch {
-          // письмо не критично
+        } catch (err) {
+          console.error("Manual checkout email failed:", err);
         }
       }
       return NextResponse.json({

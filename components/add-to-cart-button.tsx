@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { dispatchCartUpdated } from "@/lib/cart-events";
 
@@ -16,6 +17,7 @@ type CartProduct = {
 
 export function AddToCartButton({ product }: { product: CartProduct }) {
   const [added, setAdded] = useState(false);
+  const router = useRouter();
 
   const onClick = () => {
     const current = JSON.parse(localStorage.getItem("cart") || "[]") as Array<CartProduct & { quantity: number }>;
@@ -30,7 +32,9 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
     localStorage.setItem("cart", JSON.stringify(current));
     dispatchCartUpdated();
     setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
+    window.setTimeout(() => {
+      router.push("/cart");
+    }, 260);
   };
 
   return (
@@ -39,7 +43,7 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
       onClick={onClick}
       className="rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
     >
-      {added ? "Спасибо" : "Добавить в корзину"}
+      {added ? "Добавлено" : "Добавить в корзину"}
     </button>
   );
 }

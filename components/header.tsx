@@ -12,7 +12,7 @@ export function Header() {
         <div className="flex items-end gap-3 py-2 md:gap-4 md:py-3">
           <Link
             href="/"
-            className="flex h-12 w-20 items-center justify-center rounded-3xl transition hover:bg-zinc-900/5 md:h-20 md:w-36"
+            className="flex h-12 w-20 items-center justify-center rounded-3xl md:h-20 md:w-36"
             aria-label="Главная"
           >
             <Image

@@ -69,7 +69,9 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
         whileInView="show"
         viewport={{ once: true, margin: "-60px", amount: 0.12 }}
       >
-        {products.map((product) => (
+        {products.map((product) => {
+          const discountedMinor = Math.max(0, Math.round(product.priceMinor * 0.9));
+          return (
           <motion.article
             key={product.id}
             variants={item}
@@ -95,14 +97,25 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
                 <h3 className="font-display text-[15px] font-normal leading-snug tracking-tight text-zinc-900 md:text-[1.05rem]">
                   {product.name}
                 </h3>
-                <p className="text-sm tabular-nums tracking-tight text-zinc-700">{formatMoney(product.priceMinor, product.currency)}</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-sm tabular-nums tracking-tight text-zinc-500 line-through">
+                    {formatMoney(product.priceMinor, product.currency)}
+                  </p>
+                  <p className="text-sm font-medium tabular-nums tracking-tight text-zinc-800">
+                    {formatMoney(discountedMinor, product.currency)}
+                  </p>
+                  <span className="rounded-full bg-[#d94f45]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#b02b21]">
+                    -10%
+                  </span>
+                </div>
                 {product.status === "SOLD_OUT" ? (
                   <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400">Нет в наличии</p>
                 ) : null}
               </div>
             </Link>
           </motion.article>
-        ))}
+          );
+        })}
       </motion.div>
     </section>
   );
