@@ -1,6 +1,12 @@
 # resale-shopping
 
-Production-ready e-commerce baseline for premium resale migration.
+Next.js storefront for `resale-shopping.ru` with catalog, cart, checkout, Stripe, email notifications, and Prisma/PostgreSQL.
+
+## TL;DR For New Agent
+
+- Open `PROJECT OVERVIEW.md` first for architecture and current state.
+- Main UI entrypoints: `app/page.tsx`, `components/header*.tsx`, `components/home-discounts-section.tsx`.
+- Checkout flow: `app/checkout/page.tsx` -> `app/api/checkout/route.ts` -> `app/api/stripe/webhook/route.ts`.
 
 ## Quick start
 
@@ -13,79 +19,63 @@ npm run db:seed
 npm run dev
 ```
 
-## Automatic catalog sync (public WordPress API)
+## Core scripts
 
-If you do not have original CSV/images, run automatic sync from public WordPress endpoints (see `scripts/scrape-alfa-export.mjs` source URL):
+```bash
+# full catalog sync (scrape + import)
+npm run catalog:sync
+
+# production build
+npm run build
+npm start
+```
+
+## Catalog import options
+
+### 1) Public WordPress sync
+
+If there is no legacy CSV/media export, use public sync:
 
 ```bash
 npm run db:sync:alfa
 ```
 
-What it does:
-- pulls categories and products from `wp-json/wp/v2`
-- resolves brands from `pwb-brand`
-- scrapes product pages for price and gallery images
-- stores landing page content snapshots for key pages
-- generates `data/redirect-map.json` for 301 mapping
-
-## Import products from WooCommerce CSV (optional)
-
-1. In WordPress admin open `WooCommerce -> Products -> Export`.
-2. Enable export of all columns and metadata.
-3. Save CSV into `data/woocommerce-products.csv`.
-4. Run:
+### 2) WooCommerce CSV import (optional)
 
 ```bash
 npm run db:import:woo -- data/woocommerce-products.csv
 ```
 
-## VPS: один скрипт (проще всего)
+## Deploy (VPS)
 
-На **Ubuntu/Debian VPS** после `ssh` (с поднятым интернетом):
+### Standard update
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/srgsprn/resale-shopping/main/scripts/vps-one-shot.sh | sudo bash
+cd /root/resale-shopping
+git pull origin main
+npm ci --include=dev
+npm run build
+PORT=3001 pm2 restart resale-shopping --update-env
 ```
 
-Или уже в клоне репозитория:
+### Bootstrap from scratch
 
 ```bash
 sudo bash scripts/vps-one-shot.sh
 ```
 
-Скрипт: Node 20 → PostgreSQL → `.env` с `DATABASE_URL` → миграции → импорт каталога → `next build` → PM2.
-
-Потом в `.env` добавь Stripe и Resend/SMTP (оплата и почта).
-
-Если в `.env` случайно остался `prisma+postgres://` (с Mac), на VPS **один раз**:
-
-```bash
-cd ~/resale-shopping && git pull && sudo bash scripts/vps-autofix-and-deploy.sh
-```
-
-Скрипт сам вычистит мусор, пропишет нормальный `postgresql://...`, применит миграции и соберёт проект.
-
-## Домен + HTTPS (nginx + Let’s Encrypt)
-
-1. В DNS у регистратора создай **A-запись**: имя `@` (или корень домена) → **IP VPS**. Для `www` — отдельная **A** на тот же IP или **CNAME** `www` → основной домен (если не делаешь www — см. ниже).
-2. Дождись обновления DNS (часто 5–30 минут).
-3. На **VPS** (под root / sudo), подставь свой домен и почту для Let’s Encrypt:
+## Domain + SSL
 
 ```bash
 cd ~/resale-shopping && git pull
-DOMAIN=resale-shopping.ru CERTBOT_EMAIL=твоя@почта.ru bash scripts/vps-nginx-ssl.sh
+DOMAIN=resale-shopping.ru CERTBOT_EMAIL=you@example.com bash scripts/vps-nginx-ssl.sh
 ```
 
-Без `www` в сертификате (если нет записи для www):
+If you do not use `www`:
 
 ```bash
-INCLUDE_WWW=0 DOMAIN=resale-shopping.ru CERTBOT_EMAIL=твоя@почта.ru bash scripts/vps-nginx-ssl.sh
+INCLUDE_WWW=0 DOMAIN=resale-shopping.ru CERTBOT_EMAIL=you@example.com bash scripts/vps-nginx-ssl.sh
 ```
-
-4. В `.env` на сервере: `NEXT_PUBLIC_SITE_URL="https://resale-shopping.ru"`, перезапуск приложения (`pm2 restart resale-shopping`).
-5. В Stripe webhook укажи: `https://resale-shopping.ru/api/stripe/webhook`.
-
-Ручной вариант по шагам: `scripts/vps-postgres-install.sh` + `scripts/vps-deploy.sh`.
 
 ## Required env vars
 
@@ -94,5 +84,5 @@ INCLUDE_WWW=0 DOMAIN=resale-shopping.ru CERTBOT_EMAIL=твоя@почта.ru bas
 - `STRIPE_SECRET_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `STRIPE_WEBHOOK_SECRET`
-- `RESEND_API_KEY` or SMTP vars
+- `RESEND_API_KEY` (or SMTP vars)
 
