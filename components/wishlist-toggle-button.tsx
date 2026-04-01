@@ -33,13 +33,13 @@ export function WishlistToggleButton({ item }: { item: WishlistItem }) {
       }}
       aria-label={active ? "Убрать из избранного" : "Добавить в избранное"}
       title={active ? "Убрать из избранного" : "Добавить в избранное"}
-      className={`inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${
+      className={`inline-grid h-9 w-9 place-items-center rounded-full border transition ${
         active
           ? "border-red-500 bg-red-50 text-red-600"
           : "border-[#d9d2c8] bg-white text-zinc-500 hover:border-zinc-800 hover:text-zinc-900"
       }`}
     >
-      <svg viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} aria-hidden className="h-5 w-5">
+      <svg viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} aria-hidden className="h-5 w-5 shrink-0">
         <path
           d="M12.001 20.001s-7.25-4.55-9.4-8.36C.91 8.7 2.14 5.96 4.82 5.14c1.62-.5 3.37.1 4.45 1.39 1.08-1.29 2.83-1.89 4.45-1.39 2.68.82 3.91 3.56 2.22 6.5-2.15 3.81-9.44 8.36-9.44 8.36Z"
           stroke="currentColor"
