@@ -22,23 +22,23 @@ export default async function ConserjPage() {
 
   return (
     <div className="space-y-10">
-      <section className="relative overflow-hidden rounded-[28px] border border-[#d9d2c8] p-6 md:p-10">
+      <section className="relative overflow-hidden rounded-[28px] border border-[#d9d2c8] min-h-[300px] md:min-h-[380px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/landing/conserj-hero.jpg"
           alt="Консьерж-шопинг"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[#f6f3ef]/82" />
-        <div className="relative">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-600">Консьерж сервис</p>
-          <h1 className="mt-3 max-w-4xl text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
-          Твой личный байер от Resale Shopping. Привезем новые лоты из Европы и США всего за 14 дней.
+        <div className="absolute inset-0 bg-zinc-900/18" />
+        <div className="relative flex min-h-[300px] flex-col items-center justify-center px-6 py-8 text-center md:min-h-[380px] md:px-10">
+          <p className="text-[11px] uppercase tracking-[0.24em] text-white/90">Консьерж сервис</p>
+          <h1 className="mt-3 max-w-3xl text-base font-normal leading-relaxed text-white md:text-lg">
+            Твой личный байер от Resale Shopping. Привезем новые лоты из Европы и США всего за 14 дней.
           </h1>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               href="/checkout"
-              className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-[#b8a99a] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
+              className="inline-flex items-center justify-center rounded-full border border-white/90 bg-white/90 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
             >
               Создать заявку
             </Link>
