@@ -25,7 +25,7 @@ export default async function ConserjPage() {
       <section className="relative overflow-hidden rounded-[28px] border border-[#d9d2c8] p-6 md:p-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://kartinki.pibig.info/uploads/posts/2023-08/1692262661_kartinki-pibig-info-p-kartinki-shoping-instagram-49.jpg"
+          src="/landing/conserj-hero.jpg"
           alt="Консьерж-шопинг"
           className="absolute inset-0 h-full w-full object-cover"
         />
