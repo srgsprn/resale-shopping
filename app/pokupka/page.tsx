@@ -1,20 +1,20 @@
 export default function PurchaseInfoPage() {
   return (
     <div className="space-y-8">
-      <section className="mx-auto max-w-4xl overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
-        <div className="grid gap-3 md:grid-cols-[1.3fr_0.7fr] md:items-stretch">
-          <div className="p-4 md:p-5">
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Как купить</h1>
-            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
+      <section className="mx-auto max-w-3xl overflow-hidden rounded-[20px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
+        <div className="grid gap-2 md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
+          <div className="p-3 md:p-4">
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">Как купить</h1>
+            <p className="mt-1.5 max-w-lg text-[11px] leading-relaxed text-zinc-800 md:text-xs">
               Путь покупки выстроен так же, как на премиальных resale-платформах: прозрачные карточки товара, понятное
               оформление заказа и предсказуемая доставка.
             </p>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1200&q=80"
+            src="/landing/prodaja-hero.png"
             alt="Девушка фотографирует сумку на телефон"
-            className="h-[120px] w-full object-cover md:h-[150px]"
+            className="h-[90px] w-full object-cover md:h-[110px]"
           />
         </div>
       </section>

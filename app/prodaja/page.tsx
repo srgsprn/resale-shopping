@@ -19,7 +19,7 @@ export default function SaleInPage() {
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80"
+            src="/landing/prodaja-hero.png"
             alt="Девушка фотографирует дорогую сумку для продажи"
             className="h-full min-h-[220px] w-full object-cover"
           />
