@@ -19,8 +19,8 @@ export default function SaleInPage() {
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/landing/prodaja-hero.png"
-            alt="Девушка фотографирует дорогую сумку для продажи"
+            src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1400&q=80"
+            alt="Человек фотографирует сумку на телефон"
             className="h-full min-h-[220px] w-full object-cover"
           />
         </div>
