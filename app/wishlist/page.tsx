@@ -28,7 +28,7 @@ export default function WishlistPage() {
       <section className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-8">
         <h1 className="text-2xl font-semibold tracking-tight">Избранное</h1>
         <p className="mt-2 text-sm text-zinc-700">
-          Авторизуйтесь через Yandex, чтобы сохранять понравившиеся товары и возвращаться к ним в один клик.
+          Авторизуйтесь в личном кабинете, чтобы сохранять понравившиеся товары и возвращаться к ним в один клик.
         </p>
         <Link
           href="/auth/signin"
