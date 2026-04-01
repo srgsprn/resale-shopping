@@ -4,9 +4,10 @@ import Link from "next/link";
 const heartIcon = (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-6 w-6 md:h-7 md:w-7">
     <path
-      d="M12.001 20.001s-7.25-4.55-9.4-8.36C.91 8.7 2.14 5.96 4.82 5.14c1.62-.5 3.37.1 4.45 1.39 1.08-1.29 2.83-1.89 4.45-1.39 2.68.82 3.91 3.56 2.22 6.5-2.15 3.81-9.44 8.36-9.44 8.36Z"
+      d="M20.84 4.61c-1.54-1.53-4.03-1.53-5.57 0l-1.27 1.27-1.27-1.27a3.94 3.94 0 0 0-5.57 0 3.94 3.94 0 0 0 0 5.57l1.27 1.27L14 17.06l5.61-5.61 1.27-1.27a3.94 3.94 0 0 0-.04-5.57Z"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.9"
+      strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
