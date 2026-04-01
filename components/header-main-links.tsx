@@ -17,7 +17,7 @@ export function HeaderMainLinks() {
     <nav className="ml-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] md:gap-4 md:text-[11px] md:tracking-[0.14em]">
       <Link
         href="/wishlist"
-        className="relative inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-1.5 py-1.5 text-zinc-700 transition hover:bg-zinc-900/5 hover:text-zinc-900"
+        className="relative inline-flex items-center gap-1.5 whitespace-nowrap p-0 text-zinc-700 transition hover:text-zinc-900"
       >
         <span className="sr-only">Избранное</span>
         {heartIcon}

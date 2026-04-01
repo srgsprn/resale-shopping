@@ -3,16 +3,16 @@ import Link from "next/link";
 export default function SaleInPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[28px] border border-[#d9d2c8] bg-gradient-to-r from-[#f0dfca] via-[#ead2b7] to-[#e0c29e]">
-        <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="p-7 md:p-10">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Как продать</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-800 md:text-base">
+      <section className="mx-auto max-w-4xl overflow-hidden rounded-[22px] border border-[#d9d2c8] bg-gradient-to-r from-[#f0dfca] via-[#ead2b7] to-[#e0c29e]">
+        <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
+          <div className="p-4 md:p-5">
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Как продать</h1>
+            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
               Мы берем на себя операционную часть продажи: проверку, публикацию и сопровождение сделки до выплаты.
             </p>
             <Link
               href="/prodat"
-              className="mt-6 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
+              className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
             >
               Продать
             </Link>
@@ -21,15 +21,9 @@ export default function SaleInPage() {
           <img
             src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1400&q=80"
             alt="Человек фотографирует сумку на телефон"
-            className="h-full min-h-[220px] w-full object-cover"
+            className="h-[140px] w-full object-cover md:h-[170px]"
           />
         </div>
-      </section>
-
-      <section className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-6">
-        <h2 className="text-lg font-semibold tracking-tight">
-          Вот пошаговая инструкция по продаже товара через приложение Resale Shopping
-        </h2>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
