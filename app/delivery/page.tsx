@@ -1,7 +1,7 @@
 export default function DeliveryPage() {
   return (
     <div className="space-y-8">
-      <section className="mx-auto max-w-5xl overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#ece7df] via-[#e3ddd2] to-[#d6cdc0]">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#ece7df] via-[#e3ddd2] to-[#d6cdc0]">
         <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
           <div className="p-5 md:p-6">
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Доставка и возврат</h1>

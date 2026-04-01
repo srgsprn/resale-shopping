@@ -22,18 +22,27 @@ export default async function ConserjPage() {
 
   return (
     <div className="space-y-10">
-      <section className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-10">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-500">Консьерж сервис</p>
-        <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
+      <section className="relative overflow-hidden rounded-[28px] border border-[#d9d2c8] p-6 md:p-10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://kartinki.pibig.info/uploads/posts/2023-08/1692262661_kartinki-pibig-info-p-kartinki-shoping-instagram-49.jpg"
+          alt="Консьерж-шопинг"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#f6f3ef]/82" />
+        <div className="relative">
+          <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-600">Консьерж сервис</p>
+          <h1 className="mt-3 max-w-4xl text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
           Твой личный байер от Resale Shopping. Привезем новые лоты из Европы и США всего за 14 дней.
-        </h1>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link
-            href="/checkout"
-            className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-[#b8a99a] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
-          >
-            Создать заявку
-          </Link>
+          </h1>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/checkout"
+              className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-[#b8a99a] px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
+            >
+              Создать заявку
+            </Link>
+          </div>
         </div>
       </section>
 
