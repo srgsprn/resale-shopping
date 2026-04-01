@@ -54,7 +54,7 @@ export function HeaderCategoryNav() {
 
   const navItems: Array<{ label: string; href: string }> = [
     { label: "Каталог", href: "/catalog" },
-    { label: "Новинки", href: "/catalog?sort=newest" },
+    { label: "Новинки", href: "/new" },
     {
       label: "Ювелирные украшения",
       href: jewelrySlug ? `/catalog?category=${encodeURIComponent(jewelrySlug)}` : "/catalog",

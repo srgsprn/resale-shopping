@@ -26,10 +26,9 @@ function loadCart(): CartItem[] {
 }
 
 export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => loadCart());
 
   useEffect(() => {
-    setItems(loadCart());
     const onUpdate = () => setItems(loadCart());
     window.addEventListener("resale-cart-updated", onUpdate);
     window.addEventListener("storage", onUpdate);

@@ -12,13 +12,13 @@ export default async function HomePage() {
   const [featured, latest] = await Promise.all([
     prisma.product.findMany({
       where: { status: "ACTIVE" },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
       take: 8,
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     }),
     prisma.product.findMany({
       where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
       take: 4,
       orderBy: { createdAt: "desc" },
     }),

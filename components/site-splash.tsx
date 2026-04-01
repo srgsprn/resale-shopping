@@ -7,23 +7,22 @@ const STORAGE_KEY = "resale-splash-seen";
 
 export function SiteSplash() {
   const reduceMotion = useReducedMotion();
-  const [allowRender, setAllowRender] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const [allowRender, setAllowRender] = useState(() => {
+    if (typeof window === "undefined") return false;
     try {
-      if (sessionStorage.getItem(STORAGE_KEY) === "1") return;
+      return sessionStorage.getItem(STORAGE_KEY) !== "1";
     } catch {
-      /* private mode */
+      return true;
     }
-    setAllowRender(true);
-    setOpen(true);
-  }, []);
+  });
+  const [open, setOpen] = useState(allowRender);
 
   useEffect(() => {
     if (!allowRender) return;
     document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
   }, [allowRender]);
 
   useEffect(() => {
@@ -40,7 +39,6 @@ export function SiteSplash() {
       /* ignore */
     }
     setAllowRender(false);
-    document.documentElement.style.overflow = "";
   };
 
   if (!allowRender) return null;

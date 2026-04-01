@@ -17,15 +17,11 @@ function cartCount(): number {
 }
 
 export function HeaderCartBadge() {
-  const [count, setCount] = useState(0);
-  const prev = useRef(0);
+  const [count, setCount] = useState(() => cartCount());
+  const prev = useRef(count);
   const [popKey, setPopKey] = useState(0);
 
   useEffect(() => {
-    const initial = cartCount();
-    prev.current = initial;
-    setCount(initial);
-
     const onUpdate = () => {
       const next = cartCount();
       if (next > prev.current) setPopKey((k) => k + 1);

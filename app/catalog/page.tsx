@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { prisma } from "@/lib/prisma";
 
 type Props = {
-  searchParams: Promise<{ category?: string; q?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; q?: string; sort?: string; brand?: string }>;
 };
 
 const sortOptions = [
@@ -29,6 +29,7 @@ export default async function CatalogPage({ searchParams }: Props) {
     prisma.product.findMany({
       where: {
         status: { in: ["ACTIVE", "SOLD_OUT"] },
+        brand: params.brand ? { equals: params.brand, mode: "insensitive" } : undefined,
         category: params.category ? { slug: params.category } : undefined,
         OR: params.q
           ? [
@@ -37,7 +38,7 @@ export default async function CatalogPage({ searchParams }: Props) {
             ]
           : undefined,
       },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
       orderBy,
     }),
     prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
@@ -45,7 +46,9 @@ export default async function CatalogPage({ searchParams }: Props) {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-3xl font-semibold">Каталог</h1>
+      <h1 className="text-3xl font-semibold">
+        Каталог{params.brand ? `: ${params.brand}` : ""}
+      </h1>
 
       <form className="grid gap-3 rounded-2xl border border-[#d9d2c8] bg-white p-4 md:grid-cols-4">
         <input
@@ -54,6 +57,7 @@ export default async function CatalogPage({ searchParams }: Props) {
           placeholder="Что вы ищете?"
           className="rounded-xl border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-400"
         />
+        <input type="hidden" name="brand" value={params.brand || ""} />
 
         <select
           name="category"

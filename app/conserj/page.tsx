@@ -15,7 +15,7 @@ const advantages = [
 export default async function ConserjPage() {
   const latest = await prisma.product.findMany({
     where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
-    include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+    include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
     take: 8,
     orderBy: { createdAt: "desc" },
   });

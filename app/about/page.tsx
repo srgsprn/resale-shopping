@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export const dynamic = "force-dynamic";
 
 const principles = [
@@ -24,25 +22,37 @@ const principles = [
 export default function AboutPage() {
   return (
     <div className="space-y-8">
-      <section className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-10">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-500">О нас</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">Resale Shopping</h1>
-        <p className="mt-5 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
-          Resale Shopping — международный сервис в России, где можно купить и перепродать товары известных брендов.
-          Значительная часть лотов поставляется напрямую из Европы.
-        </p>
-        <p className="mt-3 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
-          Магазины и частные продавцы размещают у нас новые и практически новые вещи известных брендов с уценкой до 90%.
-          Премиальные вещи — это не только покупка с удовольствием, но и инвестиция в гардероб: на дистанции стоимость многих
-          позиций растет.
-        </p>
+      <section className="overflow-hidden rounded-[28px] border border-[#d9d2c8] bg-white">
+        <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div className="p-6 md:p-10">
+            <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">Resale Shopping</h1>
+            <p className="mt-5 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
+              Resale Shopping — это международный сервис в России, предлагающий приобрести и осуществить перепродажу
+              товаров известных брендов. Также большая часть вещей на нашей платформе представлена прямиком из Европы.
+            </p>
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
+              Модные магазины и частные продавцы выставляют на нашей платформе новые и практически новые вещи известных
+              брендов с уценкой до 90%.
+            </p>
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
+              Люксовые вещи являются не просто приятной покупкой, но и модной инвестицией в гардероб. Стоимость
+              приобретенных изделий на дистанции растет, что делает такой формат покупки еще более осмысленным.
+            </p>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://alfa-resale.ru/wp-content/uploads/2026/01/IMG_3734-1024x572.jpeg"
+            alt="О компании Resale Shopping"
+            className="h-full min-h-[260px] w-full object-cover"
+          />
+        </div>
       </section>
 
       <section className="rounded-[28px] border border-[#d9d2c8] bg-[#f8f6f2] p-6 md:p-10">
         <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Как работает сервис</h2>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
-          Resale Shopping объединяет лучшие практики международных resale-платформ и адаптирует их под понятный и безопасный
-          клиентский путь.
+          Resale Shopping стремится обеспечить лучший опыт покупки и продажи брендовых вещей, опираясь на успешные
+          практики международных платформ и пожелания пользователей.
         </p>
         <ul className="mt-6 grid gap-4 md:grid-cols-2">
           {principles.map((item) => (
@@ -55,18 +65,19 @@ export default function AboutPage() {
       </section>
 
       <section className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-10">
-        <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Проверка подлинности</h2>
-        <p className="mt-4 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
-          Перед отправкой отдел аутентификации Resale Shopping проверяет каждую позицию на подлинность и соответствие описанию.
-          После успешной проверки к отправлению прикладывается сертификат подлинности.
-        </p>
-        <Link
-          href="/assurance"
-          className="mt-6 inline-flex items-center justify-center rounded-full border border-zinc-800/60 bg-[#dfd4c5] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 transition hover:bg-white"
-        >
-          Подробнее
-        </Link>
+        <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">О нас в СМИ</h2>
+        <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/64c2713bc83ae6fb270796c8_61e1ea92724df534c3ac7fdf_image-1024x576.png" alt="СМИ 1" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/Vc.ru-logo-e1746687239574.png" alt="СМИ 2" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/2cbd6d6fc7df101797d57dc818cd917d-e1746682360309.jpg" alt="СМИ 3" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/RBK_logo.svg-1024x273.png" alt="СМИ 4" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
+        </div>
       </section>
+
     </div>
   );
 }

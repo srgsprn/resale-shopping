@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { HeaderCartBadge } from "@/components/header-cart-badge";
+import { HeaderAuthButton } from "@/components/header-auth-button";
 import { HeaderCategoryNav } from "@/components/header-category-nav";
 import { HeaderMainLinks } from "@/components/header-main-links";
 
@@ -26,8 +27,15 @@ export function Header() {
           </Link>
 
           <div className="ml-auto flex items-center gap-2 pb-0.5 md:gap-3 md:pb-1">
+            <Link
+              href="/prodaja"
+              className="inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-900 shadow-sm transition hover:brightness-105 md:text-[11px]"
+            >
+              Продать
+            </Link>
             <HeaderMainLinks />
             <HeaderCartBadge />
+            <HeaderAuthButton />
           </div>
         </div>
 

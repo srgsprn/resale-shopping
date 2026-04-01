@@ -27,15 +27,29 @@ export async function POST(request: Request) {
   try {
     const body = bodySchema.parse(await request.json());
 
-    const order = await createPendingOrderFromCheckout(body.items, body.customer);
-
+    const requestedProductIds = body.items.map((i) => i.productId);
     const products = await prisma.product.findMany({
-      where: { id: { in: body.items.map((i) => i.productId) }, status: "ACTIVE" },
+      where: { id: { in: requestedProductIds }, status: "ACTIVE" },
       include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
     });
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const unavailable = body.items.filter((item) => !productById.has(item.productId));
+    if (unavailable.length > 0) {
+      return NextResponse.json(
+        {
+          error: "Некоторые товары больше недоступны. Обновите корзину и попробуйте снова.",
+        },
+        { status: 409 },
+      );
+    }
+
+    const order = await createPendingOrderFromCheckout(body.items, body.customer);
 
     const lineItems = body.items.map((item) => {
-      const product = products.find((p) => p.id === item.productId)!;
+      const product = productById.get(item.productId);
+      if (!product) {
+        throw new Error("Продукт недоступен для оплаты");
+      }
       return {
         quantity: item.quantity,
         price_data: {

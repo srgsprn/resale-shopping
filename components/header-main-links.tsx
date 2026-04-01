@@ -12,23 +12,6 @@ const heartIcon = (
   </svg>
 );
 
-const cartIcon = (
-  <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5">
-    <path
-      d="M6.5 9.2h14l-1.2 11H7.7L6.5 9.2Z"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6.5 9.2 5.5 5.8H2.8"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
 export function HeaderMainLinks() {
   return (
     <nav className="ml-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] md:gap-4 md:text-[11px] md:tracking-[0.14em]">
