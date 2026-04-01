@@ -1,11 +1,11 @@
 export default function DeliveryPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[28px] border border-[#d9d2c8] bg-gradient-to-r from-[#ece7df] via-[#e3ddd2] to-[#d6cdc0]">
-        <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="p-7 md:p-10">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Доставка и возврат</h1>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-800 md:text-base">
+      <section className="mx-auto max-w-5xl overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#ece7df] via-[#e3ddd2] to-[#d6cdc0]">
+        <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
+          <div className="p-5 md:p-6">
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Доставка и возврат</h1>
+            <p className="mt-2 text-xs leading-relaxed text-zinc-800 md:text-sm">
               Прозрачные условия по каждому сценарию доставки и понятный регламент возврата.
             </p>
           </div>
@@ -13,7 +13,7 @@ export default function DeliveryPage() {
           <img
             src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1400&q=80"
             alt="Доставка и сервис"
-            className="h-full min-h-[220px] w-full object-cover"
+            className="h-[150px] w-full object-cover md:h-[185px]"
           />
         </div>
       </section>

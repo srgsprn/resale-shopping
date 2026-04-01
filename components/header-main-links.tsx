@@ -15,10 +15,10 @@ const heartIcon = (
 
 export function HeaderMainLinks() {
   return (
-    <nav className="ml-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] md:gap-4 md:text-[11px] md:tracking-[0.14em]">
+    <nav className="flex items-center">
       <Link
         href="/wishlist"
-        className="inline-flex h-7 w-7 items-center justify-center text-zinc-700 transition hover:text-zinc-900 md:h-8 md:w-8"
+        className="inline-flex items-center justify-center rounded-md px-1.5 py-1.5 text-zinc-700 transition hover:bg-zinc-900/5 hover:text-zinc-900"
       >
         <span className="sr-only">Избранное</span>
         {heartIcon}
