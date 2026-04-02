@@ -1,6 +1,7 @@
 "use client";
 
-import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 
 const userIcon = (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-6 w-6">
@@ -18,35 +19,53 @@ const userIcon = (
   </svg>
 );
 
+const linkClass =
+  "inline-flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-full text-zinc-700 transition hover:bg-zinc-200/50 hover:text-zinc-900 active:scale-95";
+
 export function HeaderAuthButton() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <span className="inline-block h-10 w-10 flex-none rounded-md bg-zinc-200/70" aria-hidden />;
+    return <span className="inline-block h-10 w-10 flex-none rounded-full bg-zinc-200/70" aria-hidden />;
   }
 
   if (!session?.user) {
     return (
-      <button
-        type="button"
-        onClick={() => signIn("yandex", { callbackUrl: "/wishlist" })}
-        className="inline-flex h-10 w-10 flex-none items-center justify-center text-zinc-700 transition hover:text-zinc-900"
-        aria-label="Войти"
+      <Link
+        href="/auth/signin"
+        className={linkClass}
+        aria-label="Войти в личный кабинет"
+        title="Личный кабинет — войти"
       >
         {userIcon}
-      </button>
+      </Link>
     );
   }
 
   return (
+    <Link
+      href="/wishlist"
+      className={linkClass}
+      aria-label="Личный кабинет"
+      title="Избранное"
+    >
+      {userIcon}
+    </Link>
+  );
+}
+
+/** Кнопка выхода для страниц кабинета (шапка ведёт в избранное, не в signOut). */
+export function SignOutLink({ className }: { className?: string }) {
+  return (
     <button
       type="button"
       onClick={() => signOut({ callbackUrl: "/" })}
-      className="inline-flex h-10 w-10 flex-none items-center justify-center text-zinc-700 transition hover:text-zinc-900"
-      aria-label="Выйти"
-      title="Выйти"
+      className={
+        className ??
+        "text-sm text-zinc-600 underline-offset-4 transition hover:text-zinc-900 hover:underline"
+      }
     >
-      {userIcon}
+      Выйти из аккаунта
     </button>
   );
 }
