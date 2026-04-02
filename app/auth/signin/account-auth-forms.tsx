@@ -147,15 +147,6 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
               </p>
             </div>
 
-            <p className="text-xs leading-relaxed text-zinc-600">
-              Ваши личные данные будут использоваться для упрощения вашего дальнейшего взаимодействия с сайтом,
-              управления доступом к вашему аккаунту и других целей, описанных в документе{" "}
-              <Link href="/oferta" className="text-[#a16f39] underline-offset-2 hover:underline">
-                политика конфиденциальности
-              </Link>
-              .
-            </p>
-
             <div>
               <label htmlFor="reg-phone" className={labelClass}>
                 Ваш номер <span className="text-red-600">*</span>
