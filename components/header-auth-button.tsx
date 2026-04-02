@@ -44,10 +44,10 @@ export function HeaderAuthButton() {
 
   return (
     <Link
-      href="/wishlist"
+      href="/account"
       className={linkClass}
       aria-label="Личный кабинет"
-      title="Избранное"
+      title="Личный кабинет"
     >
       {userIcon}
     </Link>

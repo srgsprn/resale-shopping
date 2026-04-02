@@ -1,9 +1,4 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
-
-import { ProductCard } from "@/components/product-card";
-import { prisma } from "@/lib/prisma";
 
 const STEPS: [string, string][] = [
   [
@@ -35,14 +30,7 @@ const STEPS: [string, string][] = [
 const HERO_IMAGE =
   "https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=1400&q=80";
 
-export default async function ConserjPage() {
-  const latest = await prisma.product.findMany({
-    where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
-    include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
-    take: 8,
-    orderBy: { createdAt: "desc" },
-  });
-
+export default function ConserjPage() {
   return (
     <div className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
@@ -80,15 +68,6 @@ export default async function ConserjPage() {
             <p className="mt-2 text-sm leading-relaxed text-zinc-700">{text}</p>
           </article>
         ))}
-      </section>
-
-      <section>
-        <h2 className="mb-5 text-xl font-semibold tracking-tight text-zinc-900 md:text-2xl">Новинки</h2>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          {latest.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
       </section>
     </div>
   );

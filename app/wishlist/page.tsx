@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 
-import { SignOutLink } from "@/components/header-auth-button";
 import { formatMoney } from "@/lib/money";
 import { readWishlist, type WishlistItem } from "@/lib/wishlist";
 
@@ -45,15 +44,16 @@ export default function WishlistPage() {
   return (
     <section className="space-y-5">
       <div className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Избранное</h1>
-            <p className="mt-2 text-sm text-zinc-600">
-              Здесь собраны товары, которые вы отметили. Выберите лот, чтобы посмотреть детали и оформить заказ.
-            </p>
-          </div>
-          <SignOutLink className="shrink-0 cursor-pointer text-sm text-zinc-600 underline-offset-4 transition hover:text-zinc-900 hover:underline" />
-        </div>
+        <h1 className="text-2xl font-semibold tracking-tight">Избранное</h1>
+        <p className="mt-2 text-sm text-zinc-600">
+          Здесь собраны товары, которые вы отметили. Выберите лот, чтобы посмотреть детали и оформить заказ.
+        </p>
+        <Link
+          href="/account"
+          className="mt-4 inline-block text-sm text-[#7c5430] underline-offset-4 hover:underline"
+        >
+          ← Личный кабинет
+        </Link>
       </div>
       {items.length === 0 ? (
         <section className="rounded-[24px] border border-[#d9d2c8] bg-[#f8f6f2] p-6 text-sm text-zinc-700">

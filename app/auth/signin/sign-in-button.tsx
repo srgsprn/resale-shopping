@@ -9,7 +9,7 @@ type Props = {
   label?: string;
 };
 
-export function SignInButton({ callbackUrl = "/wishlist", className, label }: Props) {
+export function SignInButton({ callbackUrl = "/account", className, label }: Props) {
   const providerReady = Boolean(process.env.NEXT_PUBLIC_AUTH_YANDEX_ENABLED === "1");
 
   return (

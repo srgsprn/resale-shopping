@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 import { SignInButton } from "./sign-in-button";
 
@@ -10,7 +11,13 @@ const inputClass =
 
 const labelClass = "block text-sm font-medium text-zinc-800";
 
-export function AccountAuthForms() {
+const grayDisabledBtnClass =
+  "w-full cursor-not-allowed rounded-md border border-[#e5ddd4] bg-zinc-100 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400";
+
+function AccountAuthFormsBody() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/account";
+
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [remember, setRemember] = useState(true);
@@ -68,10 +75,13 @@ export function AccountAuthForms() {
                 Забыли пароль?
               </Link>
             </div>
+            <button type="button" disabled className={grayDisabledBtnClass} title="Вход по паролю скоро">
+              Войти
+            </button>
             <SignInButton
-              callbackUrl="/wishlist"
+              callbackUrl={callbackUrl}
               className="w-full rounded-md border-0 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
-              label="Войти"
+              label="Войти через Yandex"
             />
           </div>
         </section>
@@ -113,16 +123,11 @@ export function AccountAuthForms() {
               />
               <p className="mt-1 text-[11px] text-zinc-500">Подтверждение по SMS — в разработке.</p>
             </div>
-            <button
-              type="button"
-              disabled
-              className="w-full cursor-not-allowed rounded-md border border-[#e5ddd4] bg-zinc-100 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400"
-              title="Скоро"
-            >
+            <button type="button" disabled className={grayDisabledBtnClass} title="Скоро">
               Отправить код
             </button>
             <SignInButton
-              callbackUrl="/wishlist"
+              callbackUrl={callbackUrl}
               className="w-full rounded-md border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
               label="Регистрация через Yandex"
             />
@@ -133,5 +138,17 @@ export function AccountAuthForms() {
         </section>
       </div>
     </div>
+  );
+}
+
+export function AccountAuthForms() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-5xl py-12 text-center text-sm text-zinc-500">Загрузка формы…</div>
+      }
+    >
+      <AccountAuthFormsBody />
+    </Suspense>
   );
 }
