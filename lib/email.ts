@@ -16,23 +16,52 @@ export type OrderEmailPayload = {
 
 export type OrderEmailKind = "confirmed" | "pending_stripe";
 
-function resolveOrderEmailFrom(): string {
+/** Оборачивает голый email в «Имя <email>», если нет угловых скобок. */
+function formatFromHeader(raw: string): string {
+  const s = raw.trim();
+  if (s.includes("<") && s.includes(">")) return s;
+  if (s.includes("@")) return `Resale Shopping <${s}>`;
+  return s;
+}
+
+function resolveSmtpFrom(): string {
   const raw = process.env.ORDER_FROM_EMAIL?.trim();
-  if (raw) {
-    if (raw.includes("<") && raw.includes(">")) return raw;
-    return `Resale Shopping <${raw}>`;
-  }
+  if (raw) return formatFromHeader(raw);
   const smtpUser = process.env.SMTP_USER?.trim();
-  if (smtpUser?.includes("@")) {
-    return `Resale Shopping <${smtpUser}>`;
-  }
-  if (process.env.RESEND_API_KEY) {
-    console.warn(
-      "[email] ORDER_FROM_EMAIL не задан: для Resend укажите отправителя в формате «Имя <email@проверенный-домен>». Иначе письма могут не доставляться.",
-    );
-    return "Resale Shopping <onboarding@resend.dev>";
-  }
-  return "Resale Shopping <orders@resale-shopping.ru>";
+  if (smtpUser?.includes("@")) return formatFromHeader(smtpUser);
+  return formatFromHeader("orders@resale-shopping.ru");
+}
+
+/**
+ * Цепочка From для Resend: сначала проверенный домен, затем запасной onboarding@resend.dev
+ * (ограничения тарифа Resend — см. панель).
+ */
+function resendFromCandidates(): string[] {
+  const list: string[] = [];
+  const push = (v?: string | null) => {
+    if (!v?.trim()) return;
+    const formatted = formatFromHeader(v.trim());
+    if (!list.includes(formatted)) list.push(formatted);
+  };
+  push(process.env.RESEND_FROM);
+  push(process.env.ORDER_FROM_EMAIL);
+  push("onboarding@resend.dev");
+  return list;
+}
+
+function resolveReplyTo(): string | undefined {
+  const r = process.env.ORDER_REPLY_TO_EMAIL?.trim();
+  if (r) return r;
+  return undefined;
+}
+
+function plainTextToHtml(text: string): string {
+  const esc = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;line-height:1.55;color:#1a1a1a">${esc.replace(/\n/g, "<br>\n")}</body></html>`;
 }
 
 function buildEmailContent(payload: OrderEmailPayload, kind: OrderEmailKind): { subject: string; text: string } {
@@ -87,32 +116,65 @@ export const ORDER_EMAIL_TEMPLATES: Record<TemplateKey, { subject: string; body:
 
 const DEFAULT_TEMPLATE: TemplateKey = "premium-resale";
 
+function resendErrorMessage(error: unknown): string {
+  if (error == null) return "unknown";
+  if (typeof error === "string") return error;
+  if (typeof error === "object" && "message" in error && typeof (error as { message: unknown }).message === "string") {
+    return (error as { message: string }).message;
+  }
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
+async function sendViaResend(payload: OrderEmailPayload, subject: string, text: string): Promise<void> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY пустой");
+
+  const resend = new Resend(key);
+  const html = plainTextToHtml(text);
+  const replyTo = resolveReplyTo();
+  const candidates = resendFromCandidates();
+  let lastError: unknown;
+
+  for (const from of candidates) {
+    const { data, error } = await resend.emails.send({
+      from,
+      to: [payload.email],
+      subject,
+      text,
+      html,
+      ...(replyTo ? { replyTo: [replyTo] } : {}),
+    });
+
+    if (!error && data?.id) {
+      console.info("[email] Resend OK id=%s from=%s to=%s", data.id, from, payload.email);
+      return;
+    }
+
+    lastError = error;
+    console.warn("[email] Resend отказ from=%s to=%s: %s", from, payload.email, resendErrorMessage(error));
+  }
+
+  throw new Error(`Resend: не удалось отправить ни с одного адреса отправителя. Последняя ошибка: ${resendErrorMessage(lastError)}`);
+}
+
 export async function sendOrderConfirmationEmail(
   payload: OrderEmailPayload,
   kind: OrderEmailKind = "confirmed",
 ) {
-  const from = resolveOrderEmailFrom();
   const { subject, text } = buildEmailContent(payload, kind);
+  const replyTo = resolveReplyTo();
 
   if (process.env.RESEND_API_KEY) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
-      from,
-      to: payload.email,
-      subject,
-      text,
-    });
-    if (error) {
-      console.error("[email] Resend API error:", error);
-      throw new Error(typeof error === "object" && error && "message" in error ? String(error.message) : "Resend send failed");
-    }
-    if (!data) {
-      console.warn("[email] Resend returned no data id");
-    }
+    await sendViaResend(payload, subject, text);
     return;
   }
 
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    const from = resolveSmtpFrom();
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT || 587),
@@ -128,9 +190,14 @@ export async function sendOrderConfirmationEmail(
       to: payload.email,
       subject,
       text,
+      html: plainTextToHtml(text),
+      ...(replyTo ? { replyTo } : {}),
     });
+    console.info("[email] SMTP OK to=%s", payload.email);
     return;
   }
 
-  throw new Error("Почта не настроена: задайте RESEND_API_KEY или SMTP_HOST / SMTP_USER / SMTP_PASS в .env");
+  throw new Error(
+    "Почта не настроена: задайте RESEND_API_KEY (рекомендуется) или SMTP_HOST + SMTP_USER + SMTP_PASS в .env на сервере",
+  );
 }
