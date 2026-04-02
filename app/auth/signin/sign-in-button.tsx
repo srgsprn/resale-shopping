@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react";
 import clsx from "clsx";
 
+import { YandexMarkIcon } from "@/components/yandex-mark-icon";
+
 type Props = {
   callbackUrl?: string;
   className?: string;
@@ -43,14 +45,7 @@ export function SignInButton({
         className,
       )}
     >
-      <span
-        className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#fc3f1d] shadow-none outline-none ring-0"
-        aria-hidden
-      >
-        <span className="select-none font-sans text-[17px] font-black leading-none tracking-tight text-white">
-          Я
-        </span>
-      </span>
+      <YandexMarkIcon className="h-11 w-11 shrink-0" />
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-semibold leading-snug tracking-tight text-white">
           {providerReady ? (label ?? "Войти через Яндекс") : "Яндекс OAuth не настроен"}
