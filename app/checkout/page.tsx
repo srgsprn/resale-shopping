@@ -120,12 +120,8 @@ function CheckoutContent() {
         return;
       }
       if (json.url) {
-        if (json.url.includes("manual=1")) {
-          if (!giftSlug) {
-            localStorage.setItem("cart", "[]");
-            window.dispatchEvent(new Event("resale-cart-updated"));
-          }
-        }
+        // Корзину очищаем только на странице успеха (ClearCartOnSuccess), иначе до редиректа
+        // срабатывает resale-cart-updated и на мгновение показывается «корзина пуста».
         window.location.href = json.url;
         return;
       }
@@ -194,10 +190,7 @@ function CheckoutContent() {
 
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         <section>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">Оформить заказ</h1>
-          <p className="mb-8 mt-2 text-sm text-zinc-600">
-            Укажите контакты и при необходимости комментарий к заказу. Затем оплата (если на сервере настроен Stripe).
-          </p>
+          <h1 className="mb-8 mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">Оформить заказ</h1>
           <form onSubmit={onSubmit} className="max-w-xl space-y-5">
             <div>
               <label htmlFor="fullName" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">

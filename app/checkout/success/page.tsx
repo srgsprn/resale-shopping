@@ -42,11 +42,6 @@ export default async function SuccessPage({ searchParams }: Props) {
           <p>
             Сумма: <strong>{formatMoney(order.totalMinor, order.currency)}</strong>
           </p>
-          {params.manual === "1" ? (
-            <p className="text-sm text-zinc-600">
-              Онлайн-оплата на сайте пока не подключена — менеджер свяжется с вами по почте или телефону для подтверждения и оплаты.
-            </p>
-          ) : null}
         </>
       ) : params.session_id ? (
         <p className="text-sm text-zinc-600">

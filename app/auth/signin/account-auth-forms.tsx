@@ -24,10 +24,6 @@ export function AccountAuthForms() {
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
         <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-6 shadow-sm md:p-8">
           <h2 className="border-b border-[#ebe6df] pb-3 text-lg font-semibold text-zinc-900">Авторизоваться</h2>
-          <p className="mt-3 text-xs leading-relaxed text-zinc-600">
-            Быстрый вход через Yandex ID. Поля ниже — для удобства, как на классическом магазине; авторизация идёт по кнопке
-            «Войти».
-          </p>
 
           <div className="mt-5 space-y-4">
             <div>
@@ -99,12 +95,7 @@ export function AccountAuthForms() {
               />
             </div>
             <p className="text-xs leading-relaxed text-zinc-600">
-              На ваш электронный адрес будут приходить уведомления о заказах. Ваши личные данные используются для работы
-              личного кабинета и заказов в соответствии с{" "}
-              <Link href="/oferta" className="text-[#a16f39] underline-offset-2 hover:underline">
-                офертой
-              </Link>
-              .
+              На ваш электронный адрес будет отправлена ссылка для установки нового пароля.
             </p>
             <div>
               <label htmlFor="reg-phone" className={labelClass}>
