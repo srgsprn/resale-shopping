@@ -7,22 +7,37 @@ import { HomeDiscountsSection } from "@/components/home-discounts-section";
 import { ProductCard } from "@/components/product-card";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
+
+/** Не показываем на главной в «Скидки» / «Красиво и со вкусом». */
+const HOME_EXCLUDED_SLUGS = ["chanel-classic-flap-black", "louis-vuitton-capucines"];
+
+const homeCatalogWhere: Pick<Prisma.ProductWhereInput, "AND"> = {
+  AND: [
+    { slug: { notIn: HOME_EXCLUDED_SLUGS } },
+    { NOT: { slug: { startsWith: "gift-card" } } },
+    { images: { some: {} } },
+  ],
+};
 
 export default async function HomePage() {
-  const [featured, latest] = await Promise.all([
-    prisma.product.findMany({
-      where: { status: "ACTIVE" },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
-      take: 8,
-      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    }),
-    prisma.product.findMany({
-      where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
-      take: 4,
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  const discountCandidates = await prisma.product.findMany({
+    where: { status: "ACTIVE", ...homeCatalogWhere },
+    include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    take: 24,
+  });
+
+  const featured = discountCandidates.slice(0, 8);
+
+  const tasteCandidates = await prisma.product.findMany({
+    where: { status: { in: ["ACTIVE", "SOLD_OUT"] }, ...homeCatalogWhere },
+    include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
+    orderBy: { createdAt: "desc" },
+    take: 24,
+  });
+
+  const latest = tasteCandidates.slice(0, 8);
 
   return (
     <div className="space-y-12 pb-6 md:space-y-16 md:pb-8">
@@ -66,28 +81,28 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="mx-auto max-w-3xl overflow-hidden rounded-[20px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm md:rounded-[22px]">
-        <div className="grid gap-0 md:grid-cols-[1.2fr_0.8fr] md:items-stretch">
-          <div className="px-4 py-4 text-balance md:px-5 md:py-5">
-            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 md:text-xl">Консьерж сервис</h2>
-            <p className="mt-2 max-w-md text-xs leading-relaxed text-zinc-800 md:text-sm">
-              Тихий подбор и сопровождение на каждом шаге — чтобы вы получили идеальный лот без лишних действий.
+      <section className="w-full overflow-hidden rounded-[18px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm md:rounded-[20px]">
+        <div className="grid gap-0 md:grid-cols-[1.25fr_0.75fr] md:items-stretch">
+          <div className="px-3 py-2.5 text-balance md:px-5 md:py-3">
+            <h2 className="text-sm font-semibold tracking-tight text-zinc-900 md:text-base">Консьерж сервис</h2>
+            <p className="mt-1 max-w-2xl text-[11px] leading-snug text-zinc-800 md:text-xs">
+              Тихий подбор и сопровождение на каждом шаге.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               <Link
                 href="/conserj"
-                className="inline-flex items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-4 py-2 text-[11px] font-semibold tracking-[0.1em] text-[#3d342c] transition hover:from-[#f2ebe3] hover:to-[#e2d2c0]"
+                className="inline-flex items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-3 py-1.5 text-[10px] font-semibold tracking-[0.08em] text-[#3d342c] transition hover:from-[#f2ebe3] hover:to-[#e2d2c0] md:px-4"
               >
                 Подробнее
               </Link>
             </div>
           </div>
-          <div className="relative min-h-[96px] max-md:max-h-[120px] md:min-h-0">
+          <div className="relative min-h-[64px] max-md:max-h-[88px] md:min-h-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=740&q=80"
               alt="Консьерж сервис"
-              className="h-full w-full object-cover md:min-h-[112px]"
+              className="h-full w-full object-cover md:min-h-[72px]"
             />
           </div>
         </div>

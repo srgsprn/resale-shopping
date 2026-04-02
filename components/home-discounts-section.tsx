@@ -63,7 +63,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
       </div>
 
       <motion.div
-        className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 sm:gap-y-12 lg:grid-cols-4 lg:gap-x-6"
+        className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 sm:gap-y-10 md:grid-cols-4 md:gap-x-5 md:gap-y-10 lg:gap-x-6"
         variants={container}
         initial="hidden"
         whileInView="show"

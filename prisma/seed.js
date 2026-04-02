@@ -32,7 +32,7 @@ async function main() {
       status: "ACTIVE",
       categoryId: bagCategory.id,
       currency: "RUB",
-      isFeatured: true,
+      isFeatured: false,
       images: ["https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1200"],
     },
     {
@@ -45,8 +45,21 @@ async function main() {
       status: "ACTIVE",
       categoryId: bagCategory.id,
       currency: "RUB",
-      isFeatured: true,
+      isFeatured: false,
       images: ["https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=1200"],
+    },
+    {
+      slug: "ysl-loulou-bag",
+      brand: "Saint Laurent",
+      name: "Loulou",
+      sku: "A2024003",
+      conditionLabel: "Отличное",
+      priceMinor: 16900000,
+      status: "ACTIVE",
+      categoryId: bagCategory.id,
+      currency: "RUB",
+      isFeatured: true,
+      images: ["https://alfa-resale.ru/wp-content/uploads/2026/03/YSL-Loulou-1.jpg"],
     },
   ];
 
