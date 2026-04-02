@@ -12,16 +12,11 @@ const inputClass =
 
 const labelClass = "block text-sm font-medium text-zinc-800";
 
-const grayDisabledBtnClass =
-  "w-full cursor-not-allowed rounded-md border border-[#e5ddd4] bg-zinc-100 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400";
-
 const passwordLoginBtnClass =
   "w-full rounded-md border border-[#c9b89c] bg-zinc-200/90 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 shadow-sm transition hover:enabled:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-40";
 
-function isLikelyEmail(s: string) {
-  const t = s.trim();
-  return t.includes("@") && t.includes(".") && t.length > 5;
-}
+const regPrimaryBtnClass =
+  "w-full rounded-md border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50";
 
 function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
   const router = useRouter();
@@ -34,18 +29,9 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const [regEmail, setRegEmail] = useState("");
-  const [regName, setRegName] = useState("");
   const [regPhone, setRegPhone] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [regPassword2, setRegPassword2] = useState("");
-  const [regPending, setRegPending] = useState(false);
-  const [regError, setRegError] = useState<string | null>(null);
 
   const canPasswordLogin = loginEmail.trim().length > 0 && loginPassword.length > 0;
-  const canRegister =
-    regEmail.trim().length > 0 &&
-    regPassword.length >= 8 &&
-    regPassword === regPassword2;
 
   async function handlePasswordLogin() {
     setLoginError(null);
@@ -66,49 +52,6 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
       router.refresh();
     } finally {
       setLoginPending(false);
-    }
-  }
-
-  async function handleRegister() {
-    setRegError(null);
-    if (regPassword !== regPassword2) {
-      setRegError("Пароли не совпадают.");
-      return;
-    }
-    if (regPassword.length < 8) {
-      setRegError("Пароль не короче 8 символов.");
-      return;
-    }
-    setRegPending(true);
-    try {
-      const r = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: regEmail.trim().toLowerCase(),
-          password: regPassword,
-          name: regName.trim() || undefined,
-        }),
-      });
-      const data = (await r.json().catch(() => ({}))) as { error?: string };
-      if (!r.ok) {
-        setRegError(data.error ?? "Не удалось зарегистрироваться.");
-        return;
-      }
-      const res = await signIn("credentials", {
-        email: regEmail.trim().toLowerCase(),
-        password: regPassword,
-        redirect: false,
-        callbackUrl,
-      });
-      if (res?.error) {
-        setRegError("Аккаунт создан. Войдите с паролем слева.");
-        return;
-      }
-      router.push(callbackUrl);
-      router.refresh();
-    } finally {
-      setRegPending(false);
     }
   }
 
@@ -188,7 +131,7 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
           <div className="mt-5 space-y-4">
             <div>
               <label htmlFor="reg-email" className={labelClass}>
-                Email <span className="text-red-600">*</span>
+                Email address <span className="text-red-600">*</span>
               </label>
               <input
                 id="reg-email"
@@ -199,108 +142,55 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
                 onChange={(e) => setRegEmail(e.target.value)}
                 className={inputClass}
               />
-              <button
-                type="button"
-                disabled={!isLikelyEmail(regEmail)}
-                onClick={() => {
-                  const e = regEmail.trim();
-                  const subject = encodeURIComponent("Регистрация на resale-shopping.ru");
-                  const body = encodeURIComponent(
-                    `Здравствуйте! Прошу связаться по регистрации.\n\nEmail: ${e}\n`,
-                  );
-                  window.location.href = `mailto:help@resale-shopping.ru?subject=${subject}&body=${body}`;
-                }}
-                className={`mt-3 ${isLikelyEmail(regEmail) ? passwordLoginBtnClass : grayDisabledBtnClass}`}
-              >
-                Отправить
-              </button>
-              <p className="mt-1 text-[11px] text-zinc-500">
-                Заявка откроется в почте. Либо укажите пароль ниже и нажмите «Создать аккаунт».
+              <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                На ваш электронный адрес будет отправлена ссылка для установки нового пароля.
               </p>
             </div>
-            <div>
-              <label htmlFor="reg-name" className={labelClass}>
-                Имя
-              </label>
-              <input
-                id="reg-name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                value={regName}
-                onChange={(e) => setRegName(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label htmlFor="reg-password" className={labelClass}>
-                Пароль <span className="text-red-600">*</span>
-              </label>
-              <input
-                id="reg-password"
-                name="new-password"
-                type="password"
-                autoComplete="new-password"
-                value={regPassword}
-                onChange={(e) => setRegPassword(e.target.value)}
-                className={inputClass}
-              />
-              <p className="mt-1 text-[11px] text-zinc-500">Не короче 8 символов.</p>
-            </div>
-            <div>
-              <label htmlFor="reg-password2" className={labelClass}>
-                Повтор пароля <span className="text-red-600">*</span>
-              </label>
-              <input
-                id="reg-password2"
-                name="new-password-confirm"
-                type="password"
-                autoComplete="new-password"
-                value={regPassword2}
-                onChange={(e) => setRegPassword2(e.target.value)}
-                className={inputClass}
-              />
-            </div>
+
             <p className="text-xs leading-relaxed text-zinc-600">
-              Аккаунт с паролем хранится на сайте. Вход через Yandex — отдельный способ; можно пользоваться любым.
+              Ваши личные данные будут использоваться для упрощения вашего дальнейшего взаимодействия с сайтом,
+              управления доступом к вашему аккаунту и других целей, описанных в документе{" "}
+              <Link href="/oferta" className="text-[#a16f39] underline-offset-2 hover:underline">
+                политика конфиденциальности
+              </Link>
+              .
             </p>
+
             <div>
               <label htmlFor="reg-phone" className={labelClass}>
-                Ваш номер
+                Ваш номер <span className="text-red-600">*</span>
               </label>
-              <input
-                id="reg-phone"
-                name="tel"
-                type="tel"
-                autoComplete="tel"
-                placeholder="+7 …"
-                value={regPhone}
-                onChange={(e) => setRegPhone(e.target.value)}
-                className={inputClass}
-              />
-              <p className="mt-1 text-[11px] text-zinc-500">Для SMS — позже.</p>
+              <div className="mt-1 flex overflow-hidden rounded-md border border-[#d9d2c8] bg-[#faf8f5] focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-zinc-400">
+                <input
+                  id="reg-phone"
+                  name="tel"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="+7 …"
+                  value={regPhone}
+                  onChange={(e) => setRegPhone(e.target.value)}
+                  className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2.5 text-sm text-zinc-900 outline-none"
+                />
+                <button
+                  type="button"
+                  disabled
+                  title="Отправка SMS — в разработке"
+                  className="shrink-0 border-l border-[#d9d2c8] bg-[#ebe6df] px-3 py-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500"
+                >
+                  Отправить код
+                </button>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-600">
+                На указанный номер телефона будет отправлено SMS-сообщение с кодом.
+              </p>
             </div>
-            <button type="button" disabled className={grayDisabledBtnClass} title="Скоро">
-              Отправить код
-            </button>
-            {regError ? <p className="text-sm text-red-600">{regError}</p> : null}
-            <button
-              type="button"
-              disabled={!canRegister || regPending}
-              onClick={() => void handleRegister()}
-              className={canRegister && !regPending ? passwordLoginBtnClass : grayDisabledBtnClass}
-            >
-              {regPending ? "Создание…" : "Создать аккаунт"}
-            </button>
+
             <SignInButton
               yandexReady={yandexReady}
               callbackUrl={callbackUrl}
-              className="w-full rounded-md border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
-              label="Регистрация через Yandex"
+              className={regPrimaryBtnClass}
+              label="Регистрация"
             />
-            <p className="text-center text-[11px] text-zinc-500">
-              Первый вход через Yandex создаёт сессию без пароля на сайте.
-            </p>
           </div>
         </section>
       </div>
