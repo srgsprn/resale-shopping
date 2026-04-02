@@ -26,16 +26,18 @@ export function Header() {
             />
           </Link>
 
-          <div className="ml-auto flex items-center gap-2 md:gap-3">
+          <div className="ml-auto flex h-10 items-center gap-2 md:gap-3">
             <Link
               href="/prodaja"
-              className="inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-900 shadow-sm transition hover:brightness-105 md:text-[11px]"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-4 text-[11px] font-semibold tracking-[0.06em] text-[#3d342c] shadow-sm transition hover:from-[#f2ebe3] hover:to-[#e2d2c0] md:px-5 md:text-xs"
             >
               Продать
             </Link>
-            <HeaderMainLinks />
-            <HeaderCartBadge />
-            <HeaderAuthButton />
+            <div className="flex h-10 items-center gap-0.5 md:gap-1">
+              <HeaderMainLinks />
+              <HeaderCartBadge />
+              <HeaderAuthButton />
+            </div>
           </div>
         </div>
 
