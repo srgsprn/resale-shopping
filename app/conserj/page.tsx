@@ -30,31 +30,58 @@ const STEPS: [string, string][] = [
 const HERO_IMAGE =
   "https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=1400&q=80";
 
+function ConserjHeroCopy() {
+  return (
+    <>
+      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Консьерж сервис</h1>
+      <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
+        Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
+        первого раза. Сервис оформлен в том же духе, что и раздел «Как купить»: понятные шаги и спокойное
+        сопровождение сделки.
+      </p>
+      <Link
+        href="mailto:help@resale-shopping.ru?subject=%D0%9A%D0%BE%D0%BD%D1%81%D1%8C%D0%B5%D1%80%D0%B6%20%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81"
+        className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
+      >
+        Оставить заявку
+      </Link>
+    </>
+  );
+}
+
 export default function ConserjPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
-        <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
-          <div className="p-4 md:p-5">
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Консьерж сервис</h1>
-            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
-              Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
-              первого раза. Сервис оформлен в том же духе, что и раздел «Как купить»: понятные шаги и спокойное
-              сопровождение сделки.
-            </p>
-            <Link
-              href="mailto:help@resale-shopping.ru?subject=%D0%9A%D0%BE%D0%BD%D1%81%D1%8C%D0%B5%D1%80%D0%B6%20%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81"
-              className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
-            >
-              Оставить заявку
-            </Link>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMAGE}
-            alt="Консьерж сервис"
-            className="h-[165px] w-full object-cover md:h-[200px]"
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8]">
+        {/* Мобила: фото на фон всего блока + затемнение для читаемости */}
+        <div className="relative min-h-[min(58vw,320px)] md:hidden">
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${HERO_IMAGE})` }}
           />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-[#f6f3ef]/93 via-[#ebe4d8]/82 to-[#dfd2c4]/88]"
+          />
+          <div className="relative z-10 p-4 pb-6 pt-6">
+            <ConserjHeroCopy />
+          </div>
+        </div>
+
+        {/* Десктоп: без изменений — градиент + колонка с картинкой */}
+        <div className="hidden bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:block">
+          <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
+            <div className="p-4 md:p-5">
+              <ConserjHeroCopy />
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={HERO_IMAGE}
+              alt="Консьерж сервис"
+              className="h-[165px] w-full object-cover md:h-[200px]"
+            />
+          </div>
         </div>
       </section>
 
