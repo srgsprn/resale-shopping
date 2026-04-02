@@ -22,10 +22,10 @@ const principles = [
 export default function AboutPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[28px] border border-[#d9d2c8] bg-white">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
           <div className="p-6 md:p-10">
-            <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">Resale Shopping</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Resale Shopping</h1>
             <p className="mt-5 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
               Resale Shopping — это международный сервис в России, предлагающий приобрести и осуществить перепродажу
               товаров известных брендов. Также большая часть вещей на нашей платформе представлена прямиком из Европы.
@@ -48,7 +48,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-[#d9d2c8] bg-[#f8f6f2] p-6 md:p-10">
+      <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-6 md:p-10">
         <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Как работает сервис</h2>
         <p className="mt-4 max-w-4xl text-sm leading-relaxed text-zinc-700 md:text-base">
           Resale Shopping стремится обеспечить лучший опыт покупки и продажи брендовых вещей, опираясь на успешные
@@ -64,9 +64,9 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-10">
-        <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">О нас в СМИ</h2>
-        <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-6 md:p-10">
+        <h2 className="text-center text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">О нас в СМИ</h2>
+        <div className="mx-auto mt-5 grid max-w-4xl grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/64c2713bc83ae6fb270796c8_61e1ea92724df534c3ac7fdf_image-1024x576.png" alt="СМИ 1" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
           {/* eslint-disable-next-line @next/next/no-img-element */}

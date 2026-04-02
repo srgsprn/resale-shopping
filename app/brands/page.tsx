@@ -21,14 +21,16 @@ const groupedBrands: Array<{ letter: string; brands: string[] }> = [
 
 export default function BrandsPage() {
   return (
-    <section className="space-y-6">
-      <div className="rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-9">
-        <h1 className="text-3xl font-semibold tracking-tight">Бренды</h1>
-        <p className="mt-3 text-sm text-zinc-700 md:text-base">
-          Мы работаем с люксовыми брендами и регулярно обновляем ассортимент новыми поступлениями.
-        </p>
-      </div>
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-[#d9d2c8] bg-[#f8f6f2] p-4">
+    <section className="space-y-8">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
+        <div className="p-5 md:p-6">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Бренды</h1>
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-zinc-800 md:text-sm">
+            Мы работаем с люксовыми брендами и регулярно обновляем ассортимент новыми поступлениями.
+          </p>
+        </div>
+      </section>
+      <div className="flex flex-wrap gap-2 rounded-2xl border border-[#d9d2c8] bg-white p-4">
         {groupedBrands.map((group) => (
           <a
             key={group.letter}
@@ -49,7 +51,7 @@ export default function BrandsPage() {
                 <Link
                   key={brand}
                   href={`/catalog?brand=${encodeURIComponent(brand)}`}
-                  className="rounded-xl border border-[#d9d2c8] bg-[#f8f6f2] px-4 py-2 text-sm font-medium text-zinc-800 transition hover:border-[#c7bbac] hover:bg-white"
+                  className="rounded-xl border border-[#d9d2c8] bg-white px-4 py-2 text-sm font-medium text-zinc-800 transition hover:border-[#c7bbac] hover:bg-[#faf8f5]"
                 >
                   {brand}
                 </Link>

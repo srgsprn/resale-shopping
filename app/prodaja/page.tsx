@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function SaleInPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[22px] border border-[#d9d2c8] bg-gradient-to-r from-[#f0dfca] via-[#ead2b7] to-[#e0c29e]">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
           <div className="p-4 md:p-5">
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Как продать</h1>

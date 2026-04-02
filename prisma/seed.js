@@ -73,6 +73,50 @@ async function main() {
     }
   }
 
+  const accCategory = await prisma.category.findUnique({ where: { slug: "accessories" } });
+  if (accCategory) {
+    const giftImage =
+      "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80";
+    const giftCards = [
+      { slug: "gift-card-50000", name: "Подарочная карта 50 000 ₽", priceMinor: 50_000 * 100 },
+      { slug: "gift-card-100000", name: "Подарочная карта 100 000 ₽", priceMinor: 100_000 * 100 },
+      { slug: "gift-card-500000", name: "Подарочная карта 500 000 ₽", priceMinor: 500_000 * 100 },
+    ];
+
+    for (const gc of giftCards) {
+      const created = await prisma.product.upsert({
+        where: { slug: gc.slug },
+        update: {
+          brand: "Resale Shopping",
+          name: gc.name,
+          priceMinor: gc.priceMinor,
+          status: "ACTIVE",
+          categoryId: accCategory.id,
+          currency: "RUB",
+        },
+        create: {
+          slug: gc.slug,
+          brand: "Resale Shopping",
+          name: gc.name,
+          priceMinor: gc.priceMinor,
+          status: "ACTIVE",
+          categoryId: accCategory.id,
+          currency: "RUB",
+        },
+      });
+
+      await prisma.productImage.deleteMany({ where: { productId: created.id } });
+      await prisma.productImage.create({
+        data: {
+          productId: created.id,
+          url: giftImage,
+          alt: gc.name,
+          sortOrder: 0,
+        },
+      });
+    }
+  }
+
   const templates = [
     {
       key: "luxury",

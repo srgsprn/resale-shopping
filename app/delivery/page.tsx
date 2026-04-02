@@ -1,7 +1,7 @@
 export default function DeliveryPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#ece7df] via-[#e3ddd2] to-[#d6cdc0]">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
           <div className="p-5 md:p-6">
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Доставка и возврат</h1>
@@ -11,9 +11,9 @@ export default function DeliveryPage() {
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1400&q=80"
+            src="https://fastimport.ru/wp-content/uploads/2019/03/snimok-ekrana-2024-03-22-v-14.13.34-300x300.png"
             alt="Доставка и сервис"
-            className="h-[150px] w-full object-cover md:h-[185px]"
+            className="h-[150px] w-full object-contain bg-white/40 md:h-[185px]"
           />
         </div>
       </section>
@@ -33,7 +33,7 @@ export default function DeliveryPage() {
         </article>
       </section>
 
-      <section className="rounded-[24px] border border-[#d9d2c8] bg-[#f8f6f2] p-6">
+      <section className="rounded-2xl border border-[#d9d2c8] bg-white p-6">
         <h2 className="text-lg font-semibold">Условия возврата</h2>
         <ul className="mt-3 space-y-2 text-sm text-zinc-700">
           <li><span className="font-semibold text-zinc-900">1.</span> Срок возврата: 3 дня с момента получения.</li>
