@@ -113,6 +113,34 @@ export async function POST(request: Request) {
       data: { stripeCheckoutSessionId: session.id },
     });
 
+    const fullStripe = await prisma.order.findUnique({
+      where: { id: order.id },
+      include: { items: true, customer: true },
+    });
+    if (
+      fullStripe?.customer.email &&
+      !fullStripe.customer.email.endsWith("@example.com") &&
+      session.url
+    ) {
+      const summary = fullStripe.items.map((i) => `${i.productBrand || ""} ${i.productTitle}`.trim()).join(", ");
+      try {
+        await sendOrderConfirmationEmail(
+          {
+            name: fullStripe.customer.fullName,
+            email: fullStripe.customer.email,
+            orderNumber: fullStripe.orderNumber,
+            summary,
+            totalMinor: fullStripe.totalMinor,
+            orderLink: `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`,
+            checkoutUrl: session.url,
+          },
+          "pending_stripe",
+        );
+      } catch (err) {
+        console.error("Stripe checkout: письмо после оформления не отправлено:", err);
+      }
+    }
+
     return NextResponse.json({ url: session.url });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Checkout error";

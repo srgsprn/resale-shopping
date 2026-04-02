@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ClearCartOnSuccess } from "@/components/clear-cart-on-success";
 import { formatMoney } from "@/lib/money";
 import { getOrderByNumber } from "@/lib/orders";
+import { formatPaymentStatusRu } from "@/lib/payment-status";
 import { prisma } from "@/lib/prisma";
 
 type Props = {
@@ -36,7 +37,7 @@ export default async function SuccessPage({ searchParams }: Props) {
             Номер заказа: <strong>{order.orderNumber}</strong>
           </p>
           <p>
-            Статус оплаты: <strong>{order.paymentStatus}</strong>
+            Статус оплаты: <strong>{formatPaymentStatusRu(order.paymentStatus)}</strong>
           </p>
           <p>
             Сумма: <strong>{formatMoney(order.totalMinor, order.currency)}</strong>

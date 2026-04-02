@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/lib/money";
+import { formatPaymentStatusRu } from "@/lib/payment-status";
 
 export default async function AdminOrdersPage() {
   const orders = await prisma.order.findMany({
@@ -28,7 +29,7 @@ export default async function AdminOrdersPage() {
                 <td className="py-2">{o.orderNumber}</td>
                 <td>{o.customer.fullName}</td>
                 <td>{formatMoney(o.totalMinor, o.currency)}</td>
-                <td>{o.paymentStatus}</td>
+                <td>{formatPaymentStatusRu(o.paymentStatus)}</td>
               </tr>
             ))}
           </tbody>

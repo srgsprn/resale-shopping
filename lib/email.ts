@@ -10,7 +10,63 @@ export type OrderEmailPayload = {
   summary: string;
   totalMinor: number;
   orderLink: string;
+  /** Ссылка Stripe Checkout — только для письма «ожидается оплата». */
+  checkoutUrl?: string;
 };
+
+export type OrderEmailKind = "confirmed" | "pending_stripe";
+
+function resolveOrderEmailFrom(): string {
+  const raw = process.env.ORDER_FROM_EMAIL?.trim();
+  if (raw) {
+    if (raw.includes("<") && raw.includes(">")) return raw;
+    return `Resale Shopping <${raw}>`;
+  }
+  const smtpUser = process.env.SMTP_USER?.trim();
+  if (smtpUser?.includes("@")) {
+    return `Resale Shopping <${smtpUser}>`;
+  }
+  if (process.env.RESEND_API_KEY) {
+    console.warn(
+      "[email] ORDER_FROM_EMAIL не задан: для Resend укажите отправителя в формате «Имя <email@проверенный-домен>». Иначе письма могут не доставляться.",
+    );
+    return "Resale Shopping <onboarding@resend.dev>";
+  }
+  return "Resale Shopping <orders@resale-shopping.ru>";
+}
+
+function buildEmailContent(payload: OrderEmailPayload, kind: OrderEmailKind): { subject: string; text: string } {
+  const template = ORDER_EMAIL_TEMPLATES[DEFAULT_TEMPLATE];
+
+  if (kind === "pending_stripe") {
+    const url = payload.checkoutUrl;
+    if (!url) {
+      throw new Error("pending_stripe email requires checkoutUrl");
+    }
+    return {
+      subject: `Заказ ${payload.orderNumber}: ожидается оплата`,
+      text: `Здравствуйте, ${payload.name}!
+
+Мы получили ваш заказ № ${payload.orderNumber}.
+
+Состав: ${payload.summary}
+Сумма: ${formatMoney(payload.totalMinor)}
+
+Чтобы завершить оформление, перейдите к оплате по ссылке:
+${url}
+
+После успешной оплаты вы получите подтверждение на эту почту.
+
+С уважением,
+Команда resale-shopping.ru`,
+    };
+  }
+
+  return {
+    subject: template.subject,
+    text: template.body(payload),
+  };
+}
 
 type TemplateKey = "luxury" | "neutral" | "premium-resale";
 
@@ -31,19 +87,28 @@ export const ORDER_EMAIL_TEMPLATES: Record<TemplateKey, { subject: string; body:
 
 const DEFAULT_TEMPLATE: TemplateKey = "premium-resale";
 
-export async function sendOrderConfirmationEmail(payload: OrderEmailPayload) {
-  const from = process.env.ORDER_FROM_EMAIL || process.env.SMTP_USER || "orders@resale-shopping.ru";
-  const template = ORDER_EMAIL_TEMPLATES[DEFAULT_TEMPLATE];
-  const text = template.body(payload);
+export async function sendOrderConfirmationEmail(
+  payload: OrderEmailPayload,
+  kind: OrderEmailKind = "confirmed",
+) {
+  const from = resolveOrderEmailFrom();
+  const { subject, text } = buildEmailContent(payload, kind);
 
   if (process.env.RESEND_API_KEY) {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from,
       to: payload.email,
-      subject: template.subject,
+      subject,
       text,
     });
+    if (error) {
+      console.error("[email] Resend API error:", error);
+      throw new Error(typeof error === "object" && error && "message" in error ? String(error.message) : "Resend send failed");
+    }
+    if (!data) {
+      console.warn("[email] Resend returned no data id");
+    }
     return;
   }
 
@@ -61,11 +126,11 @@ export async function sendOrderConfirmationEmail(payload: OrderEmailPayload) {
     await transporter.sendMail({
       from,
       to: payload.email,
-      subject: template.subject,
+      subject,
       text,
     });
     return;
   }
 
-  throw new Error("Email provider is not configured: set RESEND_API_KEY or SMTP_* env vars");
+  throw new Error("Почта не настроена: задайте RESEND_API_KEY или SMTP_HOST / SMTP_USER / SMTP_PASS в .env");
 }

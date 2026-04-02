@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { auth } from "@/auth";
 
-import { SignInButton } from "./sign-in-button";
+import { AccountAuthForms } from "./account-auth-forms";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +25,8 @@ export default async function SignInPage() {
   }
 
   return (
-    <section className="mx-auto max-w-lg space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Авторизация</h1>
-      <p className="text-sm leading-relaxed text-zinc-600">
-        Войдите, чтобы сохранять товары в избранное и быстро возвращаться к выбранным лотам.
-      </p>
-      <SignInButton />
+    <section className="px-0 py-2 md:py-4">
+      <AccountAuthForms />
     </section>
   );
 }
