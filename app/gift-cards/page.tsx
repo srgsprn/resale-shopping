@@ -9,25 +9,21 @@ const NOMINALS = [
   { label: "500 000 ₽", slug: "gift-card-500000" },
 ] as const;
 
+/** Три варианта: новый (бант), бывший «Линия», новый (gstatic). */
 const DESIGNS = [
   {
+    label: "С бантом",
+    image:
+      "https://img.freepik.com/premium-psd/blank-gift-card-greeting-with-red-ribbon-bow-3d-rendering-isolated-transparent-background_808337-29260.jpg",
+  },
+  {
     label: "Классика",
-    image:
-      "https://images.unsplash.com/photo-1513885535751-752b5c77bd33?auto=format&fit=crop&w=1200&q=80",
+    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Линия",
+    label: "Подарочный",
     image:
-      "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    label: "Моно",
-    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    label: "Премиум",
-    image:
-      "https://images.unsplash.com/photo-1607344645866-009c370b1424?auto=format&fit=crop&w=1200&q=80",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-6T_MpR602mrs_PTD77MSyJY67j7mFQmKvQ&s",
   },
 ];
 
@@ -61,19 +57,18 @@ export default function GiftCardsPage() {
       <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
           <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Выберите дизайн карты</p>
-          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-zinc-100">
+          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={design.image} alt={design.label} className="aspect-[16/10] w-full object-cover" />
-            <div className="pointer-events-none absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/35 to-transparent p-6">
-              <p className="text-center text-lg font-semibold tracking-wide text-white drop-shadow md:text-xl">
-                Resale Shopping
-              </p>
-            </div>
+            <img
+              src={design.image}
+              alt={design.label}
+              className="aspect-[16/10] w-full object-contain"
+            />
             <div className="absolute inset-y-0 left-2 flex items-center">
               <button
                 type="button"
                 onClick={prevDesign}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-lg text-zinc-800 shadow transition hover:bg-white"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9d2c8] bg-white/95 text-lg text-zinc-800 shadow transition hover:bg-white"
                 aria-label="Предыдущий дизайн"
               >
                 ❮
@@ -83,7 +78,7 @@ export default function GiftCardsPage() {
               <button
                 type="button"
                 onClick={nextDesign}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 text-lg text-zinc-800 shadow transition hover:bg-white"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9d2c8] bg-white/95 text-lg text-zinc-800 shadow transition hover:bg-white"
                 aria-label="Следующий дизайн"
               >
                 ❯

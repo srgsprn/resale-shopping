@@ -12,13 +12,13 @@ export default async function HomePage() {
   const [featured, latest] = await Promise.all([
     prisma.product.findMany({
       where: { status: "ACTIVE" },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
+      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
       take: 8,
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     }),
     prisma.product.findMany({
       where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
+      include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
       take: 4,
       orderBy: { createdAt: "desc" },
     }),
@@ -66,29 +66,28 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm md:rounded-[28px]">
-        <div className="grid gap-0 md:grid-cols-[1.15fr_0.85fr] md:items-stretch">
-          <div className="px-5 py-10 text-balance md:px-10 md:py-12">
-            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Консьерж сервис</h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-800 md:text-base">
-              Тихий подбор, аккуратные детали и сопровождение на каждом шаге — чтобы вы получили идеальный лот без лишних
-              действий.
+      <section className="mx-auto max-w-3xl overflow-hidden rounded-[20px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm md:rounded-[22px]">
+        <div className="grid gap-0 md:grid-cols-[1.2fr_0.8fr] md:items-stretch">
+          <div className="px-4 py-4 text-balance md:px-5 md:py-5">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 md:text-xl">Консьерж сервис</h2>
+            <p className="mt-2 max-w-md text-xs leading-relaxed text-zinc-800 md:text-sm">
+              Тихий подбор и сопровождение на каждом шаге — чтобы вы получили идеальный лот без лишних действий.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-4 flex flex-wrap gap-2">
               <Link
                 href="/conserj"
-                className="inline-flex items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-6 py-2.5 text-xs font-semibold tracking-[0.12em] text-[#3d342c] transition hover:from-[#f2ebe3] hover:to-[#e2d2c0]"
+                className="inline-flex items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-4 py-2 text-[11px] font-semibold tracking-[0.1em] text-[#3d342c] transition hover:from-[#f2ebe3] hover:to-[#e2d2c0]"
               >
                 Подробнее
               </Link>
             </div>
           </div>
-          <div className="relative min-h-[200px] md:min-h-0">
+          <div className="relative min-h-[96px] max-md:max-h-[120px] md:min-h-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=740&q=80"
               alt="Консьерж сервис"
-              className="h-full min-h-[200px] w-full object-cover md:min-h-[240px]"
+              className="h-full w-full object-cover md:min-h-[112px]"
             />
           </div>
         </div>

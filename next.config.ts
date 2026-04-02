@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "fastimport.ru" },
       { protocol: "https", hostname: "90f1661d-2ff4-4f29-b07c-0e47453ca691.selstorage.ru" },
       { protocol: "https", hostname: "img.freepik.com" },
+      { protocol: "https", hostname: "encrypted-tbn0.gstatic.com" },
     ],
   },
 };

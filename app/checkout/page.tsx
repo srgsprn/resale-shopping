@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { formatMoney } from "@/lib/money";
 
-const DESIGN_LABELS = ["Классика", "Линия", "Моно", "Премиум"];
+const DESIGN_LABELS = ["С бантом", "Классика", "Подарочный"];
 
 type CartItem = {
   id: string;
