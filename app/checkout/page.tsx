@@ -167,7 +167,6 @@ function CheckoutContent() {
           </Link>
         </nav>
         <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-10 md:p-14">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Корзина</p>
           <h1 className="mt-4 text-2xl font-semibold uppercase tracking-tight text-zinc-900 md:text-3xl">
             Ваша корзина для покупок пуста
           </h1>
@@ -195,8 +194,7 @@ function CheckoutContent() {
 
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         <section>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Оформление</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Корзина</h1>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">Оформить заказ</h1>
           <p className="mb-8 mt-2 text-sm text-zinc-600">
             Укажите контакты и при необходимости комментарий к заказу. Затем оплата (если на сервере настроен Stripe).
           </p>

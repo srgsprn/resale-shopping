@@ -57,12 +57,12 @@ export default function GiftCardsPage() {
       <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
           <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Выберите дизайн карты</p>
-          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec]">
+          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec] aspect-[16/10]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={design.image}
               alt={design.label}
-              className="aspect-[16/10] w-full object-contain"
+              className="h-full w-full object-cover"
             />
             <div className="absolute inset-y-0 left-2 flex items-center">
               <button
