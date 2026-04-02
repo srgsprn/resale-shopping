@@ -9,7 +9,7 @@ const NOMINALS = [
   { label: "500 000 ₽", slug: "gift-card-500000" },
 ] as const;
 
-/** Три варианта: новый (бант), бывший «Линия», новый (gstatic). */
+/** Три варианта: PSD с бантом, Unsplash, вектор Freepik. */
 const DESIGNS = [
   {
     label: "С бантом",
@@ -23,7 +23,7 @@ const DESIGNS = [
   {
     label: "Подарочный",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-6T_MpR602mrs_PTD77MSyJY67j7mFQmKvQ&s",
+      "https://img.freepik.com/premium-vector/gift-card-with-blue-ribbon-bow-illustration_118124-3096.jpg",
   },
 ];
 

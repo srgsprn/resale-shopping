@@ -81,35 +81,27 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="w-full overflow-hidden rounded-xl border border-[#d4c9bc] bg-gradient-to-r from-[#f0e8de] via-[#e9dccf] to-[#e0d0c0] shadow-sm md:rounded-2xl">
-        <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 sm:py-1 sm:pl-3 sm:pr-1 md:gap-4 md:pl-4">
-          <div className="min-w-0 flex-1 px-3 py-2 text-balance sm:py-1.5 sm:pl-0 md:py-2">
-            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <h2 className="text-[11px] font-semibold tracking-tight text-zinc-900 md:text-xs">Консьерж сервис</h2>
-              <span className="hidden text-[9px] uppercase tracking-[0.12em] text-zinc-500 sm:inline">личный байер</span>
-            </div>
-            <p className="mt-0.5 max-w-3xl text-[10px] leading-snug text-zinc-800 md:text-[11px] md:leading-relaxed">
-              <span className="block">Твой личный байер от Resale Shopping.</span>
-              <span className="block">Привезём новые лоты из Европы и США</span>
-              <span className="block font-medium text-zinc-900">Всего за 14 дней! Сделаем с первого раза.</span>
+      <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm">
+        <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
+          <div className="p-4 md:p-5">
+            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Консьерж сервис</h2>
+            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
+              Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
+              первого раза.
             </p>
-            <div className="mt-1.5">
-              <Link
-                href="/conserj"
-                className="inline-flex items-center justify-center rounded-full border border-[#b8a99a] bg-white/70 px-2.5 py-1 text-[9px] font-semibold tracking-[0.06em] text-[#3d342c] shadow-sm backdrop-blur-sm transition hover:bg-white md:px-3 md:text-[10px]"
-              >
-                Подробнее
-              </Link>
-            </div>
+            <Link
+              href="/conserj"
+              className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
+            >
+              Подробнее
+            </Link>
           </div>
-          <div className="relative h-[52px] w-full shrink-0 overflow-hidden rounded-lg sm:h-14 sm:w-[88px] sm:rounded-l-none sm:rounded-r-xl md:h-16 md:w-[104px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=740&q=80"
-              alt=""
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=1400&q=80"
+            alt="Консьерж сервис"
+            className="h-[165px] w-full object-cover md:h-[200px]"
+          />
         </div>
       </section>
 

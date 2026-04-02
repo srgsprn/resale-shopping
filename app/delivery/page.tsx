@@ -1,8 +1,8 @@
 export default function DeliveryPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
-        <div className="grid gap-4 md:grid-cols-[1.25fr_0.75fr]">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-[#e8dccf]">
+        <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
           <div className="p-5 md:p-6">
             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Доставка и возврат</h1>
             <p className="mt-2 text-xs leading-relaxed text-zinc-800 md:text-sm">
@@ -13,7 +13,7 @@ export default function DeliveryPage() {
           <img
             src="https://fastimport.ru/wp-content/uploads/2019/03/snimok-ekrana-2024-03-22-v-14.13.34-300x300.png"
             alt="Доставка и сервис"
-            className="h-[150px] w-full object-contain bg-white/40 md:h-[185px]"
+            className="h-[165px] w-full object-cover md:h-[200px]"
           />
         </div>
       </section>
