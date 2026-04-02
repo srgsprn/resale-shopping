@@ -70,7 +70,7 @@ export default function CartPage() {
           <div>
             <Link
               href="/catalog"
-              className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-10 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900"
+              className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-10 py-3 text-center text-xs font-semibold tracking-[0.14em] text-zinc-900"
             >
               в каталог
             </Link>
