@@ -9,7 +9,7 @@ import { HeaderSellButton } from "@/components/header-sell-button";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-[#d9d2c8]/80 bg-[#f6f3ef]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#f6f3ef]/80">
+    <header className="relative z-40 border-b border-[#d9d2c8]/80 bg-[#f6f3ef]/90 backdrop-blur-md supports-[backdrop-filter]:bg-[#f6f3ef]/80 md:sticky md:top-0">
       <div className="mx-auto max-w-7xl px-3 md:px-8">
         <div className="flex items-center gap-3 py-2 md:gap-4 md:py-3">
           <Link
