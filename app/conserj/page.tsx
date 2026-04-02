@@ -53,18 +53,20 @@ export default function ConserjPage() {
   return (
     <div className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8]">
-        {/* Мобила: фото на фон всего блока + затемнение для читаемости */}
-        <div className="relative min-h-[min(58vw,320px)] md:hidden">
-          <div
+        {/* Мобила: фото целиком (contain) на фоне блока, текст и кнопка поверх */}
+        <div className="relative min-h-[min(100vw,480px)] bg-[#ebe4d8] md:hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HERO_IMAGE}
+            alt=""
             aria-hidden
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-contain object-center"
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-b from-[#f6f3ef]/93 via-[#ebe4d8]/82 to-[#dfd2c4]/88]"
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f6f3ef]/78 via-[#f6f3ef]/25 to-[#dfd2c4]/55"
           />
-          <div className="relative z-10 p-4 pb-6 pt-6">
+          <div className="relative z-10 p-4 pb-8 pt-6">
             <ConserjHeroCopy />
           </div>
         </div>
