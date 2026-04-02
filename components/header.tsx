@@ -13,15 +13,15 @@ export function Header() {
         <div className="flex items-center gap-3 py-2 md:gap-4 md:py-3">
           <Link
             href="/"
-            className="flex h-12 w-20 items-center justify-center rounded-3xl md:h-20 md:w-36"
+            className="flex h-11 w-[7.25rem] shrink-0 items-center justify-center rounded-2xl md:h-[3.35rem] md:w-[13.5rem]"
             aria-label="Главная"
           >
             <Image
               src="/resale-icon.png"
               alt="Resale shopping"
-              width={144}
-              height={80}
-              className="h-12 w-20 rounded-3xl object-contain md:h-20 md:w-36"
+              width={216}
+              height={90}
+              className="h-11 w-[7.25rem] rounded-2xl object-contain object-left md:h-[3.35rem] md:w-[13.5rem]"
               priority
             />
           </Link>
