@@ -15,9 +15,6 @@ const labelClass = "block text-sm font-medium text-zinc-800";
 const passwordLoginBtnClass =
   "w-full rounded-md border border-[#c9b89c] bg-zinc-200/90 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 shadow-sm transition hover:enabled:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-40";
 
-const regPrimaryBtnClass =
-  "w-full rounded-md border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50";
-
 function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -119,8 +116,7 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
             <SignInButton
               yandexReady={yandexReady}
               callbackUrl={callbackUrl}
-              className="w-full rounded-md border-0 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
-              label="Войти через Yandex"
+              label="Войти через Яндекс"
             />
           </div>
         </section>
@@ -179,8 +175,8 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
             <SignInButton
               yandexReady={yandexReady}
               callbackUrl={callbackUrl}
-              className={regPrimaryBtnClass}
-              label="Регистрация"
+              label="Регистрация через Яндекс"
+              hint="Быстро и без пароля на сайте"
             />
           </div>
         </section>
