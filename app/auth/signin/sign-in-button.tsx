@@ -7,10 +7,18 @@ type Props = {
   callbackUrl?: string;
   className?: string;
   label?: string;
+  /**
+   * С сервера: есть ли AUTH_YANDEX_ID + AUTH_YANDEX_SECRET (не зависит от пересборки с NEXT_PUBLIC_*).
+   * Если не передано — fallback на NEXT_PUBLIC_AUTH_YANDEX_ENABLED=1.
+   */
+  yandexReady?: boolean;
 };
 
-export function SignInButton({ callbackUrl = "/account", className, label }: Props) {
-  const providerReady = Boolean(process.env.NEXT_PUBLIC_AUTH_YANDEX_ENABLED === "1");
+export function SignInButton({ callbackUrl = "/account", className, label, yandexReady }: Props) {
+  const fromBuild =
+    process.env.NEXT_PUBLIC_AUTH_YANDEX_ENABLED === "1" ||
+    process.env.NEXT_PUBLIC_AUTH_YANDEX_ENABLED === "true";
+  const providerReady = yandexReady ?? fromBuild;
 
   return (
     <button

@@ -16,9 +16,14 @@ const grayDisabledBtnClass =
   "w-full cursor-not-allowed rounded-md border border-[#e5ddd4] bg-zinc-100 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400";
 
 const passwordLoginBtnClass =
-  "w-full rounded-md border border-[#c9b89c] bg-zinc-200/90 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 shadow-sm transition hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-45";
+  "w-full rounded-md border border-[#c9b89c] bg-zinc-200/90 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 shadow-sm transition hover:enabled:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-40";
 
-function AccountAuthFormsBody() {
+function isLikelyEmail(s: string) {
+  const t = s.trim();
+  return t.includes("@") && t.includes(".") && t.length > 5;
+}
+
+function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/account";
@@ -123,8 +128,10 @@ function AccountAuthFormsBody() {
               <input
                 id="login-email"
                 name="username"
-                type="email"
+                type="text"
+                inputMode="email"
                 autoComplete="username"
+                placeholder="email@example.com"
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className={inputClass}
@@ -162,11 +169,12 @@ function AccountAuthFormsBody() {
               type="button"
               disabled={!canPasswordLogin || loginPending}
               onClick={() => void handlePasswordLogin()}
-              className={canPasswordLogin && !loginPending ? passwordLoginBtnClass : grayDisabledBtnClass}
+              className={passwordLoginBtnClass}
             >
               {loginPending ? "Вход…" : "Войти"}
             </button>
             <SignInButton
+              yandexReady={yandexReady}
               callbackUrl={callbackUrl}
               className="w-full rounded-md border-0 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
               label="Войти через Yandex"
@@ -191,6 +199,24 @@ function AccountAuthFormsBody() {
                 onChange={(e) => setRegEmail(e.target.value)}
                 className={inputClass}
               />
+              <button
+                type="button"
+                disabled={!isLikelyEmail(regEmail)}
+                onClick={() => {
+                  const e = regEmail.trim();
+                  const subject = encodeURIComponent("Регистрация на resale-shopping.ru");
+                  const body = encodeURIComponent(
+                    `Здравствуйте! Прошу связаться по регистрации.\n\nEmail: ${e}\n`,
+                  );
+                  window.location.href = `mailto:help@resale-shopping.ru?subject=${subject}&body=${body}`;
+                }}
+                className={`mt-3 ${isLikelyEmail(regEmail) ? passwordLoginBtnClass : grayDisabledBtnClass}`}
+              >
+                Отправить
+              </button>
+              <p className="mt-1 text-[11px] text-zinc-500">
+                Заявка откроется в почте. Либо укажите пароль ниже и нажмите «Создать аккаунт».
+              </p>
             </div>
             <div>
               <label htmlFor="reg-name" className={labelClass}>
@@ -267,6 +293,7 @@ function AccountAuthFormsBody() {
               {regPending ? "Создание…" : "Создать аккаунт"}
             </button>
             <SignInButton
+              yandexReady={yandexReady}
               callbackUrl={callbackUrl}
               className="w-full rounded-md border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:brightness-105"
               label="Регистрация через Yandex"
@@ -281,14 +308,14 @@ function AccountAuthFormsBody() {
   );
 }
 
-export function AccountAuthForms() {
+export function AccountAuthForms({ yandexReady }: { yandexReady: boolean }) {
   return (
     <Suspense
       fallback={
         <div className="mx-auto max-w-5xl py-12 text-center text-sm text-zinc-500">Загрузка формы…</div>
       }
     >
-      <AccountAuthFormsBody />
+      <AccountAuthFormsBody yandexReady={yandexReady} />
     </Suspense>
   );
 }

@@ -24,9 +24,13 @@ export default async function SignInPage() {
     );
   }
 
+  const yandexReady = Boolean(
+    process.env.AUTH_YANDEX_ID?.trim() && process.env.AUTH_YANDEX_SECRET?.trim(),
+  );
+
   return (
     <section className="px-0 py-2 md:py-4">
-      <AccountAuthForms />
+      <AccountAuthForms yandexReady={yandexReady} />
     </section>
   );
 }
