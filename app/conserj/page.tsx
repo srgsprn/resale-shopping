@@ -32,15 +32,17 @@ const STEPS: [string, string][] = [
 function ConserjHeroCopy() {
   return (
     <>
-      <h1 className="text-xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Консьерж сервис</h1>
-      <p className="mt-2 max-w-xl text-[11px] leading-relaxed text-zinc-800 md:text-sm">
+      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 max-md:text-xl max-md:max-w-[20rem] md:text-3xl">
+        Консьерж сервис
+      </h1>
+      <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 max-md:text-[11px] max-md:max-w-[22rem] md:text-sm">
         Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
         первого раза. Сервис оформлен в том же духе, что и раздел «Как купить»: понятные шаги и спокойное
         сопровождение сделки.
       </p>
       <Link
         href="mailto:help@resale-shopping.ru?subject=%D0%9A%D0%BE%D0%BD%D1%81%D1%8C%D0%B5%D1%80%D0%B6%20%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81"
-        className="mt-3 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-900 md:mt-4 md:px-5 md:py-2 md:text-[11px]"
+        className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900 max-md:mt-3 max-md:px-4 max-md:py-1.5 max-md:text-[10px]"
       >
         Оставить заявку
       </Link>
@@ -51,7 +53,7 @@ function ConserjHeroCopy() {
 export default function ConserjPage() {
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-2xl border border-[#d9d2c8] md:rounded-[24px]">
+      <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8]">
         {/* Мобила: компактно — полоса с фото без «полей», текст отдельно */}
         <div className="flex flex-col md:hidden">
           <div className="relative h-[min(42vw,168px)] w-full shrink-0 overflow-hidden bg-[#e8e0d6]">
@@ -68,18 +70,16 @@ export default function ConserjPage() {
         </div>
 
         <div className="hidden bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:block">
-          <div className="grid grid-cols-[1.35fr_0.65fr] items-center gap-0">
+          <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
             <div className="p-4 md:p-5">
               <ConserjHeroCopy />
             </div>
-            <div className="h-[92px] w-full shrink-0 overflow-hidden bg-[#e8dcc8] lg:h-[100px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={CONCIERGE_HERO_IMAGE}
-                alt={CONCIERGE_HERO_ALT}
-                className="h-full w-full object-cover object-center"
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={CONCIERGE_HERO_IMAGE}
+              alt={CONCIERGE_HERO_ALT}
+              className="h-[165px] w-full object-cover md:h-[200px]"
+            />
           </div>
         </div>
       </section>
