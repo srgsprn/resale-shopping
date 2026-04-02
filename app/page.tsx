@@ -83,20 +83,20 @@ export default async function HomePage() {
       </div>
 
       <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] shadow-sm">
-        {/* Мобила: сумка целиком на фоне, текст и кнопка поверх */}
-        <div className="relative min-h-[min(68vw,360px)] bg-[#ebe4d8] md:hidden">
+        {/* Мобила: фото на всю ширину блока (cover), текст поверх */}
+        <div className="relative min-h-[min(56vw,280px)] w-full md:hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={CONCIERGE_HERO_IMAGE}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-contain object-center"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f6f3ef]/88 via-[#f6f3ef]/30 to-[#dfd2c4]/65"
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f6f3ef]/90 via-[#f6f3ef]/35 to-[#dfd2c4]/70"
           />
-          <div className="relative z-10 p-4 pb-6 pt-5">
+          <div className="relative z-10 p-4 pb-5 pt-4">
             <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Консьерж сервис</h2>
             <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800">
               Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
@@ -111,26 +111,27 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
-          <div className="flex flex-col justify-center p-5 md:p-6">
-            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Консьерж сервис</h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-800">
+        {/* Десктоп: компактный баннер (~половина прежней высоты и типографики) */}
+        <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.45fr_0.5fr] md:items-center">
+          <div className="flex flex-col justify-center px-4 py-3 md:px-5 md:py-3.5">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 lg:text-xl">Консьерж сервис</h2>
+            <p className="mt-1 max-w-xl text-xs leading-relaxed text-zinc-800 md:mt-1.5">
               Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
               первого раза.
             </p>
             <Link
               href="/conserj"
-              className="mt-4 inline-flex w-fit items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
+              className="mt-2 inline-flex w-fit items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-900 md:mt-2.5"
             >
               Подробнее
             </Link>
           </div>
-          <div className="relative min-h-[200px] bg-[#e8dcc8]">
+          <div className="relative h-[96px] w-full shrink-0 overflow-hidden bg-[#e8dcc8] lg:h-[100px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={CONCIERGE_HERO_IMAGE}
               alt={CONCIERGE_HERO_ALT}
-              className="h-full w-full object-cover object-center"
+              className="block h-full w-full object-cover object-center"
             />
           </div>
         </div>

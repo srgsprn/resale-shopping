@@ -56,12 +56,12 @@ export default function ConserjPage() {
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8]">
         {/* Мобила: компактно — полоса с фото без «полей», текст отдельно */}
         <div className="flex flex-col md:hidden">
-          <div className="relative h-[min(42vw,168px)] w-full shrink-0 overflow-hidden bg-[#e8e0d6]">
+          <div className="relative aspect-[5/3] w-full min-h-[148px] shrink-0 overflow-hidden bg-[#e8dcc8] sm:aspect-[2/1] sm:min-h-[160px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={CONCIERGE_HERO_IMAGE}
               alt={CONCIERGE_HERO_ALT}
-              className="h-full w-full object-contain object-center"
+              className="absolute inset-0 block h-full w-full object-cover object-center"
             />
           </div>
           <div className="border-t border-[#d9d2c8]/50 bg-gradient-to-b from-[#f8f5f0] to-[#f0ebe4] px-4 py-3">
