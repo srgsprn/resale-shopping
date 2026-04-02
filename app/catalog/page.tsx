@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 
 import { ProductCard } from "@/components/product-card";
+import { catalogListingWhere } from "@/lib/catalog-listing-filter";
 import { prisma } from "@/lib/prisma";
 
 type Props = {
@@ -29,6 +30,7 @@ export default async function CatalogPage({ searchParams }: Props) {
     prisma.product.findMany({
       where: {
         status: { in: ["ACTIVE", "SOLD_OUT"] },
+        ...catalogListingWhere(),
         brand: params.brand ? { equals: params.brand, mode: "insensitive" } : undefined,
         category: params.category ? { slug: params.category } : undefined,
         OR: params.q

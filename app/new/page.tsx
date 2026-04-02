@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { ProductCard } from "@/components/product-card";
+import { catalogListingWhere } from "@/lib/catalog-listing-filter";
 import { prisma } from "@/lib/prisma";
 
 export default async function NewArrivalsPage() {
@@ -10,6 +11,7 @@ export default async function NewArrivalsPage() {
   const recent = await prisma.product.findMany({
     where: {
       status: { in: ["ACTIVE", "SOLD_OUT"] },
+      ...catalogListingWhere(),
       createdAt: { gte: since },
     },
     include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
@@ -21,7 +23,7 @@ export default async function NewArrivalsPage() {
     recent.length > 0
       ? recent
       : await prisma.product.findMany({
-          where: { status: { in: ["ACTIVE", "SOLD_OUT"] } },
+          where: { status: { in: ["ACTIVE", "SOLD_OUT"] }, ...catalogListingWhere() },
           include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
           take: 24,
           orderBy: { createdAt: "desc" },
