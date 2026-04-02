@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { HomeDiscountsSection } from "@/components/home-discounts-section";
 import { ProductCard } from "@/components/product-card";
+import { CONCIERGE_HERO_ALT, CONCIERGE_HERO_IMAGE } from "@/lib/concierge-assets";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
@@ -81,11 +82,23 @@ export default async function HomePage() {
         <HomeDiscountsSection products={featured} />
       </div>
 
-      <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] shadow-sm">
-        <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
-          <div className="p-4 md:p-5">
-            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Консьерж сервис</h2>
-            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
+      <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] shadow-sm">
+        {/* Мобила: сумка целиком на фоне, текст и кнопка поверх */}
+        <div className="relative min-h-[min(68vw,360px)] bg-[#ebe4d8] md:hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CONCIERGE_HERO_IMAGE}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-contain object-center"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f6f3ef]/88 via-[#f6f3ef]/30 to-[#dfd2c4]/65"
+          />
+          <div className="relative z-10 p-4 pb-6 pt-5">
+            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Консьерж сервис</h2>
+            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800">
               Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
               первого раза.
             </p>
@@ -96,12 +109,30 @@ export default async function HomePage() {
               Подробнее
             </Link>
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=1400&q=80"
-            alt="Консьерж сервис"
-            className="h-[165px] w-full object-cover md:h-[200px]"
-          />
+        </div>
+
+        <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
+          <div className="flex flex-col justify-center p-5 md:p-6">
+            <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Консьерж сервис</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-800">
+              Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
+              первого раза.
+            </p>
+            <Link
+              href="/conserj"
+              className="mt-4 inline-flex w-fit items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
+            >
+              Подробнее
+            </Link>
+          </div>
+          <div className="relative min-h-[200px] bg-[#e8dcc8]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={CONCIERGE_HERO_IMAGE}
+              alt={CONCIERGE_HERO_ALT}
+              className="h-full w-full object-cover object-center"
+            />
+          </div>
         </div>
       </section>
 

@@ -1,6 +1,5 @@
-/** Фото для блока "Консьерж сервис" (редакционный кадр). */
-export const CONCIERGE_IMAGE =
-  "https://images.unsplash.com/photo-1593985817973-741b20cb456d?auto=format&fit=crop&w=1200&q=80";
+/** Редакционное фото для блока «Консьерж» (главная и страница /conserj). */
+export const CONCIERGE_HERO_IMAGE =
+  "https://img.freepik.com/free-photo/view-women-s-purse-tiles-with-mediterranean-aesthetics_23-2150916730.jpg?semt=ais_hybrid&w=1400&q=80";
 
-export const CONCIERGE_IMAGE_ALT = "Девушка в белой рубашке (личный ассистент)";
-
+export const CONCIERGE_HERO_ALT = "Консьерж сервис";
