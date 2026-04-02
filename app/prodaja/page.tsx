@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { OpenSellFormButton } from "@/components/open-sell-form-button";
 
 export default function SaleInPage() {
   return (
@@ -10,12 +10,7 @@ export default function SaleInPage() {
             <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
               Мы берем на себя операционную часть продажи: проверку, публикацию и сопровождение сделки до выплаты.
             </p>
-            <Link
-              href="/prodat"
-              className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
-            >
-              Продать
-            </Link>
+            <OpenSellFormButton className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm transition hover:brightness-105" />
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

@@ -5,6 +5,7 @@ import { HeaderCartBadge } from "@/components/header-cart-badge";
 import { HeaderAuthButton } from "@/components/header-auth-button";
 import { HeaderCategoryNav } from "@/components/header-category-nav";
 import { HeaderMainLinks } from "@/components/header-main-links";
+import { HeaderSellButton } from "@/components/header-sell-button";
 
 export function Header() {
   return (
@@ -27,12 +28,7 @@ export function Header() {
           </Link>
 
           <div className="ml-auto flex h-10 items-center gap-2 md:gap-3">
-            <Link
-              href="/prodaja"
-              className="inline-flex h-10 shrink-0 items-center justify-center rounded-full border border-[#c4b5a4] bg-gradient-to-r from-[#efe6db] to-[#dcc9b5] px-4 text-[11px] font-semibold tracking-[0.06em] text-[#3d342c] shadow-sm transition hover:from-[#f2ebe3] hover:to-[#e2d2c0] md:px-5 md:text-xs"
-            >
-              Продать
-            </Link>
+            <HeaderSellButton />
             <div className="flex h-10 items-center gap-0.5 md:gap-1">
               <HeaderMainLinks />
               <HeaderCartBadge />

@@ -39,14 +39,17 @@ export function SignInButton({
         "hover:-translate-y-px hover:bg-zinc-900 hover:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
         "active:translate-y-0 active:shadow-md",
         "disabled:pointer-events-none disabled:translate-y-0 disabled:opacity-45 disabled:shadow-none",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
         className,
       )}
     >
       <span
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#fc3f1d] shadow-[inset_0_-2px_0_rgba(0,0,0,0.15)]"
+        className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#fc3f1d] shadow-none outline-none ring-0"
         aria-hidden
       >
-        <span className="select-none font-sans text-[17px] font-black leading-none tracking-tight text-white">Я</span>
+        <span className="select-none font-sans text-[17px] font-black leading-none tracking-tight text-white">
+          Я
+        </span>
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-semibold leading-snug tracking-tight text-white">
