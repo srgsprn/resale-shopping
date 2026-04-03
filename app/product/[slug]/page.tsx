@@ -24,9 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   if (!product) return {};
   const title = decodeHtmlEntities(product.name);
+  const brandLine = decodeHtmlEntities(product.brand);
   return {
     title,
-    description: `${product.brand} — ${title}`,
+    description: `${brandLine} — ${title}`,
   };
 }
 
@@ -55,13 +56,14 @@ export default async function ProductPage({ params }: Props) {
   }
 
   const displayName = decodeHtmlEntities(product.name);
+  const displayBrand = decodeHtmlEntities(product.brand);
   const condition = product.conditionLabel || "Отличное";
   const material = product.material || product.composition || "Уточняется";
 
   const wishItem = {
     id: product.id,
     slug: product.slug,
-    brand: product.brand,
+    brand: displayBrand,
     name: displayName,
     priceMinor: product.priceMinor,
     currency: product.currency,
@@ -72,7 +74,7 @@ export default async function ProductPage({ params }: Props) {
   const cartProduct = {
     id: product.id,
     slug: product.slug,
-    brand: product.brand,
+    brand: displayBrand,
     name: displayName,
     priceMinor: product.priceMinor,
     currency: product.currency,
@@ -89,7 +91,7 @@ export default async function ProductPage({ params }: Props) {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">{displayName}</h1>
           <p className="mt-1 text-sm text-zinc-600">
-            Бренд: <span className="text-zinc-800">{product.brand}</span>
+            Бренд: <span className="text-zinc-800">{displayBrand}</span>
           </p>
         </div>
 

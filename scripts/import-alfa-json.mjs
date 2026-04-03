@@ -13,6 +13,16 @@ function mapStatus(s) {
   return statusMap[s] || "DRAFT";
 }
 
+/** В каталоге короткое имя бренда без «& Arpels»; снимает и HTML-сущности из источника. */
+function normalizeBrand(raw) {
+  const b = (raw || "Unknown").trim();
+  const decoded = b.replace(/&amp;/gi, "&");
+  if (/van\s+cleef/i.test(decoded) && /arpels/i.test(decoded)) {
+    return "Van Cleef";
+  }
+  return raw || "Unknown";
+}
+
 async function main() {
   const productsRaw = await readFile("data/alfa-products.json", "utf8");
   const pagesRaw = await readFile("data/alfa-pages.json", "utf8").catch(() => "[]");
@@ -25,7 +35,7 @@ async function main() {
   for (const row of products) {
     const slug = row.slug;
     const name = row.name || slug;
-    const brand = row.brand || "Unknown";
+    const brand = normalizeBrand(row.brand);
     const cat = row.category || { name: "Без категории", slug: "uncategorized" };
     const catSlug = cat.slug || "uncategorized";
 

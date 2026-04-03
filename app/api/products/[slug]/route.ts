@@ -19,7 +19,7 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
   return NextResponse.json({
     id: product.id,
     slug: product.slug,
-    brand: product.brand,
+    brand: decodeHtmlEntities(product.brand),
     name: decodeHtmlEntities(product.name),
     priceMinor: product.priceMinor,
     currency: product.currency,

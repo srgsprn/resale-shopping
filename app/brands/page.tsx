@@ -15,7 +15,7 @@ const groupedBrands: Array<{ letter: string; brands: string[] }> = [
   { letter: "r", brands: ["Rimowa", "Rolex"] },
   { letter: "s", brands: ["Saint Laurent", "Salvatore Ferragamo", "Schiaparelli"] },
   { letter: "t", brands: ["The Row", "Tiffany & Co", "Tom Ford"] },
-  { letter: "v", brands: ["Valentino Garavani", "Van Cleef & Arpels", "Versace"] },
+  { letter: "v", brands: ["Valentino Garavani", "Van Cleef", "Versace"] },
   { letter: "y", brands: ["Yeezy"] },
 ];
 

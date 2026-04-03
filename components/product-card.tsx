@@ -25,6 +25,7 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   const displayName = decodeHtmlEntities(product.name);
+  const displayBrand = decodeHtmlEntities(product.brand);
   const metaBits = [
     product.conditionLabel,
     product.size,
@@ -55,7 +56,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       <div className="space-y-2 p-4">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">{product.brand}</p>
+        <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">{displayBrand}</p>
         <h3 className="line-clamp-2 text-[15px] font-medium text-zinc-900">{displayName}</h3>
         <p className="text-sm font-medium text-zinc-800">{formatMoney(product.priceMinor, product.currency)}</p>
         <p className="line-clamp-2 text-xs text-zinc-500">
@@ -71,7 +72,7 @@ export function ProductCard({ product }: ProductCardProps) {
             item={{
               id: product.id,
               slug: product.slug,
-              brand: product.brand,
+              brand: displayBrand,
               name: displayName,
               priceMinor: product.priceMinor,
               currency: product.currency,
