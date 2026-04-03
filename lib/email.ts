@@ -311,6 +311,38 @@ function recipientPrefersSmtpFirst(raw: string): boolean {
   return domain.endsWith(".ru") || domain.endsWith(".su") || domain.endsWith(".xn--p1ai");
 }
 
+function recipientDomainAscii(raw: string): string {
+  const email = raw.trim();
+  const at = email.lastIndexOf("@");
+  if (at <= 0 || at === email.length - 1) return "";
+  try {
+    return punycode.toASCII(email.slice(at + 1).toLowerCase());
+  } catch {
+    return "";
+  }
+}
+
+/** list.ru, mail.ru, bk.ru и т.д. — лучше слать через smtp.mail.ru своего ящика (MAILRU_SMTP_*). */
+function recipientMailRuFamily(email: string): boolean {
+  const d = recipientDomainAscii(email);
+  return ["mail.ru", "bk.ru", "list.ru", "inbox.ru", "internet.ru"].includes(d);
+}
+
+function recipientYandexFamily(email: string): boolean {
+  const d = recipientDomainAscii(email);
+  return ["yandex.ru", "ya.ru", "yandex.com", "narod.ru", "yandex.by", "yandex.kz"].includes(d);
+}
+
+/** Email из ORDER_FROM_EMAIL («Имя <a@b>» или просто a@b) — для MAILRU/Yandex SMTP без дублирования логина. */
+function mailboxFromOrderFromEmail(): string | undefined {
+  const raw = process.env.ORDER_FROM_EMAIL?.trim();
+  if (!raw) return undefined;
+  const angle = raw.match(/<([^>\s]+@[^>\s]+)>/);
+  if (angle?.[1]) return angle[1].trim();
+  if (raw.includes("@") && !/\s/.test(raw)) return raw;
+  return undefined;
+}
+
 function hasResendApiKey(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
@@ -321,55 +353,131 @@ function hasExplicitSmtpConfig(): boolean {
   );
 }
 
-type SmtpTransportMode = "explicit" | "resend_relay";
-
 /** Конфиг для nodemailer SMTP (тип createTransport — перегрузки, локально задаём форму). */
 type SmtpConnectionConfig = {
   host: string;
   port: number;
   secure: boolean;
+  requireTLS?: boolean;
   auth: { user: string; pass: string };
 };
 
-function getSmtpTransportOptions(): { mode: SmtpTransportMode; options: SmtpConnectionConfig } | null {
+type OrderSmtpCandidate =
+  | { kind: "url"; label: string; url: string }
+  | { kind: "options"; label: string; options: SmtpConnectionConfig };
+
+function candidateKey(c: OrderSmtpCandidate): string {
+  if (c.kind === "url") return `url:${c.url}`;
+  const o = c.options;
+  return `opt:${o.host}:${o.port}:${o.secure}:${o.auth.user}`;
+}
+
+function pushUnique(out: OrderSmtpCandidate[], c: OrderSmtpCandidate) {
+  if (out.some((x) => candidateKey(x) === candidateKey(c))) return;
+  out.push(c);
+}
+
+function buildResendRelayCandidates(): OrderSmtpCandidate[] {
+  if (process.env.RESEND_SMTP_RELAY_DISABLED === "1") return [];
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) return [];
+  const host = process.env.RESEND_SMTP_HOST?.trim() || "smtp.resend.com";
+  const auth = { user: "resend", pass: key };
+  const out: OrderSmtpCandidate[] = [];
+  const envPort = process.env.RESEND_SMTP_PORT?.trim();
+  if (envPort) {
+    const port = Number(envPort);
+    const secure = port === 465 || process.env.RESEND_SMTP_SECURE === "true";
+    pushUnique(out, {
+      kind: "options",
+      label: `Resend SMTP :${port}`,
+      options: { host, port, secure, auth },
+    });
+  } else {
+    pushUnique(out, {
+      kind: "options",
+      label: "Resend SMTP :465",
+      options: { host, port: 465, secure: true, auth },
+    });
+    pushUnique(out, {
+      kind: "options",
+      label: "Resend SMTP :587 STARTTLS",
+      options: { host, port: 587, secure: false, requireTLS: true, auth },
+    });
+  }
+  return out;
+}
+
+/**
+ * Цепочка SMTP для заказа: URL → Mail.ru / Yandex пресеты → свой SMTP → несколько вариантов Resend relay.
+ * Для list.ru без MAILRU_SMTP_* доставка не гарантируется (антиспам Mail.ru к чужим IP).
+ */
+function buildOrderSmtpTryList(toEmail: string): OrderSmtpCandidate[] {
+  const out: OrderSmtpCandidate[] = [];
+
+  const orderUrl = process.env.ORDER_SMTP_URL?.trim();
+  const genericUrl = process.env.SMTP_URL?.trim();
+  for (const url of [orderUrl, genericUrl]) {
+    if (url && /^smtps?:\/\//i.test(url)) {
+      pushUnique(out, { kind: "url", label: "ORDER_SMTP_URL / SMTP_URL", url });
+    }
+  }
+
+  const mailP = process.env.MAILRU_SMTP_PASSWORD?.trim();
+  const mailU = process.env.MAILRU_SMTP_USER?.trim() || mailboxFromOrderFromEmail();
+  if (recipientMailRuFamily(toEmail) && mailU && mailP) {
+    pushUnique(out, {
+      kind: "options",
+      label: "Mail.ru SMTP (smtp.mail.ru)",
+      options: {
+        host: process.env.MAILRU_SMTP_HOST?.trim() || "smtp.mail.ru",
+        port: Number(process.env.MAILRU_SMTP_PORT || 465),
+        secure: process.env.MAILRU_SMTP_SECURE !== "false",
+        auth: { user: mailU, pass: mailP },
+      },
+    });
+  }
+
+  const yxP = process.env.YANDEX_SMTP_PASSWORD?.trim();
+  const yxU = process.env.YANDEX_SMTP_USER?.trim() || mailboxFromOrderFromEmail();
+  if (recipientYandexFamily(toEmail) && yxU && yxP) {
+    pushUnique(out, {
+      kind: "options",
+      label: "Yandex SMTP (smtp.yandex.ru)",
+      options: {
+        host: process.env.YANDEX_SMTP_HOST?.trim() || "smtp.yandex.ru",
+        port: Number(process.env.YANDEX_SMTP_PORT || 465),
+        secure: process.env.YANDEX_SMTP_SECURE !== "false",
+        auth: { user: yxU, pass: yxP },
+      },
+    });
+  }
+
   const host = process.env.SMTP_HOST?.trim();
   const user = process.env.SMTP_USER?.trim();
   const pass = process.env.SMTP_PASS?.trim();
   if (host && user && pass) {
-    return {
-      mode: "explicit",
+    pushUnique(out, {
+      kind: "options",
+      label: "SMTP_HOST (хостинг)",
       options: {
         host,
         port: Number(process.env.SMTP_PORT || 587),
         secure: process.env.SMTP_SECURE === "true",
         auth: { user, pass },
       },
-    };
+    });
   }
 
-  if (process.env.RESEND_SMTP_RELAY_DISABLED === "1") {
-    return null;
+  for (const c of buildResendRelayCandidates()) {
+    pushUnique(out, c);
   }
 
-  const key = process.env.RESEND_API_KEY?.trim();
-  if (!key) return null;
-
-  const rHost = process.env.RESEND_SMTP_HOST?.trim() || "smtp.resend.com";
-  const rPort = Number(process.env.RESEND_SMTP_PORT || 465);
-  return {
-    mode: "resend_relay",
-    options: {
-      host: rHost,
-      port: rPort,
-      secure: rPort === 465 || process.env.RESEND_SMTP_SECURE === "true",
-      auth: { user: "resend", pass: key },
-    },
-  };
+  return out;
 }
 
-/** Отправка через nodemailer: либо SMTP хостинга, либо официальный relay Resend по API-ключу. */
-function hasSmtpSendPath(): boolean {
-  return getSmtpTransportOptions() !== null;
+function hasOrderSmtpCandidates(toEmail: string): boolean {
+  return buildOrderSmtpTryList(toEmail).length > 0;
 }
 
 function sleep(ms: number) {
@@ -438,35 +546,49 @@ async function sendViaResend(
   throw new Error(`Resend: не удалось отправить ни с одного адреса отправителя. Последняя ошибка: ${resendErrorMessage(lastError)}`);
 }
 
-async function sendViaSmtp(
+async function sendOrderThroughSmtpCandidates(
   payload: OrderEmailPayload,
   subject: string,
   text: string,
   kind: OrderEmailKind,
 ): Promise<void> {
-  const cfg = getSmtpTransportOptions();
-  if (!cfg) {
-    throw new Error("SMTP: задайте SMTP_HOST+SMTP_USER+SMTP_PASS или RESEND_API_KEY для smtp.resend.com");
+  const candidates = buildOrderSmtpTryList(payload.email);
+  if (candidates.length === 0) {
+    throw new Error(
+      "SMTP: задайте RESEND_API_KEY (relay), SMTP_HOST+USER+PASS, ORDER_SMTP_URL или MAILRU_SMTP_* для list.ru",
+    );
   }
 
   const from = resolveSmtpFrom();
   const replyTo = resolveReplyTo();
-  const transporter = nodemailer.createTransport(cfg.options as Parameters<typeof nodemailer.createTransport>[0]);
-
-  console.info(
-    "[email] SMTP транспорт: %s",
-    cfg.mode === "resend_relay" ? `Resend relay (${cfg.options.host})` : `хостинг (${cfg.options.host})`,
-  );
-
-  await transporter.sendMail({
+  const html = buildOrderEmailHtml(payload, kind);
+  const mail = {
     from,
     to: payload.email,
     subject,
     text,
-    html: buildOrderEmailHtml(payload, kind),
+    html,
     ...(replyTo ? { replyTo } : {}),
-  });
-  console.info("[email] SMTP OK mode=%s to=%s", cfg.mode, payload.email);
+  };
+
+  let lastErr: unknown;
+  for (const c of candidates) {
+    try {
+      const transporter =
+        c.kind === "url"
+          ? nodemailer.createTransport(c.url)
+          : nodemailer.createTransport(c.options as Parameters<typeof nodemailer.createTransport>[0]);
+      console.info("[email] SMTP попытка: %s", c.label);
+      await transporter.sendMail(mail);
+      console.info("[email] SMTP OK (%s) to=%s", c.label, payload.email);
+      return;
+    } catch (e) {
+      lastErr = e;
+      console.warn("[email] SMTP сбой (%s):", c.label, e);
+    }
+  }
+
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
 
 export async function sendOrderConfirmationEmail(
@@ -476,17 +598,28 @@ export async function sendOrderConfirmationEmail(
   const { subject, text } = buildEmailContent(payload, kind);
   const normalized = normalizeEmailForResend(payload.email);
 
-  const smtpFirst = hasSmtpSendPath() && recipientPrefersSmtpFirst(payload.email);
+  if (
+    recipientMailRuFamily(payload.email) &&
+    !process.env.MAILRU_SMTP_PASSWORD?.trim() &&
+    !process.env.ORDER_SMTP_URL?.trim() &&
+    !hasExplicitSmtpConfig()
+  ) {
+    console.warn(
+      "[email] Получатель Mail.ru/list.ru: добавьте MAILRU_SMTP_PASSWORD (пароль приложения smtp.mail.ru); логин по умолчанию — email из ORDER_FROM_EMAIL. Иначе остаётся только Resend (часто в «Спам» или режется).",
+    );
+  }
+
+  const smtpFirst = hasOrderSmtpCandidates(payload.email) && recipientPrefersSmtpFirst(payload.email);
 
   if (smtpFirst) {
     try {
-      console.info("[email] SMTP приоритет (.ru/.su/.рф) to=%s", payload.email);
-      await sendViaSmtp(payload, subject, text, kind);
+      console.info("[email] SMTP-цепочка приоритет (.ru/.su/.рф) to=%s", payload.email);
+      await sendOrderThroughSmtpCandidates(payload, subject, text, kind);
       return;
     } catch (smtpErr) {
       const canTryResend = hasResendApiKey() && !("error" in normalized);
       console.warn(
-        `[email] SMTP приоритет не удался${canTryResend ? ", пробую Resend…" : ""}`,
+        `[email] SMTP-цепочка не удалась${canTryResend ? ", пробую Resend API…" : ""}`,
         smtpErr,
       );
       if (!canTryResend) {
@@ -498,9 +631,9 @@ export async function sendOrderConfirmationEmail(
   if (hasResendApiKey()) {
     if ("error" in normalized) {
       console.warn("[email] %s", normalized.error);
-      if (hasSmtpSendPath()) {
+      if (hasOrderSmtpCandidates(payload.email)) {
         console.warn("[email] Отправка заказа через SMTP (Resend не подходит для этого адреса)…");
-        await sendViaSmtp(payload, subject, text, kind);
+        await sendOrderThroughSmtpCandidates(payload, subject, text, kind);
         return;
       }
       throw new Error(normalized.error);
@@ -513,21 +646,21 @@ export async function sendOrderConfirmationEmail(
       return;
     } catch (err) {
       console.error("[email] Resend ошибка, заказ всё равно оформлен:", err);
-      if (hasSmtpSendPath()) {
-        console.warn("[email] Отправка через запасной SMTP…");
-        await sendViaSmtp(payload, subject, text, kind);
+      if (hasOrderSmtpCandidates(payload.email)) {
+        console.warn("[email] Отправка через запасную SMTP-цепочку…");
+        await sendOrderThroughSmtpCandidates(payload, subject, text, kind);
         return;
       }
       throw err;
     }
   }
 
-  if (hasSmtpSendPath()) {
-    await sendViaSmtp(payload, subject, text, kind);
+  if (hasOrderSmtpCandidates(payload.email)) {
+    await sendOrderThroughSmtpCandidates(payload, subject, text, kind);
     return;
   }
 
   throw new Error(
-    "Почта не настроена: задайте RESEND_API_KEY (и при необходимости SMTP_HOST + SMTP_USER + SMTP_PASS) в .env на сервере",
+    "Почта не настроена: RESEND_API_KEY и/или SMTP (см. .env.example: MAILRU_SMTP_* для list.ru)",
   );
 }
