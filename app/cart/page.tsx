@@ -45,7 +45,7 @@ export default function CartPage() {
   return (
     <>
       {items.length === 0 ? (
-        <section className="mx-auto max-w-2xl space-y-8 text-center">
+        <section className="mx-auto flex min-h-[min(70vh,640px)] w-full max-w-2xl flex-col items-center justify-center gap-8 px-4 py-12 text-center md:min-h-[60vh] md:py-16">
           <div className="flex justify-center">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-14 w-14 text-zinc-700">
               <path
@@ -63,18 +63,16 @@ export default function CartPage() {
             </svg>
           </div>
 
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
+          <h1 className="text-2xl font-normal tracking-tight text-zinc-900 md:text-3xl">
             ВАША КОРЗИНА ДЛЯ ПОКУПОК ПУСТА
           </h1>
 
-          <div>
-            <Link
-              href="/catalog"
-              className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-10 py-3 text-center text-xs font-semibold tracking-[0.14em] text-zinc-900"
-            >
-              в каталог
-            </Link>
-          </div>
+          <Link
+            href="/catalog"
+            className="inline-flex items-center justify-center rounded-full border border-zinc-800 bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-10 py-3 text-center text-xs font-semibold tracking-[0.14em] text-zinc-900"
+          >
+            Перейти в каталог
+          </Link>
         </section>
       ) : (
         <section className="space-y-8">
