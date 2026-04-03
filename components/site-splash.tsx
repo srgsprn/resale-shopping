@@ -50,12 +50,24 @@ export function SiteSplash() {
       {open ? (
         <motion.div
           key="splash"
-          className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#c9bdb0]"
+          className="box-border flex min-h-0 flex-col items-stretch bg-[#c9bdb0]"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 200,
+            minHeight: "100dvh",
+            height: "100dvh",
+            width: "100%",
+            maxWidth: "100vw",
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            paddingBottom: "env(safe-area-inset-bottom, 0px)",
+            boxSizing: "border-box",
+          }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: fast ? 0.15 : 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="px-6 text-center text-[#1c1917]">
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 text-center text-[#1c1917]">
             <motion.div
               className="mx-auto mb-5 h-px w-[min(72vw,420px)] origin-left bg-[#1c1917]/70 md:mb-7"
               initial={fast ? { opacity: 1, scaleX: 1 } : { opacity: 0.4, scaleX: 0 }}

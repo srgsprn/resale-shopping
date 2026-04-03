@@ -5,7 +5,11 @@ import Link from "next/link";
 
 import { HomeDiscountsSection } from "@/components/home-discounts-section";
 import { ProductCard } from "@/components/product-card";
-import { CONCIERGE_HERO_ALT, CONCIERGE_HERO_IMAGE } from "@/lib/concierge-assets";
+import {
+  CONCIERGE_HERO_ALT,
+  CONCIERGE_HERO_IMAGE,
+  CONCIERGE_SHORT_COPY,
+} from "@/lib/concierge-assets";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
@@ -83,14 +87,14 @@ export default async function HomePage() {
       </div>
 
       <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] shadow-sm">
-        {/* Мобила: фото на всю ширину блока (cover), текст поверх */}
-        <div className="relative min-h-[min(56vw,280px)] w-full md:hidden">
+        {/* Мобила: фото на весь блок + лёгкий blur, текст поверх */}
+        <div className="relative min-h-[min(56vw,280px)] w-full overflow-hidden md:hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={CONCIERGE_HERO_IMAGE}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-110 object-cover object-center blur-[3px]"
           />
           <div
             aria-hidden
@@ -98,10 +102,7 @@ export default async function HomePage() {
           />
           <div className="relative z-10 p-4 pb-5 pt-4">
             <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Консьерж сервис</h2>
-            <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800">
-              Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
-              первого раза.
-            </p>
+            <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-zinc-800 sm:text-sm">{CONCIERGE_SHORT_COPY}</p>
             <Link
               href="/conserj"
               className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
@@ -111,27 +112,24 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Десктоп: компактный баннер (~половина прежней высоты и типографики) */}
-        <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.45fr_0.5fr] md:items-center">
-          <div className="flex flex-col justify-center px-4 py-3 md:px-5 md:py-3.5">
-            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 lg:text-xl">Консьерж сервис</h2>
-            <p className="mt-1 max-w-xl text-xs leading-relaxed text-zinc-800 md:mt-1.5">
-              Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
-              первого раза.
-            </p>
+        {/* Десктоп: ~×1.5 к предыдущему компакту; фото на всю высоту ряда */}
+        <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
+          <div className="flex flex-col justify-center px-5 py-4 md:px-6 md:py-5">
+            <h2 className="text-xl font-semibold tracking-tight text-zinc-900 lg:text-2xl">Консьерж сервис</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-800">{CONCIERGE_SHORT_COPY}</p>
             <Link
               href="/conserj"
-              className="mt-2 inline-flex w-fit items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-900 md:mt-2.5"
+              className="mt-4 inline-flex w-fit items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
             >
               Подробнее
             </Link>
           </div>
-          <div className="relative h-[96px] w-full shrink-0 overflow-hidden bg-[#e8dcc8] lg:h-[100px]">
+          <div className="relative min-h-[144px] w-full overflow-hidden bg-[#e8dcc8] lg:min-h-[156px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={CONCIERGE_HERO_IMAGE}
               alt={CONCIERGE_HERO_ALT}
-              className="block h-full w-full object-cover object-center"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
           </div>
         </div>

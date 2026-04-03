@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-import { CONCIERGE_HERO_ALT, CONCIERGE_HERO_IMAGE } from "@/lib/concierge-assets";
+import {
+  CONCIERGE_HERO_ALT,
+  CONCIERGE_HERO_IMAGE,
+  CONCIERGE_PAGE_TAIL,
+  CONCIERGE_SHORT_COPY,
+} from "@/lib/concierge-assets";
 
 const STEPS: [string, string][] = [
   [
@@ -35,10 +40,9 @@ function ConserjHeroCopy() {
       <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 max-md:text-xl max-md:max-w-[20rem] md:text-3xl">
         Консьерж сервис
       </h1>
-      <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 max-md:text-[11px] max-md:max-w-[22rem] md:text-sm">
-        Твой личный байер от Resale Shopping. Привезём новые лоты из Европы и США всего за 14 дней — сделаем с
-        первого раза. Сервис оформлен в том же духе, что и раздел «Как купить»: понятные шаги и спокойное
-        сопровождение сделки.
+      <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 max-md:text-[12px] max-md:max-w-[22rem] md:text-sm">
+        {CONCIERGE_SHORT_COPY}
+        {CONCIERGE_PAGE_TAIL}
       </p>
       <Link
         href="mailto:help@resale-shopping.ru?subject=%D0%9A%D0%BE%D0%BD%D1%81%D1%8C%D0%B5%D1%80%D0%B6%20%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81"

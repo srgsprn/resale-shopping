@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import { AuthSessionProvider } from "@/components/auth-session-provider";
 import { Footer } from "@/components/footer";
@@ -8,6 +8,11 @@ import { MobileScrollToTop } from "@/components/mobile-scroll-to-top";
 import { SellFormProvider } from "@/components/sell-form-context";
 
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#f6f3ef",
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://resale-shopping.ru"),

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { decodeHtmlEntities } from "@/lib/html-entities";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(_request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -19,7 +20,7 @@ export async function GET(_request: Request, context: { params: Promise<{ slug: 
     id: product.id,
     slug: product.slug,
     brand: product.brand,
-    name: product.name,
+    name: decodeHtmlEntities(product.name),
     priceMinor: product.priceMinor,
     currency: product.currency,
     imageUrl: product.images[0]?.url ?? "",

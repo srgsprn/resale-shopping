@@ -70,6 +70,67 @@ function stripHtml(html) {
     .trim();
 }
 
+function decodeHtmlEntities(input) {
+  if (!input) return "";
+  let s = String(input);
+  s = s.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number.parseInt(n, 10)));
+  s = s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(Number.parseInt(h, 16)));
+  return s
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#0*39;/g, "'");
+}
+
+function extractShopAttributes(html) {
+  const attrs = {};
+  const tableMatch = html.match(
+    /<table[^>]*class="[^"]*woocommerce-product-attributes[^"]*shop_attributes[^"]*"[^>]*>[\s\S]*?<\/table>/i,
+  );
+  if (!tableMatch) return attrs;
+  const tableHtml = tableMatch[0];
+  const rowRe = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+  let m;
+  while ((m = rowRe.exec(tableHtml)) !== null) {
+    const row = m[1];
+    const th = row.match(/<th[^>]*>([\s\S]*?)<\/th>/i);
+    const td = row.match(/<td[^>]*>([\s\S]*?)<\/td>/i);
+    if (!th || !td) continue;
+    const label = stripHtml(th[1]).trim();
+    const value = stripHtml(td[1]).trim();
+    if (label && value) attrs[label] = value;
+  }
+  return attrs;
+}
+
+function extractSku(html) {
+  const m = html.match(/Артикул:\s*([A-Z0-9]+)/i);
+  return m ? m[1].trim() : null;
+}
+
+/** Состояние по классу stock step-N на карточке Alfa (до блока атрибутов). */
+function extractConditionFromStock(html) {
+  const boundary = html.indexOf("woocommerce-product-attributes shop_attributes");
+  const slice = boundary > 0 ? html.slice(0, boundary) : html;
+  const m = slice.match(/class="stock[^"]*step-(\d)/);
+  if (!m) return null;
+  const map = { 1: "Хорошее", 2: "Отличное", 3: "Новое" };
+  return map[m[1]] || null;
+}
+
+function mapAlfaAttributes(attrs, brandFromWp) {
+  const brand = attrs["Бренды"] || brandFromWp;
+  return {
+    brand,
+    size: attrs["Размер"] || null,
+    material: attrs["Материал"] || null,
+    color: attrs["Цвет"] || null,
+    gender: attrs["Пол"] || null,
+    completeness: attrs["Комплект"] || null,
+  };
+}
+
 async function fetchAll(restBase, perPage = 50) {
   const firstUrl = `${BASE_URL}/wp-json/wp/v2/${restBase}?per_page=${perPage}&page=1`;
   const firstRes = await fetch(firstUrl, { headers: { "User-Agent": "resale-shopping-migrator/1.0" } });
@@ -132,7 +193,8 @@ async function main() {
   for (const item of products) {
     const productUrl = item.link;
     const slug = item.slug;
-    const name = item.title?.rendered || slug;
+    const rawTitle = item.title?.rendered || slug;
+    const name = decodeHtmlEntities(stripHtml(rawTitle));
 
     const classList = classListToArray(item.class_list);
     const stockState = classList.includes("outofstock") ? "SOLD_OUT" : classList.includes("instock") ? "ACTIVE" : "DRAFT";
@@ -161,27 +223,34 @@ async function main() {
 
     const priceMinor = extractPriceMinor(html);
     const gallery = extractGalleryImages(html);
+    const attrs = extractShopAttributes(html);
+    const attrFields = mapAlfaAttributes(attrs, brand);
+    const sku = extractSku(html);
+    const conditionLabel = extractConditionFromStock(html);
+
+    const common = {
+      brand: attrFields.brand,
+      name,
+      description: stripHtml(item.yoast_head_json?.description || ""),
+      status,
+      priceMinor: priceMinor || 0,
+      categoryId: category.id,
+      currency: "RUB",
+      ...(sku ? { sku } : {}),
+      ...(attrFields.size ? { size: attrFields.size } : {}),
+      ...(attrFields.material ? { material: attrFields.material } : {}),
+      ...(attrFields.color ? { color: attrFields.color } : {}),
+      ...(attrFields.gender ? { gender: attrFields.gender } : {}),
+      ...(attrFields.completeness ? { completeness: attrFields.completeness } : {}),
+      ...(conditionLabel ? { conditionLabel } : {}),
+    };
 
     const product = await prisma.product.upsert({
       where: { slug },
-      update: {
-        brand,
-        name,
-        description: stripHtml(item.yoast_head_json?.description || ""),
-        status,
-        priceMinor: priceMinor || 0,
-        categoryId: category.id,
-        currency: "RUB",
-      },
+      update: common,
       create: {
         slug,
-        brand,
-        name,
-        description: stripHtml(item.yoast_head_json?.description || ""),
-        status,
-        priceMinor: priceMinor || 0,
-        categoryId: category.id,
-        currency: "RUB",
+        ...common,
       },
     });
 
@@ -192,7 +261,7 @@ async function main() {
         data: {
           productId: product.id,
           url,
-          alt: `${brand} ${name}`,
+          alt: `${attrFields.brand} ${name}`,
           sortOrder: index,
         },
       });

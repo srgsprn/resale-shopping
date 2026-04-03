@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import clsx from "clsx";
+
 import { dispatchCartUpdated } from "@/lib/cart-events";
 
 type CartProduct = {
@@ -15,7 +17,13 @@ type CartProduct = {
   imageUrl?: string;
 };
 
-export function AddToCartButton({ product }: { product: CartProduct }) {
+export function AddToCartButton({
+  product,
+  className,
+}: {
+  product: CartProduct;
+  className?: string;
+}) {
   const [added, setAdded] = useState(false);
   const router = useRouter();
 
@@ -41,7 +49,10 @@ export function AddToCartButton({ product }: { product: CartProduct }) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800"
+      className={clsx(
+        "rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-800",
+        className,
+      )}
     >
       {added ? "Добавлено" : "Добавить в корзину"}
     </button>
