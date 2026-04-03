@@ -294,8 +294,9 @@ function normalizeEmailForResend(raw: string): { to: string } | { error: string 
 }
 
 /**
- * Российские почтовики часто режут письма с зарубежных транзакционных IP (Resend).
- * Если настроен SMTP хостинга/почты — сначала шлём туда для .ru / .su / .рф.
+ * Российские почтовики часто режут письма, пришедшие только через HTTP API Resend.
+ * Для .ru / .su / .рф сначала пробуем SMTP: свой хостинг (SMTP_*) или relay Resend
+ * (smtp.resend.com + пользователь resend + пароль = RESEND_API_KEY — отдельные SMTP_* не нужны).
  */
 function recipientPrefersSmtpFirst(raw: string): boolean {
   const email = raw.trim();
@@ -314,10 +315,61 @@ function hasResendApiKey(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
 
-function hasSmtpConfig(): boolean {
+function hasExplicitSmtpConfig(): boolean {
   return Boolean(
     process.env.SMTP_HOST?.trim() && process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim(),
   );
+}
+
+type SmtpTransportMode = "explicit" | "resend_relay";
+
+/** Конфиг для nodemailer SMTP (тип createTransport — перегрузки, локально задаём форму). */
+type SmtpConnectionConfig = {
+  host: string;
+  port: number;
+  secure: boolean;
+  auth: { user: string; pass: string };
+};
+
+function getSmtpTransportOptions(): { mode: SmtpTransportMode; options: SmtpConnectionConfig } | null {
+  const host = process.env.SMTP_HOST?.trim();
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS?.trim();
+  if (host && user && pass) {
+    return {
+      mode: "explicit",
+      options: {
+        host,
+        port: Number(process.env.SMTP_PORT || 587),
+        secure: process.env.SMTP_SECURE === "true",
+        auth: { user, pass },
+      },
+    };
+  }
+
+  if (process.env.RESEND_SMTP_RELAY_DISABLED === "1") {
+    return null;
+  }
+
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) return null;
+
+  const rHost = process.env.RESEND_SMTP_HOST?.trim() || "smtp.resend.com";
+  const rPort = Number(process.env.RESEND_SMTP_PORT || 465);
+  return {
+    mode: "resend_relay",
+    options: {
+      host: rHost,
+      port: rPort,
+      secure: rPort === 465 || process.env.RESEND_SMTP_SECURE === "true",
+      auth: { user: "resend", pass: key },
+    },
+  };
+}
+
+/** Отправка через nodemailer: либо SMTP хостинга, либо официальный relay Resend по API-ключу. */
+function hasSmtpSendPath(): boolean {
+  return getSmtpTransportOptions() !== null;
 }
 
 function sleep(ms: number) {
@@ -392,21 +444,19 @@ async function sendViaSmtp(
   text: string,
   kind: OrderEmailKind,
 ): Promise<void> {
-  const host = process.env.SMTP_HOST?.trim();
-  const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS?.trim();
-  if (!host || !user || !pass) {
-    throw new Error("SMTP: не заданы SMTP_HOST, SMTP_USER или SMTP_PASS");
+  const cfg = getSmtpTransportOptions();
+  if (!cfg) {
+    throw new Error("SMTP: задайте SMTP_HOST+SMTP_USER+SMTP_PASS или RESEND_API_KEY для smtp.resend.com");
   }
 
   const from = resolveSmtpFrom();
   const replyTo = resolveReplyTo();
-  const transporter = nodemailer.createTransport({
-    host,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user, pass },
-  });
+  const transporter = nodemailer.createTransport(cfg.options as Parameters<typeof nodemailer.createTransport>[0]);
+
+  console.info(
+    "[email] SMTP транспорт: %s",
+    cfg.mode === "resend_relay" ? `Resend relay (${cfg.options.host})` : `хостинг (${cfg.options.host})`,
+  );
 
   await transporter.sendMail({
     from,
@@ -416,7 +466,7 @@ async function sendViaSmtp(
     html: buildOrderEmailHtml(payload, kind),
     ...(replyTo ? { replyTo } : {}),
   });
-  console.info("[email] SMTP OK to=%s", payload.email);
+  console.info("[email] SMTP OK mode=%s to=%s", cfg.mode, payload.email);
 }
 
 export async function sendOrderConfirmationEmail(
@@ -426,7 +476,7 @@ export async function sendOrderConfirmationEmail(
   const { subject, text } = buildEmailContent(payload, kind);
   const normalized = normalizeEmailForResend(payload.email);
 
-  const smtpFirst = hasSmtpConfig() && recipientPrefersSmtpFirst(payload.email);
+  const smtpFirst = hasSmtpSendPath() && recipientPrefersSmtpFirst(payload.email);
 
   if (smtpFirst) {
     try {
@@ -448,7 +498,7 @@ export async function sendOrderConfirmationEmail(
   if (hasResendApiKey()) {
     if ("error" in normalized) {
       console.warn("[email] %s", normalized.error);
-      if (hasSmtpConfig()) {
+      if (hasSmtpSendPath()) {
         console.warn("[email] Отправка заказа через SMTP (Resend не подходит для этого адреса)…");
         await sendViaSmtp(payload, subject, text, kind);
         return;
@@ -463,7 +513,7 @@ export async function sendOrderConfirmationEmail(
       return;
     } catch (err) {
       console.error("[email] Resend ошибка, заказ всё равно оформлен:", err);
-      if (hasSmtpConfig()) {
+      if (hasSmtpSendPath()) {
         console.warn("[email] Отправка через запасной SMTP…");
         await sendViaSmtp(payload, subject, text, kind);
         return;
@@ -472,12 +522,12 @@ export async function sendOrderConfirmationEmail(
     }
   }
 
-  if (hasSmtpConfig()) {
+  if (hasSmtpSendPath()) {
     await sendViaSmtp(payload, subject, text, kind);
     return;
   }
 
   throw new Error(
-    "Почта не настроена: задайте RESEND_API_KEY (рекомендуется) или SMTP_HOST + SMTP_USER + SMTP_PASS в .env на сервере",
+    "Почта не настроена: задайте RESEND_API_KEY (и при необходимости SMTP_HOST + SMTP_USER + SMTP_PASS) в .env на сервере",
   );
 }
