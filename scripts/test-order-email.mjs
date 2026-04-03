@@ -2,20 +2,40 @@
 /**
  * Дымовой тест почты (Resend → при ошибке SMTP, как в lib/email.ts).
  *
- * На VPS из каталога проекта, с переменными из .env:
- *   set -a && source .env && set +a && TEST_MAIL_TO=ваш@email.ru node scripts/test-order-email.mjs
+ * Важно: Resend не принимает кириллицу в email (например «твой@gmail.com» с русскими буквами).
+ * Указывайте только латиницу: TEST_MAIL_TO=you@gmail.com
  *
- * Или с Node 20.6+:
- *   TEST_MAIL_TO=ваш@email.ru node --env-file=.env scripts/test-order-email.mjs
+ *   set -a && source .env && set +a && TEST_MAIL_TO=you@gmail.com node scripts/test-order-email.mjs
+ *
+ * Или: TEST_MAIL_TO=you@gmail.com node --env-file=.env scripts/test-order-email.mjs
  */
 
 import nodemailer from "nodemailer";
+import punycode from "node:punycode";
 import { Resend } from "resend";
 
-const to = process.env.TEST_MAIL_TO?.trim();
-if (!to) {
-  console.error("Ошибка: задайте TEST_MAIL_TO=ваш@email.ru");
+const rawTo = process.env.TEST_MAIL_TO?.trim();
+if (!rawTo) {
+  console.error("Ошибка: задайте TEST_MAIL_TO=you@gmail.com (только латиница в адресе для Resend)");
   process.exit(1);
+}
+
+function normalizeForResend(email) {
+  const at = email.lastIndexOf("@");
+  if (at <= 0) return { error: "Некорректный email" };
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  if (!/^[\x00-\x7F]+$/.test(local)) {
+    return {
+      error:
+        "В адресе до «@» есть не латинские символы. Resend так не принимает. Пример: TEST_MAIL_TO=ivan@gmail.com",
+    };
+  }
+  try {
+    return { to: `${local}@${punycode.toASCII(domain)}` };
+  } catch {
+    return { error: "Некорректный домен" };
+  }
 }
 
 const resendKey = process.env.RESEND_API_KEY?.trim();
@@ -36,6 +56,14 @@ function formatFrom(raw) {
 }
 
 async function tryResend() {
+  const norm = normalizeForResend(rawTo);
+  if (norm.error) {
+    console.error("[fail]", norm.error);
+    return false;
+  }
+  const to = norm.to;
+  console.log("Проверка почты →", to, rawTo !== to ? `(было: ${rawTo})` : "");
+
   const resend = new Resend(resendKey);
   const candidates = [];
   const push = (v) => {
@@ -68,6 +96,7 @@ async function tryResend() {
 }
 
 async function trySmtp() {
+  const to = rawTo;
   const transporter = nodemailer.createTransport({
     host: smtpHost,
     port: Number(process.env.SMTP_PORT || 587),
@@ -81,8 +110,6 @@ async function trySmtp() {
 }
 
 async function main() {
-  console.log("Проверка почты →", to);
-
   if (resendKey) {
     try {
       if (await tryResend()) return;

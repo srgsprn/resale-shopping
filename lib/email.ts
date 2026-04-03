@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import punycode from "node:punycode";
 import { Resend } from "resend";
 
 import { formatMoney } from "@/lib/money";
@@ -265,6 +266,33 @@ function resendErrorMessage(error: unknown): string {
   }
 }
 
+/**
+ * Resend API принимает только ASCII в поле `to` (латиница до @; домен — в punycode).
+ * Кириллица вроде «твой@gmail.com» даёт Invalid `to` field.
+ */
+function normalizeEmailForResend(raw: string): { to: string } | { error: string } {
+  const email = raw.trim();
+  const at = email.lastIndexOf("@");
+  if (at <= 0 || at === email.length - 1) {
+    return { error: "Некорректный email" };
+  }
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  if (!/^[\x00-\x7F]+$/.test(local)) {
+    return {
+      error:
+        "Resend: в адресе до «@» допустима только латиница/цифры (ASCII). Замените email на латинский или используйте SMTP.",
+    };
+  }
+  let asciiDomain: string;
+  try {
+    asciiDomain = punycode.toASCII(domain);
+  } catch {
+    return { error: "Некорректный домен в email" };
+  }
+  return { to: `${local}@${asciiDomain}` };
+}
+
 function hasResendApiKey(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
@@ -381,8 +409,21 @@ export async function sendOrderConfirmationEmail(
   const { subject, text } = buildEmailContent(payload, kind);
 
   if (hasResendApiKey()) {
+    const normalized = normalizeEmailForResend(payload.email);
+    if ("error" in normalized) {
+      console.warn("[email] %s", normalized.error);
+      if (hasSmtpConfig()) {
+        console.warn("[email] Отправка заказа через SMTP (Resend не подходит для этого адреса)…");
+        await sendViaSmtp(payload, subject, text, kind);
+        return;
+      }
+      throw new Error(normalized.error);
+    }
+
+    const resendPayload: OrderEmailPayload = { ...payload, email: normalized.to };
+
     try {
-      await sendViaResend(payload, subject, text, kind);
+      await sendViaResend(resendPayload, subject, text, kind);
       return;
     } catch (err) {
       console.error("[email] Resend ошибка, заказ всё равно оформлен:", err);
