@@ -100,15 +100,21 @@ export default async function HomePage() {
             aria-hidden
             className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f6f3ef]/90 via-[#f6f3ef]/35 to-[#dfd2c4]/70"
           />
-          <div className="relative z-10 p-4 pb-5 pt-4">
-            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Консьерж сервис</h2>
-            <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-zinc-800 sm:text-sm">{CONCIERGE_SHORT_COPY}</p>
-            <Link
-              href="/conserj"
-              className="mt-4 inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
-            >
-              Подробнее
-            </Link>
+          <div className="relative z-10 flex min-h-[min(56vw,280px)] flex-col px-4 pb-5 pt-4">
+            <div className="flex flex-1 flex-col items-center justify-center text-center">
+              <h2 className="text-2xl font-semibold tracking-tight text-zinc-900">Консьерж сервис</h2>
+              <p className="mt-2 w-full max-w-md text-[13px] leading-relaxed text-zinc-800 sm:text-sm">
+                {CONCIERGE_SHORT_COPY}
+              </p>
+            </div>
+            <div className="flex shrink-0 justify-center pt-2">
+              <Link
+                href="/conserj"
+                className="inline-flex items-center justify-center rounded-full border border-[#d39b52] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-900"
+              >
+                Подробнее
+              </Link>
+            </div>
           </div>
         </div>
 
