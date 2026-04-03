@@ -117,12 +117,15 @@ export async function POST(request: Request) {
       where: { id: order.id },
       include: { items: true, customer: true },
     });
-    if (
-      fullStripe?.customer.email &&
-      !fullStripe.customer.email.endsWith("@example.com") &&
-      session.url
-    ) {
+    if (fullStripe?.customer.email && !fullStripe.customer.email.endsWith("@example.com")) {
       const summary = fullStripe.items.map((i) => `${i.productBrand || ""} ${i.productTitle}`.trim()).join(", ");
+      const payUrl = typeof session.url === "string" && session.url.length > 0 ? session.url : undefined;
+      if (!payUrl) {
+        console.warn(
+          "checkout: у Stripe Session нет session.url — письмо уйдёт без прямой ссылки на оплату, session.id=",
+          session.id,
+        );
+      }
       try {
         await sendOrderConfirmationEmail(
           {
@@ -132,7 +135,7 @@ export async function POST(request: Request) {
             summary,
             totalMinor: fullStripe.totalMinor,
             orderLink: `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`,
-            checkoutUrl: session.url,
+            checkoutUrl: payUrl,
           },
           "pending_stripe",
         );
@@ -141,7 +144,11 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ url: session.url });
+    const redirectUrl =
+      typeof session.url === "string" && session.url.length > 0
+        ? session.url
+        : `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`;
+    return NextResponse.json({ url: redirectUrl });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Checkout error";
     return NextResponse.json({ error: message }, { status: 400 });

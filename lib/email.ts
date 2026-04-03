@@ -110,11 +110,15 @@ function buildOrderEmailHtml(payload: OrderEmailPayload, kind: OrderEmailKind): 
 
   if (kind === "pending_stripe") {
     innerTitle = "Ожидается оплата";
-    intro = `<p style="margin:0 0 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.65;color:${textDark};">Мы получили ваш заказ № <strong style="color:${accent};">${orderNo}</strong>. Чтобы завершить оформление, оплатите заказ по кнопке ниже. После оплаты вы получите подтверждение на эту почту.</p>`;
+    intro = checkoutUrl
+      ? `<p style="margin:0 0 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.65;color:${textDark};">Мы получили ваш заказ № <strong style="color:${accent};">${orderNo}</strong>. Чтобы завершить оформление, оплатите заказ по кнопке ниже. После оплаты вы получите подтверждение на эту почту.</p>`
+      : `<p style="margin:0 0 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.65;color:${textDark};">Мы получили ваш заказ № <strong style="color:${accent};">${orderNo}</strong>. Откройте страницу заказа по кнопке ниже — там можно завершить оплату. После оплаты вы получите подтверждение на эту почту.</p>`;
     extraRows = row("Товары в заказе", items) + row("Сумма", total);
-    ctaBlock =
-      (checkoutUrl ? linkButton(checkoutUrl, "Перейти к оплате") : "") +
-      `<p style="margin:24px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;color:${textMuted};">Или откройте ссылку вручную:<br><a href="${checkoutUrl}" style="color:${accent};word-break:break-all;">${checkoutUrl}</a></p>`;
+    ctaBlock = checkoutUrl
+      ? linkButton(checkoutUrl, "Перейти к оплате") +
+        `<p style="margin:24px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;color:${textMuted};">Или откройте ссылку вручную:<br><a href="${checkoutUrl}" style="color:${accent};word-break:break-all;">${checkoutUrl}</a></p>`
+      : linkButton(orderLink, "Открыть страницу заказа") +
+        `<p style="margin:20px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;color:${textMuted};">Если не удаётся оплатить — напишите на <a href="mailto:help@resale-shopping.ru" style="color:${accent};">help@resale-shopping.ru</a>, укажите номер заказа.</p>`;
   } else {
     intro = `<p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.65;color:${textDark};">Здравствуйте, ${name}!</p>
     <p style="margin:0 0 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.65;color:${textDark};">Ваш заказ успешно оформлен и принят в обработку.</p>`;
@@ -176,23 +180,33 @@ function buildEmailContent(payload: OrderEmailPayload, kind: OrderEmailKind): { 
   const template = ORDER_EMAIL_TEMPLATES[DEFAULT_TEMPLATE];
 
   if (kind === "pending_stripe") {
-    const url = payload.checkoutUrl;
-    if (!url) {
-      throw new Error("pending_stripe email requires checkoutUrl");
-    }
-    return {
-      subject: `Заказ ${payload.orderNumber}: ожидается оплата`,
-      text: `Здравствуйте, ${payload.name}!
+    const url = payload.checkoutUrl?.trim();
+    const baseText = `Здравствуйте, ${payload.name}!
 
 Мы получили ваш заказ № ${payload.orderNumber}.
 
 Товары в заказе: ${payload.summary}
 Сумма: ${formatMoney(payload.totalMinor)}
-
+`;
+    if (url) {
+      return {
+        subject: `Заказ ${payload.orderNumber}: ожидается оплата`,
+        text: `${baseText}
 Чтобы завершить оформление, перейдите к оплате по ссылке:
 ${url}
 
 После успешной оплаты вы получите подтверждение на эту почту.
+
+С уважением,
+команда resale-shopping.ru`,
+      };
+    }
+    return {
+      subject: `Заказ ${payload.orderNumber}: ожидается оплата`,
+      text: `${baseText}
+Страница заказа (оплата): ${payload.orderLink}
+
+Если не получается оплатить — напишите на help@resale-shopping.ru, укажите номер заказа.
 
 С уважением,
 команда resale-shopping.ru`,
@@ -261,6 +275,10 @@ function hasSmtpConfig(): boolean {
   );
 }
 
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 async function sendViaResend(
   payload: OrderEmailPayload,
   subject: string,
@@ -276,23 +294,48 @@ async function sendViaResend(
   const candidates = resendFromCandidates();
   let lastError: unknown;
 
-  for (const from of candidates) {
-    const { data, error } = await resend.emails.send({
-      from,
-      to: [payload.email],
-      subject,
-      text,
-      html,
-      ...(replyTo ? { replyTo: [replyTo] } : {}),
-    });
+  const attempts = Math.max(1, Math.min(5, Number(process.env.RESEND_RETRY_ATTEMPTS || "3")));
 
-    if (!error && data?.id) {
-      console.info("[email] Resend OK id=%s from=%s to=%s", data.id, from, payload.email);
-      return;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    for (const from of candidates) {
+      const trySend = async (withReplyTo: boolean) => {
+        return resend.emails.send({
+          from,
+          to: [payload.email],
+          subject,
+          text,
+          html,
+          ...(withReplyTo && replyTo ? { replyTo: [replyTo] } : {}),
+        });
+      };
+
+      let { data, error } = await trySend(true);
+      if (error && replyTo) {
+        console.warn("[email] Resend повтор без replyTo (иногда ломает валидацию)");
+        ({ data, error } = await trySend(false));
+      }
+
+      if (!error && data?.id) {
+        console.info("[email] Resend OK id=%s from=%s to=%s attempt=%s", data.id, from, payload.email, attempt);
+        return;
+      }
+
+      lastError = error;
+      console.warn(
+        "[email] Resend отказ from=%s to=%s attempt=%s/%s: %s",
+        from,
+        payload.email,
+        attempt,
+        attempts,
+        resendErrorMessage(error),
+      );
     }
 
-    lastError = error;
-    console.warn("[email] Resend отказ from=%s to=%s: %s", from, payload.email, resendErrorMessage(error));
+    if (attempt < attempts) {
+      const delay = 600 * attempt;
+      console.warn("[email] Resend пауза %sms перед повтором…", delay);
+      await sleep(delay);
+    }
   }
 
   throw new Error(`Resend: не удалось отправить ни с одного адреса отправителя. Последняя ошибка: ${resendErrorMessage(lastError)}`);
