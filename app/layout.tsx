@@ -4,6 +4,7 @@ import { AuthSessionProvider } from "@/components/auth-session-provider";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { HomeSplashHost } from "@/components/home-splash-host";
+import { MobileNavProgress } from "@/components/mobile-nav-progress";
 import { MobileScrollToTop } from "@/components/mobile-scroll-to-top";
 import { SellFormProvider } from "@/components/sell-form-context";
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <HomeSplashHost />
             <Header />
             <MobileScrollToTop />
+            <MobileNavProgress />
             <main className="mx-auto min-h-[70vh] w-full max-w-7xl px-4 py-6 sm:px-5 md:px-8 md:py-8">{children}</main>
             <Footer />
           </SellFormProvider>

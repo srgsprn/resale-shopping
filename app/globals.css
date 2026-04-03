@@ -26,3 +26,18 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* Индикатор перехода между разделами (мобильный), золотая полоса */
+@keyframes mobile-nav-progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.mobile-nav-progress-bar {
+  animation: mobile-nav-progress-slide 1.05s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}

@@ -293,6 +293,23 @@ function normalizeEmailForResend(raw: string): { to: string } | { error: string 
   return { to: `${local}@${asciiDomain}` };
 }
 
+/**
+ * Российские почтовики часто режут письма с зарубежных транзакционных IP (Resend).
+ * Если настроен SMTP хостинга/почты — сначала шлём туда для .ru / .su / .рф.
+ */
+function recipientPrefersSmtpFirst(raw: string): boolean {
+  const email = raw.trim();
+  const at = email.lastIndexOf("@");
+  if (at <= 0 || at === email.length - 1) return false;
+  let domain = email.slice(at + 1).toLowerCase();
+  try {
+    domain = punycode.toASCII(domain);
+  } catch {
+    return false;
+  }
+  return domain.endsWith(".ru") || domain.endsWith(".su") || domain.endsWith(".xn--p1ai");
+}
+
 function hasResendApiKey(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
@@ -407,9 +424,28 @@ export async function sendOrderConfirmationEmail(
   kind: OrderEmailKind = "confirmed",
 ) {
   const { subject, text } = buildEmailContent(payload, kind);
+  const normalized = normalizeEmailForResend(payload.email);
+
+  const smtpFirst = hasSmtpConfig() && recipientPrefersSmtpFirst(payload.email);
+
+  if (smtpFirst) {
+    try {
+      console.info("[email] SMTP приоритет (.ru/.su/.рф) to=%s", payload.email);
+      await sendViaSmtp(payload, subject, text, kind);
+      return;
+    } catch (smtpErr) {
+      const canTryResend = hasResendApiKey() && !("error" in normalized);
+      console.warn(
+        `[email] SMTP приоритет не удался${canTryResend ? ", пробую Resend…" : ""}`,
+        smtpErr,
+      );
+      if (!canTryResend) {
+        throw smtpErr instanceof Error ? smtpErr : new Error(String(smtpErr));
+      }
+    }
+  }
 
   if (hasResendApiKey()) {
-    const normalized = normalizeEmailForResend(payload.email);
     if ("error" in normalized) {
       console.warn("[email] %s", normalized.error);
       if (hasSmtpConfig()) {
