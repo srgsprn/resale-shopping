@@ -79,9 +79,6 @@ export default async function ProductPage({ params }: Props) {
     imageUrl: product.images[0]?.url,
   };
 
-  const fittingSubject = encodeURIComponent(`Примерка: ${displayName}`);
-  const fittingHref = `mailto:help@resale-shopping.ru?subject=${fittingSubject}`;
-
   return (
     <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)]">
       <div>
@@ -96,23 +93,17 @@ export default async function ProductPage({ params }: Props) {
           </p>
         </div>
 
-        <p className="text-2xl font-medium text-zinc-400 md:text-[1.65rem]">
-          {formatMoney(product.priceMinor, product.currency)}
-        </p>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <AddToCartButton
-            product={cartProduct}
-            className="rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
-          />
-          <a
-            href={fittingHref}
-            className="inline-flex items-center justify-center rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
-          >
-            Забронировать на примерку
-          </a>
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-2xl font-medium text-zinc-400 md:text-[1.65rem]">
+            {formatMoney(product.priceMinor, product.currency)}
+          </p>
           <WishlistToggleButton item={wishItem} />
         </div>
+
+        <AddToCartButton
+          product={cartProduct}
+          className="flex w-full justify-center rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
+        />
 
         <Link
           href="/rassrochka"
@@ -145,10 +136,6 @@ export default async function ProductPage({ params }: Props) {
             <InfoBlock label="Комплектность" value={product.completeness || "По запросу"} />
           </dl>
         </div>
-
-        {product.description ? (
-          <p className="text-sm leading-relaxed text-zinc-700">{product.description}</p>
-        ) : null}
       </div>
     </section>
   );
