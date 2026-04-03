@@ -5,6 +5,13 @@ const prisma = new PrismaClient();
 
 const BASE_URL = "https://alfa-resale.ru";
 
+/** Лог каждые N товаров (можно SYNC_LOG_EVERY=1 для каждого). */
+const LOG_EVERY = Math.max(1, Number(process.env.SYNC_LOG_EVERY || "5"));
+
+function fmtSec(ms) {
+  return `${(ms / 1000).toFixed(1)}s`;
+}
+
 const PAGE_SLUGS = [
   "about",
   "prodaja",
@@ -131,7 +138,7 @@ function mapAlfaAttributes(attrs, brandFromWp) {
   };
 }
 
-async function fetchAll(restBase, perPage = 50) {
+async function fetchAll(restBase, perPage = 50, label = restBase) {
   const firstUrl = `${BASE_URL}/wp-json/wp/v2/${restBase}?per_page=${perPage}&page=1`;
   const firstRes = await fetch(firstUrl, { headers: { "User-Agent": "resale-shopping-migrator/1.0" } });
   if (!firstRes.ok) {
@@ -139,14 +146,18 @@ async function fetchAll(restBase, perPage = 50) {
   }
 
   const totalPages = Number(firstRes.headers.get("x-wp-totalpages") || "1");
-  const firstData = await firstRes.json();
+  const totalItems = firstRes.headers.get("x-wp-total");
+  console.log(`[sync] ${label}: всего записей ~${totalItems || "?"}, страниц API: ${totalPages}`);
 
+  const firstData = await firstRes.json();
   const data = [...firstData];
+  console.log(`[sync] ${label}: страница 1/${totalPages} (уже ${data.length})`);
 
   for (let page = 2; page <= totalPages; page += 1) {
     const url = `${BASE_URL}/wp-json/wp/v2/${restBase}?per_page=${perPage}&page=${page}`;
     const part = await fetchJson(url);
     data.push(...part);
+    console.log(`[sync] ${label}: страница ${page}/${totalPages} (всего ${data.length})`);
   }
 
   return data;
@@ -179,20 +190,45 @@ async function syncPages() {
 }
 
 async function main() {
+  const tStart = Date.now();
+  console.log("[sync] Старт:", new Date().toISOString());
+  console.log("[sync] Идёт загрузка каталога с alfa-resale.ru (долго без вывода = норма для REST)…");
+
   const [categories, pwbBrands, products] = await Promise.all([
-    fetchAll("product_cat", 100),
-    fetchAll("pwb-brand", 100),
-    fetchAll("product", 50),
+    fetchAll("product_cat", 100, "категории"),
+    fetchAll("pwb-brand", 100, "бренды"),
+    fetchAll("product", 50, "товары (список)"),
   ]);
+
+  console.log(
+    `[sync] Списки готовы за ${fmtSec(Date.now() - tStart)}: категорий ${categories.length}, брендов ${pwbBrands.length}, товаров ${products.length}`,
+  );
 
   const categoryMap = new Map(categories.map((c) => [c.id, c]));
   const brandMap = new Map(pwbBrands.map((b) => [b.id, b.name]));
 
-  let imported = 0;
+  const total = products.length;
+  const estSec = total * 1.5;
+  console.log(
+    `[sync] Дальше: HTML каждого товара (~${total} запросов). Оценка ${Math.ceil(estSec / 60)}–${Math.ceil((estSec * 2) / 60)} мин (зависит от сети). Прогресс каждые ${LOG_EVERY} товаров.`,
+  );
 
-  for (const item of products) {
+  let imported = 0;
+  const tProducts = Date.now();
+
+  for (let idx = 0; idx < products.length; idx += 1) {
+    const item = products[idx];
     const productUrl = item.link;
     const slug = item.slug;
+    const num = idx + 1;
+    if (num === 1 || num % LOG_EVERY === 0 || num === total) {
+      const elapsed = Date.now() - tProducts;
+      const avg = num > 0 ? elapsed / num : 0;
+      const eta = avg > 0 ? ((total - num) * avg) / 1000 : 0;
+      console.log(
+        `[sync] товар ${num}/${total} ${slug} … прошло ${fmtSec(elapsed)}${eta > 5 ? `, ост. ~${Math.ceil(eta / 60)} мин` : ""}`,
+      );
+    }
     const rawTitle = item.title?.rendered || slug;
     const name = decodeHtmlEntities(stripHtml(rawTitle));
 
@@ -303,8 +339,8 @@ async function main() {
 
   await writeFile("data/redirect-map.json", JSON.stringify(map, null, 2), "utf8");
 
-  console.log(`Synced ${imported} products.`);
-  console.log("Saved redirect map: data/redirect-map.json");
+  console.log(`[sync] Готово: обработано ${imported} товаров за ${fmtSec(Date.now() - tStart)} всего.`);
+  console.log("[sync] Файл редиректов: data/redirect-map.json");
 }
 
 main()
