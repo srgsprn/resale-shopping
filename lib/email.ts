@@ -251,13 +251,23 @@ function resendErrorMessage(error: unknown): string {
   }
 }
 
+function hasResendApiKey(): boolean {
+  return Boolean(process.env.RESEND_API_KEY?.trim());
+}
+
+function hasSmtpConfig(): boolean {
+  return Boolean(
+    process.env.SMTP_HOST?.trim() && process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim(),
+  );
+}
+
 async function sendViaResend(
   payload: OrderEmailPayload,
   subject: string,
   text: string,
   kind: OrderEmailKind,
 ): Promise<void> {
-  const key = process.env.RESEND_API_KEY;
+  const key = process.env.RESEND_API_KEY?.trim();
   if (!key) throw new Error("RESEND_API_KEY пустой");
 
   const resend = new Resend(key);
@@ -288,39 +298,62 @@ async function sendViaResend(
   throw new Error(`Resend: не удалось отправить ни с одного адреса отправителя. Последняя ошибка: ${resendErrorMessage(lastError)}`);
 }
 
+async function sendViaSmtp(
+  payload: OrderEmailPayload,
+  subject: string,
+  text: string,
+  kind: OrderEmailKind,
+): Promise<void> {
+  const host = process.env.SMTP_HOST?.trim();
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS?.trim();
+  if (!host || !user || !pass) {
+    throw new Error("SMTP: не заданы SMTP_HOST, SMTP_USER или SMTP_PASS");
+  }
+
+  const from = resolveSmtpFrom();
+  const replyTo = resolveReplyTo();
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user, pass },
+  });
+
+  await transporter.sendMail({
+    from,
+    to: payload.email,
+    subject,
+    text,
+    html: buildOrderEmailHtml(payload, kind),
+    ...(replyTo ? { replyTo } : {}),
+  });
+  console.info("[email] SMTP OK to=%s", payload.email);
+}
+
 export async function sendOrderConfirmationEmail(
   payload: OrderEmailPayload,
   kind: OrderEmailKind = "confirmed",
 ) {
   const { subject, text } = buildEmailContent(payload, kind);
-  const replyTo = resolveReplyTo();
 
-  if (process.env.RESEND_API_KEY) {
-    await sendViaResend(payload, subject, text, kind);
-    return;
+  if (hasResendApiKey()) {
+    try {
+      await sendViaResend(payload, subject, text, kind);
+      return;
+    } catch (err) {
+      console.error("[email] Resend ошибка, заказ всё равно оформлен:", err);
+      if (hasSmtpConfig()) {
+        console.warn("[email] Отправка через запасной SMTP…");
+        await sendViaSmtp(payload, subject, text, kind);
+        return;
+      }
+      throw err;
+    }
   }
 
-  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-    const from = resolveSmtpFrom();
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from,
-      to: payload.email,
-      subject,
-      text,
-      html: buildOrderEmailHtml(payload, kind),
-      ...(replyTo ? { replyTo } : {}),
-    });
-    console.info("[email] SMTP OK to=%s", payload.email);
+  if (hasSmtpConfig()) {
+    await sendViaSmtp(payload, subject, text, kind);
     return;
   }
 
