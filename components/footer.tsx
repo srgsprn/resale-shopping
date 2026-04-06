@@ -64,7 +64,7 @@ export function Footer() {
                 aria-label="Telegram"
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3ede4] text-[#229ED9] ring-1 ring-[#d9d2c8] transition hover:bg-white"
               >
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5 text-[#229ED9]">
                   <path
                     d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z"
                     fill="currentColor"
