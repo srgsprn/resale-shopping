@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- Публичная витрина + checkout (существующие значения сохраняем)
 enum ProductStatus {
   DRAFT
   ACTIVE
@@ -40,25 +39,78 @@ enum ContactChannel {
   EMAIL
 }
 
+// --- Staff / админка (NextAuth Credentials → CredentialUser)
+enum UserRole {
+  USER
+  EDITOR
+  MANAGER
+  ADMIN
+}
+
+// Универсальные SEO-страницы (категория «сайт», не только товар)
+enum SeoPageType {
+  PRODUCT
+  CATEGORY
+  BRAND
+  COLLECTION
+  STATIC
+  BLOG
+  PROMOTION
+  CUSTOM
+}
+
 model Category {
-  id          String    @id @default(cuid())
-  name        String
-  slug        String    @unique
-  description String?
-  imageUrl    String?
-  sortOrder   Int       @default(0)
-  isActive    Boolean   @default(true)
-  products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String     @id @default(cuid())
+  name            String
+  slug            String     @unique
+  description     String?
+  imageUrl        String?
+  parentId        String?
+  parent          Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children        Category[] @relation("CategoryTree")
+  seoTitle        String?
+  seoDescription  String?
+  h1              String?
+  sortOrder       Int        @default(0)
+  isActive        Boolean    @default(true)
+  products        Product[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([parentId])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model Brand {
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  description    String?
+  logo           String?
+  seoTitle       String?
+  seoDescription String?
+  h1             String?
+  isVisible      Boolean   @default(true)
+  sortOrder      Int       @default(0)
+  products       Product[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([isVisible])
+  @@index([sortOrder])
 }
 
 model Product {
   id              String        @id @default(cuid())
   slug            String        @unique
+  /// Текстовый бренд (legacy); при появлении brandId витрина может брать имя из Brand
   brand           String
+  brandId         String?
+  brandRef        Brand?        @relation(fields: [brandId], references: [id], onDelete: SetNull)
   name            String
   shortName       String?
+  shortDescription String?
   sku             String?       @unique
   description     String?
   composition     String?
@@ -74,6 +126,13 @@ model Product {
   currency        String        @default("RUB")
   isFeatured      Boolean       @default(false)
   status          ProductStatus @default(DRAFT)
+  /// Дублируем часть SEO на товаре для быстрого CRUD в админке; перекрытие с SitePageSEO — по правилу в коде
+  seoTitle        String?
+  seoDescription  String?
+  h1              String?
+  canonical       String?
+  ogTitle         String?
+  ogDescription   String?
   categoryId      String
   category        Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images          ProductImage[]
@@ -82,9 +141,11 @@ model Product {
   updatedAt       DateTime      @updatedAt
 
   @@index([categoryId])
+  @@index([brandId])
   @@index([status])
   @@index([isFeatured])
   @@index([brand])
+  @@index([createdAt])
 }
 
 model ProductImage {
@@ -94,7 +155,9 @@ model ProductImage {
   url       String
   alt       String?
   sortOrder Int      @default(0)
+  isMain    Boolean  @default(false)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productId, sortOrder])
 }
@@ -107,52 +170,89 @@ model Customer {
   orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([email])
 }
 
 model Order {
-  id                       String         @id @default(cuid())
-  orderNumber              String         @unique
-  stripeCheckoutSessionId  String?        @unique
-  stripePaymentIntentId    String?        @unique
-  status                   OrderStatus    @default(PENDING)
-  paymentStatus            PaymentStatus  @default(REQUIRES_PAYMENT)
+  id                       String          @id @default(cuid())
+  orderNumber              String          @unique
+  stripeCheckoutSessionId  String?         @unique
+  stripePaymentIntentId    String?         @unique
+  status                   OrderStatus     @default(PENDING)
+  paymentStatus            PaymentStatus   @default(REQUIRES_PAYMENT)
   customerId               String
-  customer                 Customer       @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  customer                 Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  /// Опционально: покупатель залогинен как CredentialUser
+  credentialUserId         String?
+  credentialUser           CredentialUser? @relation(fields: [credentialUserId], references: [id], onDelete: SetNull)
   items                    OrderItem[]
   subtotalMinor            Int
-  shippingMinor            Int            @default(0)
-  discountMinor            Int            @default(0)
+  shippingMinor            Int             @default(0)
+  discountMinor            Int             @default(0)
   totalMinor               Int
-  currency                 String         @default("RUB")
+  currency                 String          @default("RUB")
   customerNote             String?
+  /// Заметка менеджера (админка)
+  adminComment             String?
   preferredContactChannel  ContactChannel?
+  /// Контакты / география / атрибуция (часть может дублироваться с Customer — для отчётов и админки)
+  telegram                 String?
+  city                     String?
+  country                  String?
+  source                   String?
   orderSnapshot            Json
   paidAt                   DateTime?
-  createdAt                DateTime       @default(now())
-  updatedAt                DateTime       @updatedAt
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
 
   @@index([customerId])
+  @@index([credentialUserId])
   @@index([status])
   @@index([paymentStatus])
+  @@index([createdAt])
 }
 
 model OrderItem {
-  id               String   @id @default(cuid())
-  orderId          String
-  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId        String
-  product          Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
-  quantity         Int      @default(1)
-  unitPriceMinor   Int
-  totalPriceMinor  Int
-  productTitle     String
-  productBrand     String?
-  productSlug      String
-  productImageUrl  String?
-  createdAt        DateTime @default(now())
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity        Int      @default(1)
+  unitPriceMinor  Int
+  totalPriceMinor Int
+  productTitle    String
+  productBrand    String?
+  productSlug     String
+  productImageUrl String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([orderId])
   @@index([productId])
+}
+
+/// SEO записи по типу страницы + логический ключ (часто slug пути без домена)
+model SitePageSEO {
+  id             String      @id @default(cuid())
+  pageType       SeoPageType
+  slug           String
+  title          String?
+  description    String?
+  h1             String?
+  canonical      String?
+  ogTitle        String?
+  ogDescription  String?
+  robotsIndex    Boolean     @default(true)
+  robotsFollow   Boolean     @default(true)
+  textBlock      String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([pageType, slug])
+  @@index([pageType])
+  @@index([slug])
 }
 
 model LandingSection {
@@ -180,12 +280,19 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 }
 
-/// Локальные аккаунты (email + пароль) для NextAuth Credentials; не путать с Customer (заказы).
+/// Аккаунты staff/покупательский логин (NextAuth Credentials). Не смешивать с Customer (checkout).
 model CredentialUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
-  name         String   @default("")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  name         String    @default("")
+  role         UserRole  @default(USER)
+  image        String?
+  phone        String?
+  telegram     String?
+  orders       Order[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([role])
 }
