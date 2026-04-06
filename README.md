@@ -80,6 +80,16 @@ bash scripts/vps-deploy.sh
 PORT=3001 pm2 restart resale-shopping --update-env
 ```
 
+### Prisma P3009: упала миграция `20260407120000_admin_schema_brand_seo_roles`
+
+Пока в `_prisma_migrations` висит **failed**, `migrate deploy` дальше не пойдёт. Из корня репо (с рабочим `.env`):
+
+```bash
+bash scripts/prisma-fix-p3009-admin-migration.sh
+```
+
+Скрипт откатывает запись о сбое, накатывает идемпотентный SQL из `scripts/repair-failed-migration-20260407120000.sql`, помечает миграцию применённой и снова вызывает `migrate deploy`. После этого снова `bash scripts/vps-deploy.sh`.
+
 ### Bootstrap from scratch
 
 ```bash

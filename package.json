@@ -10,6 +10,7 @@
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate": "prisma migrate deploy",
+    "db:fix:p3009": "bash scripts/prisma-fix-p3009-admin-migration.sh",
     "db:seed": "node prisma/seed.js",
     "db:import:woo": "node scripts/import-woocommerce.cjs",
     "db:sync:alfa": "node scripts/sync-alfa-site.mjs",
