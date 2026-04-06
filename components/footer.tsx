@@ -43,7 +43,6 @@ export function Footer() {
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em]">Контакты</h3>
           <ul className="space-y-2 text-sm text-zinc-700">
             <li><a href="mailto:help@resale-shopping.ru">help@resale-shopping.ru</a></li>
-            <li><a href="tel:+74950050186">8 495 005 01 86</a></li>
             <li className="flex items-center gap-3">
               <a
                 href="https://max.ru/join/J1pA3IqKoZAqlMXSy6fNV6cgneaAxuPL_PECo3MX_qU"
