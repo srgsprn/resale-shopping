@@ -50,3 +50,21 @@ alwaysApply: true
 `1. ...`
 `2. ...`
 `3. ...`
+
+## Универсальный режим (все типы страниц)
+
+Поддерживаемые типы: `product | category | brand | collection | article | blog | promotion | static`.
+
+Контекстные шаблоны:
+- Product: `{{condition}} {{category}} {{brand}} {{name}} — resale shopping`
+- Category: `{{category}} — купить онлайн на resale-shopping.ru`
+- Brand: `{{brand}} — оригинальные вещи на resale-shopping.ru`
+- Collection: `Коллекция {{brand}} {{season}} — свежие поступления resale-shopping.ru`
+- Article/Blog: `{{title_name}} — советы и новости fashion индустрии`
+- Promotion: `Скидки до {{discount}}% на {{category}} — resale-shopping.ru`
+
+Дополнительно:
+- `title` до 60 символов.
+- `description` до 160 символов.
+- URL в латинице/нижнем регистре, по структуре страницы.
+- Для системных страниц (`404`, `robots`, `sitemap`) писать понятное служебное описание для пользователя и поиска.

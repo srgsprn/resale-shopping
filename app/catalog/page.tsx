@@ -1,10 +1,25 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { ProductCard } from "@/components/product-card";
 import { catalogListingWhere } from "@/lib/catalog-listing-filter";
+import { buildPageSeo } from "@/lib/page-seo";
 import { prisma } from "@/lib/prisma";
+
+const seo = buildPageSeo({
+  pageType: "category",
+  topic: "каталог люксовых вещей",
+  titleName: "Каталог",
+  details: { category: "Каталог" },
+});
+
+export const metadata: Metadata = {
+  title: seo.title,
+  description: seo.description,
+  alternates: { canonical: "/catalog" },
+};
 
 type Props = {
   searchParams: Promise<{ category?: string; q?: string; sort?: string; brand?: string }>;

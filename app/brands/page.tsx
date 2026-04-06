@@ -1,4 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+import { buildPageSeo } from "@/lib/page-seo";
+
+const seo = buildPageSeo({
+  pageType: "brand",
+  topic: "люксовые бренды и оригинальные вещи",
+  titleName: "Бренды",
+  details: { brand: "Люксовые бренды" },
+});
+
+export const metadata: Metadata = {
+  title: seo.title,
+  description: seo.description,
+  alternates: { canonical: "/brands" },
+};
 
 const groupedBrands: Array<{ letter: string; brands: string[] }> = [
   { letter: "a", brands: ["Adidas", "Alaia", "Amina Muaddi"] },

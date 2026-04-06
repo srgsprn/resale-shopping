@@ -300,14 +300,14 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
 
   const adj = conditionLeadAdjective(condition, type);
   const fallbackModel = model || name || input.slug;
-  const titleCore = collapseSpaces(`${adj} ${type} ${brand} ${fallbackModel}`);
+  const titleCore = collapseSpaces(`${adj} ${type} ${brand} ${fallbackModel} — resale shopping`);
 
-  const fixed = collapseSpaces(`${adj} ${type} ${brand}`).length + 1;
+  const fixed = collapseSpaces(`${adj} ${type} ${brand} — resale shopping`).length + 1;
   let metaTitle = titleCore;
   if (metaTitle.length > META_TITLE_MAX_CORE) {
     const budget = Math.max(4, META_TITLE_MAX_CORE - fixed);
     const shortened = truncateUtf16(fallbackModel, budget);
-    metaTitle = collapseSpaces(`${adj} ${type} ${brand} ${shortened}`);
+    metaTitle = collapseSpaces(`${adj} ${type} ${brand} ${shortened} — resale shopping`);
   }
 
   const priceStr = formatMoney(input.priceMinor, input.currency);
