@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 const NOMINALS = [
-  { label: "50 000 ₽", slug: "gift-card-50000", image: "/gift-cards/card-50000.png", objectPosition: "center 68%" },
+  { label: "50 000 ₽", slug: "gift-card-50000", image: "/gift-cards/card-50000.png", objectPosition: "center 58%" },
   { label: "100 000 ₽", slug: "gift-card-100000", image: "/gift-cards/card-100000.png", objectPosition: "center center" },
-  { label: "500 000 ₽", slug: "gift-card-500000", image: "/gift-cards/card-500000.png", objectPosition: "center 54%" },
+  { label: "500 000 ₽", slug: "gift-card-500000", image: "/gift-cards/card-500000.png", objectPosition: "center 52%" },
 ] as const;
 
 export default function GiftCardsPage() {
@@ -26,17 +26,12 @@ export default function GiftCardsPage() {
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="p-5 md:p-6">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Подарочная карта</h1>
-          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-zinc-800 md:text-sm">
-            Карта Resale Shopping — удобный подарок: получатель сам выберет лот в каталоге. Укажите в примечании к
-            заказу имя и фамилию, которые напечатаем на карте.
-          </p>
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+      <section className="grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
         <div className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Подарочная карта</p>
-          <div className="relative aspect-[2/1] overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec]">
+          <div className="relative aspect-[2.06/1] overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selectedNominal.image}
@@ -56,7 +51,7 @@ export default function GiftCardsPage() {
                   key={n.slug}
                   type="button"
                   onClick={() => setSlug(n.slug)}
-                  className={`rounded-full border px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] transition ${
+                  className={`rounded-full border px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] transition ${
                     slug === n.slug
                       ? "border-zinc-900 bg-zinc-900 text-[#f6f3ef]"
                       : "border-[#d9d2c8] bg-[#faf8f5] text-zinc-800 hover:border-zinc-600"
@@ -66,11 +61,6 @@ export default function GiftCardsPage() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="rounded-2xl border border-[#d9d2c8] bg-[#faf8f5] p-4 text-sm leading-relaxed text-zinc-700">
-            Карта Resale Shopping — идеальный подарок. В примечании к заказу укажите имя и фамилию, которые будут
-            указаны на карте. После оплаты отправим электронную карту на указанный email.
           </div>
 
           <button
