@@ -23,6 +23,15 @@ const bodySchema = z.object({
   }),
 });
 
+function sendOrderEmailInBackground(
+  payload: Parameters<typeof sendOrderConfirmationEmail>[0],
+  kind?: Parameters<typeof sendOrderConfirmationEmail>[1],
+) {
+  void sendOrderConfirmationEmail(payload, kind).catch((err) => {
+    console.error("Checkout email background send failed:", err);
+  });
+}
+
 export async function POST(request: Request) {
   try {
     const body = bodySchema.parse(await request.json());
@@ -77,18 +86,14 @@ export async function POST(request: Request) {
       });
       if (full?.customer.email && !full.customer.email.endsWith("@example.com")) {
         const summary = full.items.map((i) => `${i.productBrand || ""} ${i.productTitle}`.trim()).join(", ");
-        try {
-          await sendOrderConfirmationEmail({
-            name: full.customer.fullName,
-            email: full.customer.email,
-            orderNumber: full.orderNumber,
-            summary,
-            totalMinor: full.totalMinor,
-            orderLink: `${origin}/api/orders/${full.orderNumber}`,
-          });
-        } catch (err) {
-          console.error("Manual checkout email failed:", err);
-        }
+        sendOrderEmailInBackground({
+          name: full.customer.fullName,
+          email: full.customer.email,
+          orderNumber: full.orderNumber,
+          summary,
+          totalMinor: full.totalMinor,
+          orderLink: `${origin}/api/orders/${full.orderNumber}`,
+        });
       }
       return NextResponse.json({
         url: `${origin}/checkout/success?order=${encodeURIComponent(order.orderNumber)}&manual=1`,
@@ -126,22 +131,18 @@ export async function POST(request: Request) {
           session.id,
         );
       }
-      try {
-        await sendOrderConfirmationEmail(
-          {
-            name: fullStripe.customer.fullName,
-            email: fullStripe.customer.email,
-            orderNumber: fullStripe.orderNumber,
-            summary,
-            totalMinor: fullStripe.totalMinor,
-            orderLink: `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`,
-            checkoutUrl: payUrl,
-          },
-          "pending_stripe",
-        );
-      } catch (err) {
-        console.error("Stripe checkout: письмо после оформления не отправлено:", err);
-      }
+      sendOrderEmailInBackground(
+        {
+          name: fullStripe.customer.fullName,
+          email: fullStripe.customer.email,
+          orderNumber: fullStripe.orderNumber,
+          summary,
+          totalMinor: fullStripe.totalMinor,
+          orderLink: `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`,
+          checkoutUrl: payUrl,
+        },
+        "pending_stripe",
+      );
     }
 
     const redirectUrl =
