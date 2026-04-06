@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import type { UserRole } from "@prisma/client";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Yandex from "next-auth/providers/yandex";
@@ -40,6 +41,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: user.id,
             email: user.email,
             name: user.name?.trim() || user.email.split("@")[0] || "Пользователь",
+            role: user.role,
+            image: user.image ?? undefined,
           };
         } catch {
           return null;
@@ -65,6 +68,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (user.email) token.email = user.email;
         if (user.name !== undefined && user.name !== null) token.name = user.name;
         if (user.image) token.picture = user.image;
+        token.role =
+          "role" in user && typeof (user as { role?: UserRole }).role === "string"
+            ? (user as { role: UserRole }).role
+            : "USER";
       }
       return token;
     },
@@ -74,6 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (token.email) session.user.email = token.email as string;
         if (token.name !== undefined) session.user.name = token.name as string | null;
         if (token.picture !== undefined) session.user.image = token.picture as string | null;
+        session.user.role = (token.role as UserRole) || "USER";
       }
       return session;
     },
