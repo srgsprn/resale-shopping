@@ -10,6 +10,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { WishlistToggleButton } from "@/components/wishlist-toggle-button";
 import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
+import { buildProductSeo } from "@/lib/product-seo";
 import { prisma } from "@/lib/prisma";
 
 type Props = {
@@ -20,14 +21,66 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await prisma.product.findUnique({
     where: { slug },
-    select: { name: true, brand: true },
+    select: {
+      slug: true,
+      name: true,
+      shortName: true,
+      brand: true,
+      conditionLabel: true,
+      color: true,
+      material: true,
+      gender: true,
+      priceMinor: true,
+      currency: true,
+      category: { select: { name: true, slug: true } },
+    },
   });
   if (!product) return {};
-  const title = decodeHtmlEntities(product.name);
-  const brandLine = decodeHtmlEntities(product.brand);
+  const displayName = decodeHtmlEntities(product.name);
+  const displayBrand = decodeHtmlEntities(product.brand);
+
+  if (product.slug.startsWith("gift-card")) {
+    return {
+      title: displayName,
+      description: `Подарочная карта Resale Shopping — ${displayBrand}. Номинал ${formatMoney(product.priceMinor, product.currency)}.`,
+      keywords: ["подарочная карта", "сертификат Resale Shopping", "люкс ресейл"],
+      alternates: { canonical: `/product/${slug}` },
+      openGraph: {
+        title: displayName,
+        description: `Электронная подарочная карта ${displayBrand} на resale-shopping.ru`,
+        url: `/product/${slug}`,
+        locale: "ru_RU",
+        type: "website",
+      },
+    };
+  }
+
+  const seo = buildProductSeo({
+    name: product.name,
+    shortName: product.shortName,
+    brand: product.brand,
+    categoryName: product.category.name,
+    categorySlug: product.category.slug,
+    conditionLabel: product.conditionLabel,
+    color: product.color,
+    material: product.material,
+    gender: product.gender,
+    priceMinor: product.priceMinor,
+    currency: product.currency,
+  });
+
   return {
-    title,
-    description: `${brandLine} — ${title}`,
+    title: seo.metaTitle,
+    description: seo.metaDescription,
+    keywords: seo.keywords,
+    alternates: { canonical: `/product/${slug}` },
+    openGraph: {
+      title: seo.metaTitle,
+      description: seo.metaDescription,
+      url: `/product/${slug}`,
+      locale: "ru_RU",
+      type: "website",
+    },
   };
 }
 
@@ -60,6 +113,22 @@ export default async function ProductPage({ params }: Props) {
   const condition = product.conditionLabel || "Отличное";
   const material = product.material || product.composition || "Уточняется";
 
+  const seo = product.slug.startsWith("gift-card")
+    ? null
+    : buildProductSeo({
+        name: product.name,
+        shortName: product.shortName,
+        brand: product.brand,
+        categoryName: product.category.name,
+        categorySlug: product.category.slug,
+        conditionLabel: product.conditionLabel,
+        color: product.color,
+        material: product.material,
+        gender: product.gender,
+        priceMinor: product.priceMinor,
+        currency: product.currency,
+      });
+
   const wishItem = {
     id: product.id,
     slug: product.slug,
@@ -82,63 +151,83 @@ export default async function ProductPage({ params }: Props) {
   };
 
   return (
-    <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)]">
-      <div>
-        <ProductGallery images={product.images} productName={displayName} />
-      </div>
-
-      <div className="space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-7">
+    <>
+      <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)]">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">{displayName}</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            Бренд: <span className="text-zinc-800">{displayBrand}</span>
-          </p>
+          <ProductGallery images={product.images} productName={displayName} />
         </div>
 
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-2xl font-medium text-zinc-400 md:text-[1.65rem]">
-            {formatMoney(product.priceMinor, product.currency)}
-          </p>
-          <WishlistToggleButton item={wishItem} />
-        </div>
-
-        <AddToCartButton
-          product={cartProduct}
-          className="flex w-full justify-center rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
-        />
-
-        <Link
-          href="/rassrochka"
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-900 transition hover:bg-amber-100"
-        >
-          <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-zinc-900 text-[10px] font-bold text-amber-300">
-            T
-          </span>
-          Оформить рассрочку
-        </Link>
-
-        <ProductConditionScale value={condition} />
-
-        <div className="border-t border-[#ebe6df] pt-4">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-800">
-            Информация о товаре
-          </h2>
-          {product.sku ? (
-            <p className="mt-2 text-sm text-zinc-700">
-              <span className="text-zinc-500">Артикул:</span> {product.sku}
+        <div className="space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-7">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
+              {seo?.h1 ?? displayName}
+            </h1>
+            <p className="mt-1 text-sm text-zinc-600">
+              Бренд: <span className="text-zinc-800">{displayBrand}</span>
+              {seo && displayName !== seo.h1 ? (
+                <>
+                  {" "}
+                  <span className="text-zinc-500">·</span>{" "}
+                  <span className="text-zinc-700">{displayName}</span>
+                </>
+              ) : null}
             </p>
-          ) : null}
-          <dl className="mt-2">
-            <InfoBlock label="Категория" value={product.category.name} />
-            <InfoBlock label="Состояние" value={condition} />
-            <InfoBlock label="Размер" value={product.size || "Уточняется"} />
-            <InfoBlock label="Цвет" value={product.color || "Уточняется"} />
-            <InfoBlock label="Материал" value={material} />
-            <InfoBlock label="Пол" value={product.gender || "Уточняется"} />
-            <InfoBlock label="Комплектность" value={product.completeness || "По запросу"} />
-          </dl>
+          </div>
+
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-2xl font-medium text-zinc-400 md:text-[1.65rem]">
+              {formatMoney(product.priceMinor, product.currency)}
+            </p>
+            <WishlistToggleButton item={wishItem} />
+          </div>
+
+          <AddToCartButton
+            product={cartProduct}
+            className="flex w-full justify-center rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
+          />
+
+          <Link
+            href="/rassrochka"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-900 transition hover:bg-amber-100"
+          >
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-zinc-900 text-[10px] font-bold text-amber-300">
+              T
+            </span>
+            Оформить рассрочку
+          </Link>
+
+          <ProductConditionScale value={condition} />
+
+          <div className="border-t border-[#ebe6df] pt-4">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-800">
+              Информация о товаре
+            </h2>
+            {product.sku ? (
+              <p className="mt-2 text-sm text-zinc-700">
+                <span className="text-zinc-500">Артикул:</span> {product.sku}
+              </p>
+            ) : null}
+            <dl className="mt-2">
+              <InfoBlock label="Категория" value={product.category.name} />
+              <InfoBlock label="Состояние" value={condition} />
+              <InfoBlock label="Размер" value={product.size || "Уточняется"} />
+              <InfoBlock label="Цвет" value={product.color || "Уточняется"} />
+              <InfoBlock label="Материал" value={material} />
+              <InfoBlock label="Пол" value={product.gender || "Уточняется"} />
+              <InfoBlock label="Комплектность" value={product.completeness || "По запросу"} />
+            </dl>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {seo ? (
+        <aside
+          className="mt-10 border-t border-[#e5dfd6] pt-8 text-sm leading-relaxed text-zinc-600"
+          aria-label="Описание для поиска"
+        >
+          <p>{seo.footerParagraph}</p>
+        </aside>
+      ) : null}
+    </>
   );
 }
