@@ -57,13 +57,13 @@ export default async function AdminDashboardPage() {
       <section className="flex flex-wrap gap-3">
         <Link
           href="/admin/products/add"
-          className="rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
+          className="inline-flex items-center justify-center rounded-full border-2 border-[#6b5344] bg-[#e8dcc8] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:bg-[#dfc9ae]"
         >
           Новый товар
         </Link>
         <Link
           href="/admin/orders"
-          className="rounded-full border border-[#d9d2c8] bg-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800"
+          className="inline-flex items-center justify-center rounded-full border border-[#c4b8a8] bg-white px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:bg-[#faf8f5]"
         >
           Заказы
         </Link>

@@ -22,7 +22,9 @@ export function AdminSidebar() {
   const linkCls = (href: string) => {
     const active = href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
     return `block rounded-xl px-3 py-2 text-sm font-medium transition ${
-      active ? "bg-zinc-900 text-[#f6f3ef]" : "text-zinc-700 hover:bg-white/80"
+      active
+        ? "border border-[#8b7355] bg-[#faf6f0] text-zinc-900 shadow-sm"
+        : "text-zinc-800 hover:bg-white/90"
     }`;
   };
 
@@ -41,13 +43,7 @@ export function AdminSidebar() {
           open ? "flex" : "hidden md:flex"
         } flex-col`}
       >
-        <div className="border-b border-[#e5dfd6] px-4 py-4">
-          <Link href="/admin" className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-900">
-            Resale Admin
-          </Link>
-          <p className="mt-1 text-xs text-zinc-500">resale-shopping.ru</p>
-        </div>
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
+        <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-4 md:pt-5">
           {NAV.map((item) => (
             <Link key={item.href} href={item.href} className={linkCls(item.href)} onClick={() => setOpen(false)}>
               {item.label}

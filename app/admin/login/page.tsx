@@ -41,7 +41,6 @@ function AdminLoginForm() {
   return (
     <div className="mx-auto max-w-md rounded-[24px] border border-[#d9d2c8] bg-white p-8 shadow-sm">
       <h1 className="text-xl font-semibold text-zinc-900">Кабинет большого начальства</h1>
-      <p className="mt-2 text-sm text-zinc-600">Вход по логину и паролю.</p>
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <div>
           <label htmlFor="admin-login" className="mb-1 block text-xs font-medium uppercase tracking-[0.1em] text-zinc-600">
@@ -76,7 +75,7 @@ function AdminLoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full border border-zinc-900 bg-zinc-900 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:opacity-50"
+          className="w-full rounded-full border-2 border-[#6b5344] bg-[#e8dcc8] px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-900 shadow-sm hover:bg-[#dfc9ae] disabled:opacity-50"
         >
           {loading ? "Вход…" : "Войти"}
         </button>
