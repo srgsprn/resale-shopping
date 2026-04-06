@@ -8,8 +8,8 @@ const NOMINALS = [
     label: "50 000 ₽",
     slug: "gift-card-50000",
     image: "/gift-cards/card-50000.png",
-    objectPosition: "center 58%",
-    zoom: 1.065,
+    objectPosition: "center 50%",
+    zoom: 1.04,
   },
   {
     label: "100 000 ₽",
@@ -22,7 +22,7 @@ const NOMINALS = [
     label: "500 000 ₽",
     slug: "gift-card-500000",
     image: "/gift-cards/card-500000.png",
-    objectPosition: "center 52%",
+    objectPosition: "center 56%",
     zoom: 1.06,
   },
 ] as const;
@@ -53,12 +53,12 @@ export default function GiftCardsPage() {
 
       <section className="grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
         <div className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
-          <div className="relative aspect-[2.06/1] overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec]">
+          <div className="relative aspect-[2.06/1] overflow-hidden rounded-2xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selectedNominal.image}
               alt={`Подарочная карта ${selectedNominal.label}`}
-              className="h-full w-full object-cover shadow-[0_12px_24px_rgba(24,24,27,0.16)]"
+              className="h-full w-full object-cover"
               style={{
                 objectPosition: selectedNominal.objectPosition,
                 transform: `scale(${selectedNominal.zoom})`,
