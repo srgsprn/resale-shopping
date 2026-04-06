@@ -48,13 +48,35 @@ npm run db:import:woo -- data/woocommerce-products.csv
 
 ## Deploy (VPS)
 
-### Standard update
+Команды **`npm run db:generate`** и **`npm run build`** нужно запускать **только в корне репозитория** (где лежит `package.json` с `"name": "resale-shopping"`), не из домашней папки `~`.
+
+### Standard update (рекомендуется)
+
+Из любого места на сервере, если репо лежит в `/root/resale-shopping` или `/var/www/resale-shopping`:
+
+```bash
+bash /root/resale-shopping/scripts/vps-pull-and-deploy.sh
+```
+
+Или явно указать каталог:
+
+```bash
+REPO_DIR=/var/www/resale-shopping bash /var/www/resale-shopping/scripts/vps-pull-and-deploy.sh
+```
+
+Либо вручную:
 
 ```bash
 cd /root/resale-shopping
 git pull origin main
-npm ci --include=dev
-npm run build
+bash scripts/vps-deploy.sh
+```
+
+Скрипт `scripts/vps-deploy.sh` делает `npm ci`, `prisma generate`, `migrate deploy`, `next build` и при наличии процесса **resale-shopping** в PM2 выполняет `pm2 restart`. Тяжёлый импорт каталога по умолчанию **выключен**; однократно: `RUN_ALFA_IMPORT=1 bash scripts/vps-deploy.sh`.
+
+Порт для приложения (например **3001**), как раньше:
+
+```bash
 PORT=3001 pm2 restart resale-shopping --update-env
 ```
 

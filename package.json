@@ -16,7 +16,9 @@
     "scrape:alfa": "node scripts/scrape-alfa-export.mjs",
     "db:import:alfa-json": "node scripts/import-alfa-json.mjs",
     "catalog:sync": "node scripts/sync-catalog.mjs",
-    "email:test": "node scripts/test-order-email.mjs"
+    "email:test": "node scripts/test-order-email.mjs",
+    "deploy:vps": "bash scripts/vps-deploy.sh",
+    "deploy:vps:pull": "bash scripts/vps-pull-and-deploy.sh"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
