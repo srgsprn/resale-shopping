@@ -10,6 +10,7 @@
 #   RUN_ALFA_IMPORT=1  — после миграций запустить npm run db:import:alfa-json (тяжело, не для каждого релиза)
 #   PM2_APP=resale-shopping — имя процесса в PM2 (по умолчанию resale-shopping)
 #   RESTART_PM2=0      — не вызывать pm2 restart, даже если PM2 установлен
+#   SKIP_CLEAN_NEXT=1  — не удалять .next перед build (быстрее, но возможен старый кэш/404)
 #
 set -euo pipefail
 
@@ -46,6 +47,11 @@ if [[ "${RUN_ALFA_IMPORT:-0}" == "1" ]]; then
   npm run db:import:alfa-json
 else
   echo "==> Импорт каталога пропущен (для полного импорта: RUN_ALFA_IMPORT=1 bash scripts/vps-deploy.sh)"
+fi
+
+if [[ "${SKIP_CLEAN_NEXT:-0}" != "1" ]]; then
+  echo "==> Удаление .next (сброс кэша Next — убирает закэшированные 404 после смены маршрутов)"
+  rm -rf .next
 fi
 
 npm run build
