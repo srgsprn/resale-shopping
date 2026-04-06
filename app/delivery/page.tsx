@@ -21,7 +21,7 @@ export default function DeliveryPage() {
       <section className="grid gap-4 md:grid-cols-3">
         <article className="rounded-2xl border border-[#d9d2c8] bg-white p-5">
           <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-900">Москва и МО</h2>
-          <p className="mt-2 text-sm text-zinc-700">Бесплатная доставка от 10 000 ₽, срок обычно 7-10 дней после оплаты.</p>
+          <p className="mt-2 text-sm text-zinc-700">Бесплатная доставка от 100 000 ₽, срок обычно 7-10 дней после оплаты.</p>
         </article>
         <article className="rounded-2xl border border-[#d9d2c8] bg-white p-5">
           <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-900">По России</h2>

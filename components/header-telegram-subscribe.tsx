@@ -17,7 +17,7 @@ const telegramIcon = (
 export function HeaderTelegramSubscribeButton() {
   return (
     <Link
-      href="https://t.me/alfa_resale"
+      href="https://t.me/resaleshoppingg"
       target="_blank"
       rel="noreferrer"
       className="hidden items-center gap-2 rounded-full bg-[#dfd4c5] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6a2a24] transition hover:bg-white/70 md:inline-flex"
