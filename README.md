@@ -69,7 +69,10 @@ REPO_DIR=/var/www/resale-shopping bash /var/www/resale-shopping/scripts/vps-pull
 ```bash
 cd /root/resale-shopping
 git pull origin main
-bash scripts/vps-deploy.sh
+# Первый деплой после миграции login / сброс пароля админа: добавьте ADMIN_ENSURE=1 один раз
+ADMIN_ENSURE=1 bash scripts/vps-deploy.sh
+# Дальше обычно:
+# bash scripts/vps-deploy.sh
 ```
 
 Скрипт `scripts/vps-deploy.sh` делает `npm ci`, `prisma generate`, `migrate deploy`, `next build` и при наличии процесса **resale-shopping** в PM2 выполняет `pm2 restart`. Тяжёлый импорт каталога по умолчанию **выключен**; однократно: `RUN_ALFA_IMPORT=1 bash scripts/vps-deploy.sh`.

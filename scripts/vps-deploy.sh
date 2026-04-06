@@ -11,6 +11,7 @@
 #   PM2_APP=resale-shopping — имя процесса в PM2 (по умолчанию resale-shopping)
 #   RESTART_PM2=0      — не вызывать pm2 restart, даже если PM2 установлен
 #   SKIP_CLEAN_NEXT=1  — не удалять .next перед build (быстрее, но возможен старый кэш/404)
+#   ADMIN_ENSURE=1     — после migrate выполнить npm run admin:ensure (логин admin / пароль из .env или дефолт)
 #
 set -euo pipefail
 
@@ -41,6 +42,11 @@ export NODE_ENV="${NODE_ENV:-production}"
 
 npm run db:generate
 npx prisma migrate deploy
+
+if [[ "${ADMIN_ENSURE:-0}" == "1" ]]; then
+  echo "==> Учётка админа (ADMIN_ENSURE=1 → npm run admin:ensure)"
+  npm run admin:ensure
+fi
 
 if [[ "${RUN_ALFA_IMPORT:-0}" == "1" ]]; then
   echo "==> Импорт каталога (RUN_ALFA_IMPORT=1)"
