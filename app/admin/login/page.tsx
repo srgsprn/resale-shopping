@@ -40,10 +40,8 @@ function AdminLoginForm() {
 
   return (
     <div className="mx-auto max-w-md rounded-[24px] border border-[#d9d2c8] bg-white p-8 shadow-sm">
-      <h1 className="text-xl font-semibold text-zinc-900">Вход в админку</h1>
-      <p className="mt-2 text-sm text-zinc-600">
-        Доступ только для пользователей с ролью ADMIN, MANAGER или EDITOR.
-      </p>
+      <h1 className="text-xl font-semibold text-zinc-900">Кабинет большого начальства</h1>
+      <p className="mt-2 text-sm text-zinc-600">Вход по email и паролю.</p>
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <div>
           <label htmlFor="admin-email" className="mb-1 block text-xs font-medium uppercase tracking-[0.1em] text-zinc-600">
