@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const seo = buildProductSeo({
+    slug: product.slug,
     name: product.name,
     shortName: product.shortName,
     brand: product.brand,
@@ -70,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   return {
-    title: seo.metaTitle,
+    title: { absolute: `${seo.metaTitle} | resale-shopping.ru` },
     description: seo.metaDescription,
     keywords: seo.keywords,
     alternates: { canonical: `/product/${slug}` },
@@ -116,6 +117,7 @@ export default async function ProductPage({ params }: Props) {
   const seo = product.slug.startsWith("gift-card")
     ? null
     : buildProductSeo({
+        slug: product.slug,
         name: product.name,
         shortName: product.shortName,
         brand: product.brand,
@@ -152,6 +154,37 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <>
+      <nav
+        className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-600 md:text-sm"
+        aria-label="Хлебные крошки"
+      >
+        <Link href="/" className="text-zinc-700 underline-offset-4 hover:text-zinc-900 hover:underline">
+          Главная
+        </Link>
+        <span className="text-zinc-400" aria-hidden>
+          /
+        </span>
+        <Link
+          href="/catalog"
+          className="text-zinc-700 underline-offset-4 hover:text-zinc-900 hover:underline"
+        >
+          Каталог
+        </Link>
+        <span className="text-zinc-400" aria-hidden>
+          /
+        </span>
+        <Link
+          href={`/catalog?category=${encodeURIComponent(product.category.slug)}`}
+          className="text-zinc-700 underline-offset-4 hover:text-zinc-900 hover:underline"
+        >
+          {product.category.name}
+        </Link>
+        <span className="text-zinc-400" aria-hidden>
+          /
+        </span>
+        <span className="text-zinc-500">{displayName}</span>
+      </nav>
+
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)]">
         <div>
           <ProductGallery images={product.images} productName={displayName} />
@@ -223,9 +256,16 @@ export default async function ProductPage({ params }: Props) {
       {seo ? (
         <aside
           className="mt-10 border-t border-[#e5dfd6] pt-8 text-sm leading-relaxed text-zinc-600"
-          aria-label="Описание для поиска"
+          aria-label="Дополнительное описание"
         >
-          <p>{seo.footerParagraph}</p>
+          {seo.microcopyParagraphs.length ? (
+            <div className="space-y-3 text-zinc-700">
+              {seo.microcopyParagraphs.map((p, i) => (
+                <p key={`mc-${i}-${product.slug}`}>{p}</p>
+              ))}
+            </div>
+          ) : null}
+          <p className={seo.microcopyParagraphs.length ? "mt-5" : ""}>{seo.footerParagraph}</p>
         </aside>
       ) : null}
     </>

@@ -2,6 +2,7 @@ import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
 
 export type ProductSeoInput = {
+  slug: string;
   name: string;
   shortName?: string | null;
   brand: string;
@@ -36,6 +37,74 @@ function remainderAfterLeadingBrand(text: string, brand: string): string {
 function primaryModelLine(name: string, shortName: string | null | undefined, brand: string): string {
   const raw = collapseSpaces(decodeHtmlEntities(shortName?.trim() || name.trim()));
   return collapseSpaces(remainderAfterLeadingBrand(raw, decodeHtmlEntities(brand)));
+}
+
+type NounGender = "f" | "m" | "n" | "pl";
+
+function typeGender(type: string): NounGender {
+  const map: Record<string, NounGender> = {
+    сумка: "f",
+    одежда: "f",
+    обувь: "f",
+    ремень: "m",
+    аксессуар: "m",
+    браслет: "m",
+    шарф: "m",
+    палантин: "m",
+    ремешок: "m",
+    кошелёк: "m",
+    лот: "m",
+    украшение: "n",
+    кольцо: "n",
+    часы: "pl",
+    серьги: "pl",
+    очки: "pl",
+    перчатки: "pl",
+  };
+  return map[type] ?? "m";
+}
+
+function demonstrative(type: string): string {
+  switch (typeGender(type)) {
+    case "f":
+      return "Эта";
+    case "m":
+      return "Этот";
+    case "n":
+      return "Это";
+    default:
+      return "Эти";
+  }
+}
+
+/** Прилагательное в начале title с согласованием по роду типа товара. */
+function conditionLeadAdjective(conditionRaw: string, type: string): string {
+  const c = conditionRaw.toLowerCase();
+  const g = typeGender(type);
+
+  if (/нов|new/i.test(c)) {
+    if (g === "f") return "новая";
+    if (g === "m") return "новый";
+    if (g === "n") return "новое";
+    return "новые";
+  }
+  if (/отлич|идеал|превосход/i.test(c)) {
+    if (g === "f") return "безупречная";
+    if (g === "m") return "безупречный";
+    if (g === "n") return "безупречное";
+    return "безупречные";
+  }
+  if (/хорош|состоян/i.test(c)) {
+    if (g === "f") return "актуальная";
+    if (g === "m") return "актуальный";
+    if (g === "n") return "актуальное";
+    return "актуальные";
+  }
+
+  if (g === "f") return "брендовая";
+  if (g === "m") return "брендовый";
+  if (g === "n") return "брендовое";
+  return "брендовые";
 }
 
 /**
@@ -95,6 +164,28 @@ export function seoProductTypeWord(categoryName: string, categorySlug: string): 
   return n;
 }
 
+function fnv1a32(str: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function pickDistinctIndices(seed: number, len: number, count: number): number[] {
+  if (len <= 0) return [];
+  const out: number[] = [];
+  let salt = 0;
+  while (out.length < Math.min(count, len)) {
+    const idx = (seed + salt * 2654435761) % len;
+    salt++;
+    if (!out.includes(idx)) out.push(idx);
+    if (salt > len * 4) break;
+  }
+  return out;
+}
+
 function truncateUtf16(s: string, max: number): string {
   if (s.length <= max) return s;
   const slice = s.slice(0, max - 1).trimEnd();
@@ -102,18 +193,74 @@ function truncateUtf16(s: string, max: number): string {
 }
 
 export type ProductSeoBundle = {
-  /** Сегмент для `metadata.title` (к layout добавляется ` | resale-shopping.ru`). */
+  /** Полный смысловой title без суффикса домена (для `title.absolute` или шаблона). */
   metaTitle: string;
   metaDescription: string;
-  /** Для `metadata.keywords` */
   keywords: string[];
-  /** Видимый H1 */
   h1: string;
-  /** Развёрнутый абзац внизу карточки */
+  /** 2–3 коротких «человеческих» предложения под контекст лота. */
+  microcopyParagraphs: string[];
+  /** Фактологичный абзац внизу карточки. */
   footerParagraph: string;
 };
 
-const TITLE_MAX_BEFORE_TEMPLATE = 52;
+const META_TITLE_MAX_CORE = 68;
+
+function buildMarketingParagraphs(ctx: {
+  slug: string;
+  type: string;
+  brand: string;
+  model: string;
+  color: string;
+  categoryName: string;
+  condition: string;
+}): string[] {
+  const dem = demonstrative(ctx.type);
+  const seed = fnv1a32(`${ctx.slug}|${ctx.brand}|${ctx.model}`);
+
+  const pool: string[] = [
+    `${dem} ${ctx.type} ${ctx.brand} — находка для тех, кто любит люкс без витринной наценки и ценит оригинальную фурнитуру.`,
+    `Модель ${ctx.model} от ${ctx.brand} давно стала узнаваемым знаком статуса — спокойная роскошь без лишнего шума.`,
+    `${ctx.brand} ${ctx.model}: вещь, за которой в премиальном сегменте присматривают внимательно; на ресейле она выглядит особенно логично по цене.`,
+    `Если вы давно смотрели в сторону ${ctx.brand}, эта позиция — повод оформить заказ и получить проверенную подлинность с доставкой.`,
+    `Такие позиции разбирают быстро: узнаваемый силуэт и брендовая детализация редко остаются в каталоге надолго.`,
+    `${dem} ${ctx.type} легко впишется и в деловой капсулу, и в вечерний образ — универсальный «якорь» гардероба.`,
+    `Для ценителей качества: ощутимая текстура, аккуратные швы и фурнитура, на которую вы смотрите в первую очередь.`,
+    `Культовая линейка: её узнают с первого взгляда — а мы помогаем купить ближе к разумной цене, чем в рознице.`,
+  ];
+
+  if (/сумк/i.test(ctx.type) || /сумк/i.test(ctx.categoryName)) {
+    pool.push(
+      `Сумки ${ctx.brand} с таким настроением редко появляются на ресейле — модель ${ctx.model} давно в топе у тех, кто следит за трендами.`,
+      `Если коротко: это та самая «статусная» сумка, которую хотят носить и днём, и вечером — без компромиссов по узнаваемости.`,
+      `Справедливо сказать: ${ctx.model} от ${ctx.brand} — из тех моделей, за которыми охотятся в премиальном ресейле — заметный акцент в образе без лишней демонстрации.`,
+    );
+  }
+  if (/рем|пояс|ремень/i.test(ctx.type) || /рем/i.test(ctx.categoryName)) {
+    pool.push(
+      `Ремень ${ctx.brand} с такой пряжкой — маленькая деталь, которая сильно портит или красит весь образ.`,
+    );
+  }
+  if (/час/i.test(ctx.type) || /час/i.test(ctx.categoryName)) {
+    pool.push(
+      `Часы ${ctx.brand} — про точность образа: дисциплина линий и брендовый код, который заметен на расстоянии вытянутой руки.`,
+    );
+  }
+  if (/украш|серьг|кольц|браслет/i.test(ctx.type) || /украш/i.test(ctx.categoryName)) {
+    pool.push(
+      `Свет и фактура металла здесь работают мягко — украшение ${ctx.brand} добавляет «дорогого» блика без кричащего эффекта.`,
+    );
+  }
+
+  if (ctx.color) {
+    pool.push(
+      `Оттенок ${ctx.color.toLowerCase()} выглядит благородно на живых фото — отличный выбор, если хотите модель «не как у всех».`,
+    );
+  }
+
+  const idx = pickDistinctIndices(seed, pool.length, 3);
+  return idx.map((i) => pool[i]).filter(Boolean);
+}
 
 export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
   const brand = collapseSpaces(decodeHtmlEntities(input.brand));
@@ -130,21 +277,33 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
       ? input.material.trim()
       : "";
 
-  const titleSuffix = "отличного качества на ресейл";
-  let metaTitle = collapseSpaces(`${type} ${model} ${brand} ${titleSuffix}`);
+  const adj = conditionLeadAdjective(condition, type);
+  const titleCore = collapseSpaces(`${adj} ${type} ${brand} ${model} на сайте resale shopping`);
 
-  const overhead = `${type} ${brand} ${titleSuffix}`.length + 2;
-  if (metaTitle.length > TITLE_MAX_BEFORE_TEMPLATE) {
-    const budget = Math.max(6, TITLE_MAX_BEFORE_TEMPLATE - overhead);
+  const fixed = collapseSpaces(`${adj} ${type} ${brand} на сайте resale shopping`).length + 1;
+  let metaTitle = titleCore;
+  if (metaTitle.length > META_TITLE_MAX_CORE) {
+    const budget = Math.max(4, META_TITLE_MAX_CORE - fixed);
     const shortened = truncateUtf16(model, budget);
-    metaTitle = collapseSpaces(`${type} ${shortened} ${brand} ${titleSuffix}`);
+    metaTitle = collapseSpaces(`${adj} ${type} ${brand} ${shortened} на сайте resale shopping`);
   }
 
   const priceStr = formatMoney(input.priceMinor, input.currency);
 
+  const microcopyParagraphs = buildMarketingParagraphs({
+    slug: input.slug,
+    type,
+    brand,
+    model,
+    color,
+    categoryName: input.categoryName,
+    condition,
+  });
+
+  const leadMicro = microcopyParagraphs[0] ?? "";
   const metaDescription = truncateUtf16(
     collapseSpaces(
-      `${capitalizeRu(type)} ${brand} ${model} — оригинал, состояние «${condition}». Люкс-ресейл Resale Shopping: цена ${priceStr}, доставка по России, подлинность.`,
+      `${metaTitle}. ${leadMicro} Состояние «${condition}», цена ${priceStr}. Оригинал, доставка по России — Resale Shopping.`,
     ),
     158,
   );
@@ -160,6 +319,7 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
       `${type} ${brand}`,
       `${brand} б у`,
       `${brand} ресейл`,
+      "resale shopping",
       model.length > 1 && model !== brand ? model : null,
       "люкс ресейл",
       "оригинал б у",
@@ -169,7 +329,7 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
     ].filter((x): x is string => Boolean(x && x.trim())),
   );
 
-  const h1 = collapseSpaces(`${capitalizeRu(type)} ${model} ${brand} — купить на ресейл`);
+  const h1 = capitalizeFirstRu(metaTitle);
 
   const detailBits: string[] = [];
   if (color) detailBits.push(`оттенок: ${color}`);
@@ -177,7 +337,7 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
   const detail = detailBits.length ? ` ${detailBits.join(", ")}.` : "";
 
   const footerParagraph = collapseSpaces(
-    `В каталоге Resale Shopping — ${type} ${brand} ${model} (${condition}).${detail} Это подлинная вещь премиум-сегмента на ${priceStr}; подходит для запросов вроде «${brand} купить бу» или «${brand} ${model}» в сегменте ресейла. Оригинал, бережная проверка, доставка по России — удобный способ купить бренд б/у без витринной наценки.`,
+    `В каталоге Resale Shopping — ${type} ${brand} ${model}: категория «${input.categoryName}», состояние «${condition}».${detail} Актуальная цена ${priceStr}. Оригинал премиум-сегмента, проверка подлинности и доставка по России — разумный способ купить люкс на ресейле без витринной наценки.`,
   );
 
   return {
@@ -185,11 +345,12 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
     metaDescription,
     keywords,
     h1,
+    microcopyParagraphs,
     footerParagraph,
   };
 }
 
-function capitalizeRu(s: string) {
+function capitalizeFirstRu(s: string) {
   if (!s) return s;
   return s.charAt(0).toLocaleUpperCase("ru-RU") + s.slice(1);
 }
