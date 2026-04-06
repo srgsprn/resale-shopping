@@ -8,8 +8,8 @@ const NOMINALS = [
     label: "50 000 ₽",
     slug: "gift-card-50000",
     image: "/gift-cards/card-50000.png",
-    objectPosition: "center 50%",
-    zoom: 1.04,
+    objectPosition: "center center",
+    zoom: 1,
   },
   {
     label: "100 000 ₽",
@@ -22,8 +22,8 @@ const NOMINALS = [
     label: "500 000 ₽",
     slug: "gift-card-500000",
     image: "/gift-cards/card-500000.png",
-    objectPosition: "center 56%",
-    zoom: 1.06,
+    objectPosition: "center center",
+    zoom: 1,
   },
 ] as const;
 
@@ -69,14 +69,13 @@ export default function GiftCardsPage() {
 
         <div className="space-y-6 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
           <div>
-            <h2 className="text-lg font-semibold text-zinc-900 md:text-xl">Номинал</h2>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-1 grid grid-cols-3 gap-2">
               {NOMINALS.map((n) => (
                 <button
                   key={n.slug}
                   type="button"
                   onClick={() => setSlug(n.slug)}
-                  className={`rounded-full border px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] transition ${
+                  className={`w-full rounded-full border px-2 py-3 text-[12px] font-semibold uppercase tracking-[0.06em] transition md:px-5 md:text-sm md:tracking-[0.1em] ${
                     slug === n.slug
                       ? "border-zinc-900 bg-zinc-900 text-[#f6f3ef]"
                       : "border-[#d9d2c8] bg-[#faf8f5] text-zinc-800 hover:border-zinc-600"
