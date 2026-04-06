@@ -202,9 +202,30 @@ export type ProductSeoBundle = {
   microcopyParagraphs: string[];
   /** Фактологичный абзац внизу карточки. */
   footerParagraph: string;
+  /** Рекомендованный SEO URL (как подсказка для контента). */
+  suggestedUrl: string;
 };
 
-const META_TITLE_MAX_CORE = 68;
+const META_TITLE_MAX_CORE = 60;
+
+function transliterateToSlug(input: string): string {
+  const map: Record<string, string> = {
+    а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh", з: "z", и: "i", й: "y",
+    к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f",
+    х: "h", ц: "ts", ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya",
+  };
+
+  const lower = input.toLowerCase();
+  let out = "";
+  for (const ch of lower) {
+    out += map[ch] ?? ch;
+  }
+  return out
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
 
 function buildMarketingParagraphs(ctx: {
   slug: string;
@@ -278,14 +299,15 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
       : "";
 
   const adj = conditionLeadAdjective(condition, type);
-  const titleCore = collapseSpaces(`${adj} ${type} ${brand} ${model} на сайте resale shopping`);
+  const fallbackModel = model || name || input.slug;
+  const titleCore = collapseSpaces(`${adj} ${type} ${brand} ${fallbackModel}`);
 
-  const fixed = collapseSpaces(`${adj} ${type} ${brand} на сайте resale shopping`).length + 1;
+  const fixed = collapseSpaces(`${adj} ${type} ${brand}`).length + 1;
   let metaTitle = titleCore;
   if (metaTitle.length > META_TITLE_MAX_CORE) {
     const budget = Math.max(4, META_TITLE_MAX_CORE - fixed);
-    const shortened = truncateUtf16(model, budget);
-    metaTitle = collapseSpaces(`${adj} ${type} ${brand} ${shortened} на сайте resale shopping`);
+    const shortened = truncateUtf16(fallbackModel, budget);
+    metaTitle = collapseSpaces(`${adj} ${type} ${brand} ${shortened}`);
   }
 
   const priceStr = formatMoney(input.priceMinor, input.currency);
@@ -303,7 +325,7 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
   const leadMicro = microcopyParagraphs[0] ?? "";
   const metaDescription = truncateUtf16(
     collapseSpaces(
-      `${metaTitle}. ${leadMicro} Состояние «${condition}», цена ${priceStr}. Оригинал, доставка по России — Resale Shopping.`,
+      `${metaTitle} на resale-shopping.ru. ${leadMicro} Состояние «${condition}», цена ${priceStr}. Оригинал и доставка по России.`,
     ),
     158,
   );
@@ -340,6 +362,10 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
     `В каталоге Resale Shopping — ${type} ${brand} ${model}: категория «${input.categoryName}», состояние «${condition}».${detail} Актуальная цена ${priceStr}. Оригинал премиум-сегмента, проверка подлинности и доставка по России — разумный способ купить люкс на ресейле без витринной наценки.`,
   );
 
+  const suggestedUrl = `/${transliterateToSlug(input.categoryName || type)}/${transliterateToSlug(
+    `${brand} ${fallbackModel}`,
+  )}`;
+
   return {
     metaTitle,
     metaDescription,
@@ -347,6 +373,7 @@ export function buildProductSeo(input: ProductSeoInput): ProductSeoBundle {
     h1,
     microcopyParagraphs,
     footerParagraph,
+    suggestedUrl,
   };
 }
 
