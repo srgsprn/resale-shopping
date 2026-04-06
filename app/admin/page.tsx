@@ -50,7 +50,6 @@ export default async function AdminDashboardPage() {
         <div className="rounded-[24px] border border-[#d9d2c8] bg-white p-5 sm:col-span-2 lg:col-span-1">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-500">Новые (ожидают оплату)</p>
           <p className="mt-2 text-3xl font-semibold tabular-nums text-amber-900">{pendingOrders}</p>
-          <p className="mt-1 text-xs text-zinc-500">PENDING + REQUIRES_PAYMENT</p>
         </div>
       </section>
 
