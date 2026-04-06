@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "sonner";
 
-import { createProduct, updateProduct, type ProductActionState } from "@/app/admin/(panel)/products/actions";
+import { createProduct, updateProduct, type ProductActionState } from "@/app/admin/products/actions";
 import { slugifyLatin } from "@/lib/admin/slug";
 
 import { ImageUploadZone } from "@/components/admin/image-upload-zone";
