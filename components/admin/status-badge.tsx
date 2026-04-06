@@ -16,7 +16,9 @@ const LABEL: Record<ProductStatus, string> = {
 
 export function StatusBadge({ status }: { status: ProductStatus }) {
   return (
-    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STYLE[status]}`}>
+    <span
+      className={`inline-flex shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${STYLE[status]}`}
+    >
       {LABEL[status]}
     </span>
   );

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 
 import { ADMIN_PAGE_SIZE, listAdminProducts } from "@/lib/admin/products-queries";
+import { stripLatinParentheticals } from "@/lib/display-name";
 import { formatMoney } from "@/lib/money";
 import { prisma } from "@/lib/prisma";
 
@@ -46,19 +47,15 @@ export default async function AdminProductsPage({ searchParams }: SearchProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Товары</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            Всего: {total} · Стр. {curPage} из {totalPages}
-          </p>
-        </div>
-        <Link
-          href="/admin/products/add"
-          className="inline-flex justify-center rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white"
-        >
-          Добавить товар
-        </Link>
+      <div>
+        <h1 className="text-2xl font-semibold text-zinc-900">Товары</h1>
+        <p className="mt-1 text-sm text-zinc-600">
+          Всего: {total} · Стр. {curPage} из {totalPages}
+          {" · "}
+          <Link href="/admin/products/add" className="font-medium text-[#6b5344] underline-offset-2 hover:underline">
+            Добавить товар
+          </Link>
+        </p>
       </div>
 
       <form
@@ -78,7 +75,7 @@ export default async function AdminProductsPage({ searchParams }: SearchProps) {
             <option value="">Все</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.name}
+                {stripLatinParentheticals(c.name)}
               </option>
             ))}
           </select>
@@ -115,7 +112,7 @@ export default async function AdminProductsPage({ searchParams }: SearchProps) {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="rounded-full border border-zinc-800 bg-zinc-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white"
+            className="rounded-full border-2 border-[#6b5344] bg-[#e8dcc8] px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-900 shadow-sm hover:bg-[#dfc9ae]"
           >
             Применить
           </button>
@@ -153,8 +150,8 @@ export default async function AdminProductsPage({ searchParams }: SearchProps) {
                 </td>
                 <td className="px-4 py-3 tabular-nums text-zinc-800">{formatMoney(p.priceMinor, p.currency)}</td>
                 <td className="px-4 py-3 text-zinc-700">{brandLabel}</td>
-                <td className="px-4 py-3 text-zinc-700">{p.category.name}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-zinc-700">{stripLatinParentheticals(p.category.name)}</td>
+                <td className="px-4 py-3 whitespace-nowrap">
                   <StatusBadge status={p.status} />
                 </td>
                 <td className="px-4 py-3 text-zinc-500">
