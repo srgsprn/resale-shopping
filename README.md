@@ -90,6 +90,16 @@ bash scripts/prisma-fix-p3009-admin-migration.sh
 
 Скрипт откатывает запись о сбое, накатывает идемпотентный SQL из `scripts/repair-failed-migration-20260407120000.sql`, помечает миграцию применённой и снова вызывает `migrate deploy`. После этого снова `bash scripts/vps-deploy.sh`.
 
+### Учётка админа по логину
+
+После `prisma migrate deploy` один раз (или после смены пароля):
+
+```bash
+npm run admin:ensure
+```
+
+По умолчанию: логин **`admin`**, пароль **`ilovepringles`**, служебный email **`admin@resale-shopping.local`**. Задайте в `.env`: `ADMIN_LOGIN`, `ADMIN_PASSWORD`, при необходимости `ADMIN_EMAIL`.
+
 ### Bootstrap from scratch
 
 ```bash

@@ -283,6 +283,8 @@ model EmailTemplate {
 /// Аккаунты staff/покупательский логин (NextAuth Credentials). Не смешивать с Customer (checkout).
 model CredentialUser {
   id           String    @id @default(cuid())
+  /// Логин для входа (например admin); опционально для пользователей только с email
+  login        String?   @unique
   email        String    @unique
   passwordHash String
   name         String    @default("")

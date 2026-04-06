@@ -6,7 +6,7 @@ export default async function AdminUsersPage() {
   const users = await prisma.credentialUser.findMany({
     orderBy: { createdAt: "desc" },
     take: 100,
-    select: { id: true, email: true, name: true, role: true, createdAt: true },
+    select: { id: true, login: true, email: true, name: true, role: true, createdAt: true },
   });
 
   return (
@@ -17,6 +17,7 @@ export default async function AdminUsersPage() {
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="border-b border-[#ebe6df] text-xs text-zinc-500">
+              <th className="px-4 py-3 font-medium">Логин</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Имя</th>
               <th className="px-4 py-3 font-medium">Роль</th>
@@ -26,6 +27,7 @@ export default async function AdminUsersPage() {
           <tbody>
             {users.map((u) => (
               <tr key={u.id} className="border-b border-[#f4f1ec] last:border-0">
+                <td className="px-4 py-2 font-mono text-sm text-zinc-900">{u.login ?? "—"}</td>
                 <td className="px-4 py-2 text-zinc-900">{u.email}</td>
                 <td className="px-4 py-2 text-zinc-700">{u.name ?? "—"}</td>
                 <td className="px-4 py-2">

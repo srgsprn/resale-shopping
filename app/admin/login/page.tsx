@@ -10,7 +10,7 @@ function AdminLoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
 
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -21,12 +21,12 @@ function AdminLoginForm() {
     setLoading(true);
     try {
       const res = await signIn("credentials", {
-        email: email.trim(),
+        login: login.trim().toLowerCase(),
         password,
         redirect: false,
       });
       if (res?.error) {
-        setError("Неверный email или пароль.");
+        setError("Неверный логин или пароль.");
         setLoading(false);
         return;
       }
@@ -41,19 +41,20 @@ function AdminLoginForm() {
   return (
     <div className="mx-auto max-w-md rounded-[24px] border border-[#d9d2c8] bg-white p-8 shadow-sm">
       <h1 className="text-xl font-semibold text-zinc-900">Кабинет большого начальства</h1>
-      <p className="mt-2 text-sm text-zinc-600">Вход по email и паролю.</p>
+      <p className="mt-2 text-sm text-zinc-600">Вход по логину и паролю.</p>
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <div>
-          <label htmlFor="admin-email" className="mb-1 block text-xs font-medium uppercase tracking-[0.1em] text-zinc-600">
-            Email
+          <label htmlFor="admin-login" className="mb-1 block text-xs font-medium uppercase tracking-[0.1em] text-zinc-600">
+            Логин
           </label>
           <input
-            id="admin-email"
-            type="email"
+            id="admin-login"
+            name="login"
+            type="text"
             autoComplete="username"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
             className="w-full rounded-xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
           />
         </div>

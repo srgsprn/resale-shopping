@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+const { execSync } = require("child_process");
+const path = require("path");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -158,6 +160,12 @@ async function main() {
       create: template,
     });
   }
+
+  execSync("node scripts/ensure-admin.cjs", {
+    stdio: "inherit",
+    cwd: path.join(__dirname, ".."),
+    env: process.env,
+  });
 }
 
 main()

@@ -25,15 +25,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       id: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        login: { label: "Логин", type: "text" },
+        email: { label: "Email или логин", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : "";
+        const login = typeof credentials?.login === "string" ? credentials.login.trim().toLowerCase() : "";
+        const emailCred = typeof credentials?.email === "string" ? credentials.email.trim().toLowerCase() : "";
+        const identifier = login || emailCred;
         const password = typeof credentials?.password === "string" ? credentials.password : "";
-        if (!email || !password) return null;
+        if (!identifier || !password) return null;
         try {
-          const user = await prisma.credentialUser.findUnique({ where: { email } });
+          const user = await prisma.credentialUser.findFirst({
+            where: {
+              OR: [{ login: identifier }, { email: identifier }],
+            },
+          });
           if (!user) return null;
           const ok = await bcrypt.compare(password, user.passwordHash);
           if (!ok) return null;

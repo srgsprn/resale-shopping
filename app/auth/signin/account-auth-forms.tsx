@@ -42,7 +42,7 @@ function AccountAuthFormsBody({ yandexReady }: { yandexReady: boolean }) {
         callbackUrl,
       });
       if (res?.error) {
-        setLoginError("Неверный email или пароль.");
+        setLoginError("Неверный логин, email или пароль.");
         return;
       }
       router.push(callbackUrl);
