@@ -77,7 +77,7 @@ export async function POST(request: Request) {
           orderNumber: updated.orderNumber,
           summary,
           totalMinor: updated.totalMinor,
-          orderLink: `${site}/api/orders/${updated.orderNumber}`,
+          orderLink: `${site}/checkout/success?order=${encodeURIComponent(updated.orderNumber)}`,
         });
       } catch (err) {
         console.error("Stripe webhook email failed:", err);

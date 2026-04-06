@@ -92,7 +92,7 @@ export async function POST(request: Request) {
           orderNumber: full.orderNumber,
           summary,
           totalMinor: full.totalMinor,
-          orderLink: `${origin}/api/orders/${full.orderNumber}`,
+          orderLink: `${origin}/checkout/success?order=${encodeURIComponent(full.orderNumber)}`,
         });
       }
       return NextResponse.json({
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
           orderNumber: fullStripe.orderNumber,
           summary,
           totalMinor: fullStripe.totalMinor,
-          orderLink: `${origin}/checkout/success?session_id=${encodeURIComponent(session.id)}`,
+          orderLink: `${origin}/checkout/success?order=${encodeURIComponent(fullStripe.orderNumber)}`,
           checkoutUrl: payUrl,
         },
         "pending_stripe",
