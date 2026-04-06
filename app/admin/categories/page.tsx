@@ -11,7 +11,6 @@ export default async function AdminCategoriesPage() {
   const categories = await prisma.category.findMany({
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     include: {
-      parent: { select: { id: true, name: true, slug: true } },
       _count: { select: { products: true } },
     },
   });
@@ -29,7 +28,6 @@ export default async function AdminCategoriesPage() {
         <thead>
           <tr className="border-b border-[#ebe6df] text-xs text-zinc-500">
             <th className="px-4 py-3 font-medium">Название</th>
-            <th className="px-4 py-3 font-medium">Родитель</th>
             <th className="px-4 py-3 font-medium">Товаров</th>
             <th className="px-4 py-3 font-medium">На сайте</th>
           </tr>
@@ -45,18 +43,6 @@ export default async function AdminCategoriesPage() {
                   {!c.isActive ? (
                     <span className="ml-2 text-xs text-amber-800">(скрыта)</span>
                   ) : null}
-                </td>
-                <td className="px-4 py-3 text-zinc-700">
-                  {c.parent ? (
-                    <Link
-                      href={`/catalog?category=${encodeURIComponent(c.parent.slug)}`}
-                      className="hover:text-zinc-950 hover:underline"
-                    >
-                      {stripLatinParentheticals(c.parent.name)}
-                    </Link>
-                  ) : (
-                    "—"
-                  )}
                 </td>
                 <td className="px-4 py-3 tabular-nums text-zinc-800">{c._count.products}</td>
                 <td className="px-4 py-3">
