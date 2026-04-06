@@ -86,7 +86,7 @@ export function Footer() {
             href="https://t.me/resaleshoppingg"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f3ede4] px-4 py-2 text-xs uppercase tracking-[0.14em] text-zinc-800 ring-1 ring-[#d9d2c8] transition hover:bg-white"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#229ED9] px-4 py-2 text-xs uppercase tracking-[0.14em] text-white transition hover:bg-[#1D8FCC]"
           >
             <span aria-hidden className="inline-flex h-5 w-5 items-center justify-center">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">

@@ -4,41 +4,20 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 const NOMINALS = [
-  { label: "50 000 ₽", slug: "gift-card-50000" },
-  { label: "100 000 ₽", slug: "gift-card-100000" },
-  { label: "500 000 ₽", slug: "gift-card-500000" },
+  { label: "50 000 ₽", slug: "gift-card-50000", image: "/gift-cards/card-50000.png" },
+  { label: "100 000 ₽", slug: "gift-card-100000", image: "/gift-cards/card-100000.png" },
+  { label: "500 000 ₽", slug: "gift-card-500000", image: "/gift-cards/card-500000.png" },
 ] as const;
-
-/** Три варианта: PSD с бантом, Unsplash, вектор Freepik. */
-const DESIGNS = [
-  {
-    label: "С бантом",
-    image:
-      "https://img.freepik.com/premium-psd/blank-gift-card-greeting-with-red-ribbon-bow-3d-rendering-isolated-transparent-background_808337-29260.jpg",
-  },
-  {
-    label: "Классика",
-    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    label: "Подарочный",
-    image:
-      "https://img.freepik.com/premium-vector/gift-card-with-blue-ribbon-bow-illustration_118124-3096.jpg",
-  },
-];
 
 export default function GiftCardsPage() {
   const router = useRouter();
-  const [designIdx, setDesignIdx] = useState(0);
   const [slug, setSlug] = useState<string>(NOMINALS[0].slug);
 
-  const design = useMemo(() => DESIGNS[designIdx]!, [designIdx]);
-
-  const prevDesign = () => setDesignIdx((i) => (i === 0 ? DESIGNS.length - 1 : i - 1));
-  const nextDesign = () => setDesignIdx((i) => (i === DESIGNS.length - 1 ? 0 : i + 1));
+  const selectedNominal = useMemo(() => NOMINALS.find((n) => n.slug === slug) ?? NOMINALS[0], [slug]);
 
   const onBuy = () => {
-    const params = new URLSearchParams({ gift: slug, design: String(designIdx) });
+    const designIdx = NOMINALS.findIndex((n) => n.slug === slug);
+    const params = new URLSearchParams({ gift: slug, design: String(Math.max(0, designIdx)) });
     router.push(`/checkout?${params.toString()}`);
   };
 
@@ -56,38 +35,15 @@ export default function GiftCardsPage() {
 
       <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="space-y-4 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Выберите дизайн карты</p>
-          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec] aspect-[16/10]">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">Подарочная карта</p>
+          <div className="relative overflow-hidden rounded-2xl border border-[#d9d2c8] bg-[#f4f1ec] p-2 md:p-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={design.image}
-              alt={design.label}
-              className="h-full w-full object-cover"
+              src={selectedNominal.image}
+              alt={`Подарочная карта ${selectedNominal.label}`}
+              className="mx-auto w-full max-w-[920px] rounded-[20px] object-contain shadow-[0_12px_24px_rgba(24,24,27,0.16)]"
             />
-            <div className="absolute inset-y-0 left-2 flex items-center">
-              <button
-                type="button"
-                onClick={prevDesign}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9d2c8] bg-white/95 text-lg text-zinc-800 shadow transition hover:bg-white"
-                aria-label="Предыдущий дизайн"
-              >
-                ❮
-              </button>
-            </div>
-            <div className="absolute inset-y-0 right-2 flex items-center">
-              <button
-                type="button"
-                onClick={nextDesign}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9d2c8] bg-white/95 text-lg text-zinc-800 shadow transition hover:bg-white"
-                aria-label="Следующий дизайн"
-              >
-                ❯
-              </button>
-            </div>
           </div>
-          <p className="text-center text-sm text-zinc-600">
-            {design.label} · {designIdx + 1} / {DESIGNS.length}
-          </p>
         </div>
 
         <div className="space-y-6 rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6">
