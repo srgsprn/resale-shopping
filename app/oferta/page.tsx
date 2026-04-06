@@ -1,23 +1,7 @@
 const documents = [
   {
-    title: "Агентский договор",
-    href: "/oferta-docs/agentskiy-dogovor.pdf",
-  },
-  {
     title: "Договор купли-продажи",
     href: "/oferta-docs/dogovor-kupli-prodazhi.pdf",
-  },
-  {
-    title: "Пользовательское соглашение",
-    href: "/oferta-docs/polzovatelskoe-soglashenie.pdf",
-  },
-  {
-    title: "Оферта Яндекс Сплит",
-    href: "/oferta-docs/oferta-yandex-split.pdf",
-  },
-  {
-    title: "Лицензии",
-    href: "/oferta-docs/licenzii.pdf",
   },
 ];
 
