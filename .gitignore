@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# Admin uploads (файлы из админки не в репозитории)
+/public/uploads/admin/*
+!/public/uploads/admin/.gitkeep
+
 # debug
 npm-debug.log*
 yarn-debug.log*
