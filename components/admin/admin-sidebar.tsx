@@ -11,7 +11,6 @@ const NAV: Array<{ href: string; label: string }> = [
   { href: "/admin/categories", label: "Категории" },
   { href: "/admin/brands", label: "Бренды" },
   { href: "/admin/orders", label: "Заказы" },
-  { href: "/admin/seo-pages", label: "SEO" },
   { href: "/admin/users", label: "Пользователи" },
 ];
 

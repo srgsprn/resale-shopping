@@ -15,7 +15,7 @@ export default async function AdminOrdersPage() {
   return (
     <section className="space-y-4">
       <h1 className="text-2xl font-semibold">Заказы</h1>
-      <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white p-4">
+      <div className="hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-white p-4 md:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-zinc-200 text-zinc-500">
@@ -42,6 +42,37 @@ export default async function AdminOrdersPage() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="space-y-3 md:hidden">
+        {orders.map((o) => (
+          <article key={o.id} className="rounded-2xl border border-[#d9d2c8] bg-white p-4">
+            <div className="flex items-start justify-between gap-3">
+              <Link
+                href={`/admin/orders/${encodeURIComponent(o.orderNumber)}`}
+                className="text-sm font-semibold text-zinc-900 underline-offset-2 hover:underline"
+              >
+                {o.orderNumber}
+              </Link>
+              <span className="shrink-0 text-xs text-zinc-500">
+                {o.createdAt.toLocaleDateString("ru-RU", { day: "2-digit", month: "short", year: "numeric" })}
+              </span>
+            </div>
+            <div className="mt-3 space-y-2 text-sm">
+              <p className="flex items-center justify-between gap-3">
+                <span className="text-zinc-500">Клиент</span>
+                <span className="text-right text-zinc-900">{o.customer.fullName}</span>
+              </p>
+              <p className="flex items-center justify-between gap-3">
+                <span className="text-zinc-500">Сумма</span>
+                <span className="font-medium text-zinc-900">{formatMoney(o.totalMinor, o.currency)}</span>
+              </p>
+              <p className="flex items-center justify-between gap-3">
+                <span className="text-zinc-500">Статус</span>
+                <span className="text-right text-zinc-800">{formatPaymentStatusRu(o.paymentStatus)}</span>
+              </p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

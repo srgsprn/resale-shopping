@@ -47,15 +47,19 @@ export default async function AdminProductsPage({ searchParams }: SearchProps) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Товары</h1>
-        <p className="mt-1 text-sm text-zinc-600">
-          Всего: {total} · Стр. {curPage} из {totalPages}
-          {" · "}
-          <Link href="/admin/products/add" className="font-medium text-[#6b5344] underline-offset-2 hover:underline">
-            Добавить товар
-          </Link>
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold text-zinc-900">Товары</h1>
+          <p className="mt-1 hidden text-sm text-zinc-600 sm:block">
+            Всего: {total} · Стр. {curPage} из {totalPages}
+          </p>
+        </div>
+        <Link
+          href="/admin/products/add"
+          className="inline-flex items-center justify-center rounded-full border-2 border-[#6b5344] bg-[#e8dcc8] px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-900 shadow-sm transition hover:bg-[#dfc9ae]"
+        >
+          Добавить товар
+        </Link>
       </div>
 
       <form
