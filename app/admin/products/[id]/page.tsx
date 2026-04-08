@@ -35,12 +35,20 @@ export default async function AdminProductEditPage({ params }: Props) {
             {product.brand} {product.name}
           </p>
         </div>
-        <Link
-          href="/admin/products"
-          className="text-sm font-medium text-zinc-700 underline-offset-2 hover:underline"
-        >
-          ← К списку
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href={`/product/${product.slug}`}
+            className="rounded-full border border-[#c4b8a8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-800"
+          >
+            Перейти к товару
+          </Link>
+          <Link
+            href="/admin/products"
+            className="text-sm font-medium text-zinc-700 underline-offset-2 hover:underline"
+          >
+            ← К списку
+          </Link>
+        </div>
       </div>
       <ProductForm
         mode="edit"

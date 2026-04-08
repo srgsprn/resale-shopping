@@ -43,7 +43,7 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
   const [brand, setBrand] = useState(product?.brand ?? "");
   const [brandId, setBrandId] = useState(inferredBrandId);
   const [name, setName] = useState(product?.name ?? "");
-  const [description, setDescription] = useState(product?.description ?? "");
+  const [description, setDescription] = useState("");
   const [conditionLabel, setConditionLabel] = useState(product?.conditionLabel ?? "");
   const [seoTitle, setSeoTitle] = useState(product?.seoTitle ?? "");
   const [seoDescription, setSeoDescription] = useState(product?.seoDescription ?? "");
@@ -357,7 +357,7 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
               />
               <label className="flex items-center gap-1 text-xs">
                 <input type="radio" name="mainImg" checked={row.isMain} onChange={() => setMain(idx)} />
-                Главное
+                Главная
               </label>
               <button type="button" onClick={() => removeRow(idx)} className="text-xs text-red-700">
                 Удалить

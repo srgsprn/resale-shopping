@@ -278,9 +278,14 @@ function CheckoutContent() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="https://max.ru/favicon.ico" alt="MAX" className="h-5 w-5 rounded-sm" />
                   </button>
-                  <div className="ml-auto flex h-8 w-8 -translate-x-1 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setMessengerType((v) => (v === "telegram" ? "max" : "telegram"))}
+                    className="ml-auto flex h-8 w-8 -translate-x-1 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm"
+                    aria-label="Переключить мессенджер"
+                  >
                     ▾
-                  </div>
+                  </button>
                 </div>
               </div>
               <div>
