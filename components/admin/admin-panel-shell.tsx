@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
@@ -10,6 +10,18 @@ export function AdminPanelShell({ children }: Readonly<{ children: React.ReactNo
   const pathname = usePathname();
   const isLogin = pathname === "/admin/login" || pathname?.startsWith("/admin/login/");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileNavOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileNavOpen]);
 
   if (isLogin) {
     return (

@@ -100,24 +100,25 @@ export default function CartPage() {
               {items.map((item) => (
                 <article
                   key={item.id}
-                  className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-3 rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:gap-5 md:p-5"
+                  className="rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:items-center md:gap-5 md:p-5"
                 >
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.id)}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 transition hover:bg-[#f4f0ea]"
-                    aria-label="Удалить товар"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
-                      <path
-                        d="M4 7h16M9 7V5h6v2m-7 0 1 12h6l1-12"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
+                  <div className="grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-3 md:contents">
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 transition hover:bg-[#f4f0ea]"
+                      aria-label="Удалить товар"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
+                        <path
+                          d="M4 7h16M9 7V5h6v2m-7 0 1 12h6l1-12"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
 
                   <Link
                     href={`/product/${item.slug}`}
@@ -131,29 +132,32 @@ export default function CartPage() {
                     {item.name}
                   </Link>
 
-                  <div className="col-span-3 mt-2 justify-self-center inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1 md:col-span-1 md:mt-0">
-                    <button
-                      type="button"
-                      onClick={() => changeQty(item.id, -1)}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
-                      aria-label="Уменьшить количество"
-                    >
-                      −
-                    </button>
-                    <span className="min-w-6 text-center text-sm font-semibold tabular-nums text-zinc-900">{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => changeQty(item.id, 1)}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
-                      aria-label="Увеличить количество"
-                    >
-                      +
-                    </button>
-                  </div>
-
                   <p className="justify-self-end text-right text-base font-semibold md:text-lg">
                     {formatMoney(item.priceMinor * item.quantity, item.currency)}
                   </p>
+                  </div>
+
+                  <div className="mt-3 flex justify-center md:col-span-1 md:mt-0 md:block md:justify-self-center">
+                    <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
+                      <button
+                        type="button"
+                        onClick={() => changeQty(item.id, -1)}
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                        aria-label="Уменьшить количество"
+                      >
+                        −
+                      </button>
+                      <span className="min-w-6 text-center text-sm font-semibold tabular-nums text-zinc-900">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => changeQty(item.id, 1)}
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                        aria-label="Увеличить количество"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
                 </article>
               ))}
             </div>

@@ -36,7 +36,7 @@ export function AdminSidebar({ mobileOpen, onMobileClose }: Props) {
     <>
       <aside
         id="admin-nav-drawer"
-        className={`fixed inset-y-0 left-0 z-[60] flex w-[min(18rem,88vw)] max-w-[320px] flex-col border-r border-[#d9d2c8] bg-[#f1ece5] shadow-xl transition-transform duration-200 ease-out md:static md:z-0 md:w-60 md:max-w-none md:translate-x-0 md:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-[90] flex w-[min(18rem,88vw)] max-w-[320px] flex-col border-r border-[#d9d2c8] bg-[#f1ece5] shadow-xl transition-transform duration-200 ease-out md:static md:z-0 md:w-60 md:max-w-none md:translate-x-0 md:shadow-none ${
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -78,7 +78,7 @@ export function AdminSidebar({ mobileOpen, onMobileClose }: Props) {
       {mobileOpen ? (
         <button
           type="button"
-          className="fixed inset-0 z-[55] bg-zinc-900/40 backdrop-blur-[2px] md:hidden"
+          className="fixed inset-0 z-[80] bg-zinc-900/40 backdrop-blur-[2px] md:hidden"
           aria-label="Закрыть меню"
           onClick={onMobileClose}
         />
