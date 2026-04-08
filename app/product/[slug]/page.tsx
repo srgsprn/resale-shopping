@@ -133,6 +133,7 @@ export default async function ProductPage({ params }: Props) {
         priceMinor: product.priceMinor,
         currency: product.currency,
       });
+  const displayH1 = stripResaleShoppingSuffix(decodeHtmlEntities(seo?.h1 ?? displayName));
 
   const wishItem = {
     id: product.id,
@@ -196,11 +197,11 @@ export default async function ProductPage({ params }: Props) {
         <div className="space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-7">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
-              {seo?.h1 ?? displayName}
+              {displayH1}
             </h1>
             <p className="mt-1 text-sm text-zinc-600">
               Бренд: <span className="text-zinc-800">{displayBrand}</span>
-              {seo && displayName !== seo.h1 ? (
+              {seo && displayName !== displayH1 ? (
                 <>
                   {" "}
                   <span className="text-zinc-500">·</span>{" "}
