@@ -218,17 +218,6 @@ export default async function ProductPage({ params }: Props) {
             product={cartProduct}
             className="flex w-full justify-center rounded-xl border border-[#c9863c] bg-gradient-to-r from-[#f4c56f] to-[#d89b4f] px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-900 shadow-sm hover:brightness-105"
           />
-
-          <Link
-            href="/rassrochka"
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-900 transition hover:bg-amber-100"
-          >
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-zinc-900 text-[10px] font-bold text-amber-300">
-              T
-            </span>
-            Оформить рассрочку
-          </Link>
-
           <ProductConditionScale value={condition} />
 
           <div className="border-t border-[#ebe6df] pt-4">

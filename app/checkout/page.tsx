@@ -32,6 +32,9 @@ function CheckoutContent() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [messengerType, setMessengerType] = useState<"telegram" | "max">("telegram");
+  const [messengerHandle, setMessengerHandle] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -108,6 +111,9 @@ function CheckoutContent() {
             email,
             fullName,
             phone: phone || undefined,
+            address: address || undefined,
+            messengerType: messengerType || undefined,
+            messengerHandle: messengerHandle || undefined,
             note: mergedNote || undefined,
           },
         }),
@@ -221,16 +227,59 @@ function CheckoutContent() {
             </div>
             <div>
               <label htmlFor="phone" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
-                Телефон (необязательно)
+                Контактный телефон
               </label>
               <input
                 id="phone"
                 type="tel"
                 autoComplete="tel"
+                required
                 value={phone}
                 onChange={(ev) => setPhone(ev.target.value)}
                 className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
               />
+            </div>
+            <div>
+              <label htmlFor="address" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
+                Адрес
+              </label>
+              <input
+                id="address"
+                required
+                autoComplete="street-address"
+                value={address}
+                onChange={(ev) => setAddress(ev.target.value)}
+                className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+              />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label htmlFor="messengerType" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
+                  Мессенджер
+                </label>
+                <select
+                  id="messengerType"
+                  value={messengerType}
+                  onChange={(ev) => setMessengerType(ev.target.value as "telegram" | "max")}
+                  className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                >
+                  <option value="telegram">Telegram</option>
+                  <option value="max">MAX</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="messengerHandle" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
+                  Контакт в мессенджере
+                </label>
+                <input
+                  id="messengerHandle"
+                  required
+                  placeholder={messengerType === "telegram" ? "@username" : "@max"}
+                  value={messengerHandle}
+                  onChange={(ev) => setMessengerHandle(ev.target.value)}
+                  className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="note" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">

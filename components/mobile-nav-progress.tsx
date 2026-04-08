@@ -42,21 +42,23 @@ function MobileNavProgressInner() {
   }, []);
 
   return (
-    <div
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-[90] md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-      aria-live="polite"
-    >
-      <div
-        className={`h-[2px] w-full overflow-hidden bg-[#2d2720]/[0.07] transition-opacity duration-200 ${
-          loading ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {loading ? (
-          <div className="mobile-nav-progress-bar h-full w-[38%] max-w-[200px] rounded-full bg-gradient-to-r from-[#8f6b42] via-[#d4af37] to-[#8f6b42]" />
-        ) : null}
+    <>
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[95] hidden md:block" aria-live="polite">
+        <div className={`h-[2px] w-full overflow-hidden bg-[#2d2720]/[0.07] transition-opacity duration-200 ${loading ? "opacity-100" : "opacity-0"}`}>
+          {loading ? <div className="mobile-nav-progress-bar h-full w-[24%] max-w-[260px] rounded-full bg-gradient-to-r from-[#8f6b42] via-[#d4af37] to-[#8f6b42]" /> : null}
+        </div>
       </div>
-    </div>
+
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-[90] md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        aria-live="polite"
+      >
+        <div className={`h-[2px] w-full overflow-hidden bg-[#2d2720]/[0.07] transition-opacity duration-200 ${loading ? "opacity-100" : "opacity-0"}`}>
+          {loading ? <div className="mobile-nav-progress-bar h-full w-[38%] max-w-[200px] rounded-full bg-gradient-to-r from-[#8f6b42] via-[#d4af37] to-[#8f6b42]" /> : null}
+        </div>
+      </div>
+    </>
   );
 }
 

@@ -48,6 +48,9 @@ if [[ "${ADMIN_ENSURE:-0}" == "1" ]]; then
   npm run admin:ensure
 fi
 
+echo "==> Нормализация SKU (префикс RS)"
+npm run sku:normalize
+
 if [[ "${RUN_ALFA_IMPORT:-0}" == "1" ]]; then
   echo "==> Импорт каталога (RUN_ALFA_IMPORT=1)"
   npm run db:import:alfa-json

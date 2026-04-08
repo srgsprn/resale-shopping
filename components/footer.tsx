@@ -5,7 +5,6 @@ const clientLinks = [
   ["Как купить", "/pokupka"],
   ["Как продать", "/prodaja"],
   ["Доставка и возврат", "/delivery"],
-  ["Рассрочка", "/rassrochka"],
 ] as const;
 
 const companyLinks = [

@@ -12,6 +12,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:fix:p3009": "bash scripts/prisma-fix-p3009-admin-migration.sh",
     "db:seed": "node prisma/seed.js",
+    "sku:normalize": "node scripts/normalize-sku.cjs",
     "admin:ensure": "node scripts/ensure-admin.cjs",
     "db:import:woo": "node scripts/import-woocommerce.cjs",
     "db:sync:alfa": "node scripts/sync-alfa-site.mjs",

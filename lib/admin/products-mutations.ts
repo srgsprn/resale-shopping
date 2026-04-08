@@ -12,6 +12,13 @@ export type ProductMutationResult = { ok: true; slug?: string } | { error: strin
 
 type ImageInput = { url: string; alt?: string; isMain?: boolean };
 
+function normalizeSku(raw: string | null | undefined): string | null {
+  const value = (raw || "").trim().toUpperCase();
+  if (!value) return null;
+  if (value.startsWith("RS")) return value;
+  return `RS${value.replace(/^SKU[-_\s]*/i, "")}`;
+}
+
 function parseImagesJson(raw: string): ImageInput[] {
   try {
     const parsed = JSON.parse(raw || "[]") as unknown;
@@ -102,7 +109,7 @@ export async function createProductFromFormData(formData: FormData): Promise<Pro
         shortDescription: (formData.get("shortDescription") as string)?.trim() || null,
         description: (formData.get("description") as string)?.trim() || null,
         conditionLabel: (formData.get("conditionLabel") as string)?.trim() || null,
-        sku: (formData.get("sku") as string)?.trim() || null,
+        sku: normalizeSku(formData.get("sku") as string),
         seoTitle: (formData.get("seoTitle") as string)?.trim() || null,
         seoDescription: (formData.get("seoDescription") as string)?.trim() || null,
         h1: (formData.get("h1") as string)?.trim() || null,
@@ -194,7 +201,7 @@ export async function updateProductFromFormData(formData: FormData): Promise<Pro
           shortDescription: (formData.get("shortDescription") as string)?.trim() || null,
           description: (formData.get("description") as string)?.trim() || null,
           conditionLabel: (formData.get("conditionLabel") as string)?.trim() || null,
-          sku: (formData.get("sku") as string)?.trim() || null,
+          sku: normalizeSku(formData.get("sku") as string),
           seoTitle: (formData.get("seoTitle") as string)?.trim() || null,
           seoDescription: (formData.get("seoDescription") as string)?.trim() || null,
           h1: (formData.get("h1") as string)?.trim() || null,

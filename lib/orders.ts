@@ -12,6 +12,9 @@ export type CheckoutCustomer = {
   email: string;
   fullName: string;
   phone?: string | null;
+  address?: string | null;
+  messengerType?: "telegram" | "max" | null;
+  messengerHandle?: string | null;
   note?: string | null;
 };
 
@@ -66,6 +69,19 @@ export async function createPendingOrderFromCheckout(items: CheckoutCartLine[], 
   const currency = products[0]?.currency ?? "RUB";
   const orderNumber = buildOrderNumber(crypto.randomUUID());
 
+  const phone = customer.phone?.trim() || null;
+  const address = customer.address?.trim() || null;
+  const messengerType = customer.messengerType === "max" ? "max" : customer.messengerType === "telegram" ? "telegram" : null;
+  const messengerHandle = customer.messengerHandle?.trim() || null;
+  const rawNote = customer.note?.trim() || "";
+  const contactLines: string[] = [];
+  if (address) contactLines.push(`Адрес: ${address}`);
+  if (phone) contactLines.push(`Телефон: ${phone}`);
+  if (messengerType && messengerHandle) {
+    contactLines.push(`${messengerType === "telegram" ? "Telegram" : "MAX"}: ${messengerHandle}`);
+  }
+  const customerNote = [rawNote, ...contactLines].filter(Boolean).join("\n").trim() || null;
+
   return prisma.order.create({
     data: {
       orderNumber,
@@ -75,9 +91,19 @@ export async function createPendingOrderFromCheckout(items: CheckoutCartLine[], 
       subtotalMinor: subtotal,
       totalMinor: subtotal,
       currency,
-      customerNote: customer.note?.trim() || null,
+      customerNote,
+      telegram: messengerType === "telegram" ? messengerHandle : null,
+      source: messengerType,
       orderSnapshot: {
         source: "checkout-form",
+        contact: {
+          phone,
+          address,
+          messengerType,
+          messengerHandle,
+          telegram: messengerType === "telegram" ? messengerHandle : null,
+          max: messengerType === "max" ? messengerHandle : null,
+        },
         items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
       },
       items: { create: creates },

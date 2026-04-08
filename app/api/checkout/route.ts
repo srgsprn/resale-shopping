@@ -19,6 +19,9 @@ const bodySchema = z.object({
     email: z.string().email(),
     fullName: z.string().min(2),
     phone: z.string().max(40).optional().nullable(),
+    address: z.string().max(500).optional().nullable(),
+    messengerType: z.enum(["telegram", "max"]).optional().nullable(),
+    messengerHandle: z.string().max(80).optional().nullable(),
     note: z.string().max(2000).optional().nullable(),
   }),
 });
