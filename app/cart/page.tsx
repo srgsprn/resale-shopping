@@ -132,12 +132,12 @@ export default function CartPage() {
                     {item.name}
                   </Link>
 
-                  <p className="justify-self-end text-right text-base font-semibold md:text-lg">
+                  <p className="hidden justify-self-end text-right text-base font-semibold md:block md:text-lg">
                     {formatMoney(item.priceMinor * item.quantity, item.currency)}
                   </p>
                   </div>
 
-                  <div className="mt-3 flex justify-center md:col-span-1 md:mt-0 md:block md:justify-self-center">
+                  <div className="justify-self-end md:col-span-1 md:justify-self-center">
                     <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
                       <button
                         type="button"
@@ -158,6 +158,10 @@ export default function CartPage() {
                       </button>
                     </div>
                   </div>
+
+                  <p className="col-start-2 col-span-3 mt-2 text-sm font-medium text-zinc-700 md:hidden">
+                    Стоимость: <span className="font-semibold text-zinc-900">{formatMoney(item.priceMinor * item.quantity, item.currency)}</span>
+                  </p>
                 </article>
               ))}
             </div>
