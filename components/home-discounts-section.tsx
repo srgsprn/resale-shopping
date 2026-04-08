@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 
 export type DiscountProduct = {
   id: string;
@@ -71,6 +72,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
       >
         {products.map((product) => {
           const discountedMinor = Math.max(0, Math.round(product.priceMinor * 0.9));
+          const displayName = stripResaleShoppingSuffix(product.name);
           return (
           <motion.article
             key={product.id}
@@ -84,7 +86,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={product.images[0]?.url || "https://placehold.co/800x1000/f4f4f5/18181b?text=Resale"}
-                    alt={product.images[0]?.alt || product.name}
+                    alt={product.images[0]?.alt || displayName}
                     className="h-full w-full object-cover transition-[transform,filter] duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:filter group-hover:brightness-[1.02]"
                     loading="lazy"
                   />
@@ -95,7 +97,7 @@ export function HomeDiscountsSection({ products }: { products: DiscountProduct[]
                   {product.brand}
                 </p>
                 <h3 className="font-display text-[15px] font-normal leading-snug tracking-tight text-zinc-900 md:text-[1.05rem]">
-                  {product.name}
+                  {displayName}
                 </h3>
                 <div className="flex items-baseline gap-2">
                   <p className="text-sm tabular-nums tracking-tight text-zinc-500 line-through">

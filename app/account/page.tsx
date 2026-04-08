@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { formatMoney } from "@/lib/money";
 import { prisma } from "@/lib/prisma";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 
 async function loadSpotlightProducts() {
   const raw = await prisma.product.findMany({
@@ -33,17 +34,18 @@ function AccountDealCard({
 }) {
   const img = product.images[0]?.url || "https://placehold.co/600x600/f4f4f5/71717a?text=Resale";
   const sale = product.compareAtMinor != null && product.compareAtMinor > product.priceMinor;
+  const displayName = stripResaleShoppingSuffix(product.name);
 
   return (
     <article className="overflow-hidden rounded-xl border border-[#d9d2c8] bg-white shadow-sm transition hover:shadow-md">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="aspect-square w-full bg-zinc-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img} alt={product.images[0]?.alt || product.name} className="h-full w-full object-cover" />
+          <img src={img} alt={product.images[0]?.alt || displayName} className="h-full w-full object-cover" />
         </div>
         <div className="space-y-1 p-3">
           <p className="text-[10px] uppercase tracking-[0.18em] text-zinc-500">{product.brand}</p>
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-snug text-zinc-900">{product.name}</h3>
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-snug text-zinc-900">{displayName}</h3>
           {sale ? (
             <p className="text-sm">
               <span className="text-zinc-400 line-through">{formatMoney(product.compareAtMinor!, product.currency)}</span>{" "}

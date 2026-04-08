@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 import { readWishlist, type WishlistItem } from "@/lib/wishlist";
 
 export default function WishlistPage() {
@@ -61,23 +62,26 @@ export default function WishlistPage() {
         </section>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {items.map((item) => (
-            <article key={item.id} className="overflow-hidden rounded-2xl border border-[#d9d2c8] bg-white">
-              <Link href={`/product/${item.slug}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.imageUrl || "https://placehold.co/800x800/f4f4f5/18181b?text=Resale"}
-                  alt={item.name}
-                  className="aspect-square w-full object-cover"
-                />
-                <div className="space-y-1 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">{item.brand}</p>
-                  <h2 className="line-clamp-2 text-sm font-medium text-zinc-900">{item.name}</h2>
-                  <p className="text-sm text-zinc-800">{formatMoney(item.priceMinor, item.currency)}</p>
-                </div>
-              </Link>
-            </article>
-          ))}
+          {items.map((item) => {
+            const displayName = stripResaleShoppingSuffix(item.name);
+            return (
+              <article key={item.id} className="overflow-hidden rounded-2xl border border-[#d9d2c8] bg-white">
+                <Link href={`/product/${item.slug}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.imageUrl || "https://placehold.co/800x800/f4f4f5/18181b?text=Resale"}
+                    alt={displayName}
+                    className="aspect-square w-full object-cover"
+                  />
+                  <div className="space-y-1 p-4">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-zinc-500">{item.brand}</p>
+                    <h2 className="line-clamp-2 text-sm font-medium text-zinc-900">{displayName}</h2>
+                    <p className="text-sm text-zinc-800">{formatMoney(item.priceMinor, item.currency)}</p>
+                  </div>
+                </Link>
+              </article>
+            );
+          })}
         </div>
       )}
     </section>

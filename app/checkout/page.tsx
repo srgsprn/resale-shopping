@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 
 const DESIGN_LABELS = ["С бантом", "Классика", "Подарочный"];
 
@@ -405,7 +406,7 @@ function CheckoutContent() {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs uppercase tracking-wider text-zinc-500">{item.brand}</p>
-                  <p className="line-clamp-2 text-sm font-medium leading-snug">{item.name}</p>
+                  <p className="line-clamp-2 text-sm font-medium leading-snug">{stripResaleShoppingSuffix(item.name)}</p>
                 </div>
               </li>
             ))}

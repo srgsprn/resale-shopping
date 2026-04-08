@@ -5,6 +5,7 @@ import { useMemo, useState, useEffect } from "react";
 
 import { dispatchCartUpdated } from "@/lib/cart-events";
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 
 type CartItem = {
   id: string;
@@ -97,11 +98,13 @@ export default function CartPage() {
           <h1 className="text-3xl font-semibold tracking-tight">Корзина</h1>
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
             <div className="space-y-4">
-              {items.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:items-center md:gap-5 md:p-5"
-                >
+              {items.map((item) => {
+                const displayName = stripResaleShoppingSuffix(item.name);
+                return (
+                  <article
+                    key={item.id}
+                    className="rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:items-center md:gap-5 md:p-5"
+                  >
                   <div className="grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-3 md:contents">
                     <button
                       type="button"
@@ -129,7 +132,7 @@ export default function CartPage() {
                   </Link>
 
                   <Link href={`/product/${item.slug}`} className="min-w-0 text-base font-medium text-zinc-900 hover:underline">
-                    {item.name}
+                    {displayName}
                   </Link>
 
                   <p className="hidden justify-self-end text-right text-base font-semibold md:block md:text-lg">
@@ -162,8 +165,9 @@ export default function CartPage() {
                   <p className="col-start-2 col-span-3 mt-2 text-sm font-medium text-zinc-700 md:hidden">
                     Стоимость: <span className="font-semibold text-zinc-900">{formatMoney(item.priceMinor * item.quantity, item.currency)}</span>
                   </p>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
 
             <aside className="rounded-[28px] border border-[#d9d2c8] bg-[#f8f6f2] p-6 md:p-8 lg:sticky lg:top-24">
