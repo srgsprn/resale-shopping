@@ -90,9 +90,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function InfoBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-[#ebe6df] py-2.5 text-sm last:border-b-0">
+    <div className="flex flex-col gap-1 border-b border-[#ebe6df] py-2.5 text-sm last:border-b-0 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
       <dt className="shrink-0 text-zinc-500">{label}</dt>
-      <dd className="text-right text-zinc-900">{value}</dd>
+      <dd className="min-w-0 break-words text-zinc-900 sm:max-w-[65%] sm:text-right">{value}</dd>
     </div>
   );
 }
@@ -190,11 +190,12 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,440px)]">
-        <div>
+        {/* На мобиле сначала блок покупки и характеристики — иначе длинное фото уводит «Информация о товаре» за несколько экранов вниз. */}
+        <div className="order-2 lg:order-1">
           <ProductGallery images={product.images} productName={displayName} />
         </div>
 
-        <div className="space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-6 md:p-7">
+        <div className="order-1 space-y-5 rounded-[28px] border border-[#d9d2c8] bg-white p-6 lg:order-2 md:p-7">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
               {displayH1}

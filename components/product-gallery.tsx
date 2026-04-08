@@ -18,7 +18,7 @@ export function ProductGallery({ images, productName }: { images: ProductGallery
       <img
         src={safeImages[active]?.url || safeImages[0].url}
         alt={safeImages[active]?.alt || productName}
-        className="w-full rounded-2xl border border-[#d9d2c8] bg-white object-cover"
+        className="mx-auto w-full max-h-[min(72vh,640px)] rounded-2xl border border-[#d9d2c8] bg-white object-cover lg:max-h-none"
       />
       {safeImages.length > 1 ? (
         <div className="grid grid-cols-5 gap-2">
