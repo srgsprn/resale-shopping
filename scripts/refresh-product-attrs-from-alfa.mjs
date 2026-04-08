@@ -1,17 +1,19 @@
 /**
  * Подтягивает с alfa-resale.ru HTML карточки товара и обновляет в БД поля:
  * size, material, color, gender, completeness, conditionLabel, brand (строка).
- * Артикул (sku) не трогаем — на сайте он может быть уже нормализован (префикс RS).
- * Фото и остальные поля не меняет.
+ * Артикул (sku) не трогаем.
  *
  * Запуск: node scripts/refresh-product-attrs-from-alfa.mjs
- * Опции: ALFA_BASE_URL, ALFA_DELAY_MS (пауза между запросами), REFRESH_LIMIT (число товаров для теста)
+ * ALFA_BATCH_SIZE — параллельных HTTP-запросов за шаг (по умолчанию 8)
+ * ALFA_DELAY_MS — пауза между пакетами (по умолчанию 60)
+ * REFRESH_LIMIT — ограничить число товаров (тест)
  */
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const BASE_URL = (process.env.ALFA_BASE_URL || "https://alfa-resale.ru").replace(/\/$/, "");
-const DELAY_MS = Math.max(0, Number(process.env.ALFA_DELAY_MS || "120"));
+const BATCH_SIZE = Math.max(1, Math.min(20, Number(process.env.ALFA_BATCH_SIZE || "8")));
+const DELAY_MS = Math.max(0, Number(process.env.ALFA_DELAY_MS || "60"));
 const LIMIT = process.env.REFRESH_LIMIT ? Math.max(1, Number(process.env.REFRESH_LIMIT)) : null;
 const LOG_EVERY = Math.max(1, Number(process.env.REFRESH_LOG_EVERY || "25"));
 
@@ -71,7 +73,7 @@ function sleep(ms) {
 }
 
 async function fetchHtml(url) {
-  const res = await fetch(url, { headers: { "User-Agent": "resale-shopping-attrs-refresh/1.0" } });
+  const res = await fetch(url, { headers: { "User-Agent": "resale-shopping-attrs-refresh/1.1" } });
   if (!res.ok) return "";
   return res.text();
 }
@@ -84,65 +86,80 @@ async function main() {
     ...(LIMIT ? { take: LIMIT } : {}),
   });
 
-  console.log(`[attrs-refresh] Товаров к обходу: ${products.length} (base ${BASE_URL})`);
+  console.log(
+    `[attrs-refresh] Товаров: ${products.length}, пакеты по ${BATCH_SIZE} запросов, пауза ${DELAY_MS}ms между пакетами (${BASE_URL})`,
+  );
   let updated = 0;
   let skipped = 0;
+  let done = 0;
   const t0 = Date.now();
 
-  for (let i = 0; i < products.length; i += 1) {
-    const p = products[i];
-    const n = i + 1;
-    if (n === 1 || n % LOG_EVERY === 0 || n === products.length) {
-      console.log(`[attrs-refresh] ${n}/${products.length} … обновлено ${updated}, пропуск ${skipped}`);
-    }
-
-    const url = `${BASE_URL}/product/${p.slug}/`;
-    let html = "";
+  for (let i = 0; i < products.length; i += BATCH_SIZE) {
+    const batch = products.slice(i, i + BATCH_SIZE);
+    const urls = batch.map((p) => `${BASE_URL}/product/${p.slug}/`);
+    let htmls;
     try {
-      html = await fetchHtml(url);
+      htmls = await Promise.all(urls.map((url) => fetchHtml(url)));
     } catch {
-      skipped += 1;
+      for (const p of batch) {
+        skipped += 1;
+        done += 1;
+        logProgress(done, products.length, updated, skipped);
+      }
       if (DELAY_MS) await sleep(DELAY_MS);
       continue;
     }
 
-    if (!html || html.length < 500) {
-      skipped += 1;
-      if (DELAY_MS) await sleep(DELAY_MS);
-      continue;
-    }
+    for (let j = 0; j < batch.length; j += 1) {
+      const p = batch[j];
+      const html = htmls[j] || "";
+      done += 1;
 
-    const attrs = extractShopAttributes(html);
-    const attrFields = mapAlfaAttributes(attrs, p.brand);
-    const conditionLabel = extractConditionFromStock(html);
+      if (!html || html.length < 500) {
+        skipped += 1;
+        logProgress(done, products.length, updated, skipped);
+        continue;
+      }
 
-    const data = {};
-    if (attrFields.brand && attrFields.brand.trim()) data.brand = attrFields.brand.trim();
-    if (attrFields.size) data.size = attrFields.size;
-    if (attrFields.material) data.material = attrFields.material;
-    if (attrFields.color) data.color = attrFields.color;
-    if (attrFields.gender) data.gender = attrFields.gender;
-    if (attrFields.completeness) data.completeness = attrFields.completeness;
-    if (conditionLabel) data.conditionLabel = conditionLabel;
+      const attrs = extractShopAttributes(html);
+      const attrFields = mapAlfaAttributes(attrs, p.brand);
+      const conditionLabel = extractConditionFromStock(html);
 
-    if (Object.keys(data).length === 0) {
-      skipped += 1;
-      if (DELAY_MS) await sleep(DELAY_MS);
-      continue;
-    }
+      const data = {};
+      if (attrFields.brand && attrFields.brand.trim()) data.brand = attrFields.brand.trim();
+      if (attrFields.size) data.size = attrFields.size;
+      if (attrFields.material) data.material = attrFields.material;
+      if (attrFields.color) data.color = attrFields.color;
+      if (attrFields.gender) data.gender = attrFields.gender;
+      if (attrFields.completeness) data.completeness = attrFields.completeness;
+      if (conditionLabel) data.conditionLabel = conditionLabel;
 
-    try {
-      await prisma.product.update({ where: { id: p.id }, data });
-      updated += 1;
-    } catch (e) {
-      console.warn(`[attrs-refresh] Ошибка update ${p.slug}:`, e?.message || e);
-      skipped += 1;
+      if (Object.keys(data).length === 0) {
+        skipped += 1;
+        logProgress(done, products.length, updated, skipped);
+        continue;
+      }
+
+      try {
+        await prisma.product.update({ where: { id: p.id }, data });
+        updated += 1;
+      } catch (e) {
+        console.warn(`[attrs-refresh] Ошибка update ${p.slug}:`, e?.message || e);
+        skipped += 1;
+      }
+      logProgress(done, products.length, updated, skipped);
     }
 
     if (DELAY_MS) await sleep(DELAY_MS);
   }
 
   console.log(`[attrs-refresh] Готово за ${((Date.now() - t0) / 1000).toFixed(1)}s: обновлено ${updated}, пропуск/ошибки ${skipped}`);
+}
+
+function logProgress(done, total, updated, skipped) {
+  if (done === 1 || done % LOG_EVERY === 0 || done === total) {
+    console.log(`[attrs-refresh] ${done}/${total} … обновлено ${updated}, пропуск ${skipped}`);
+  }
 }
 
 main()
