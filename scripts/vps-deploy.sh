@@ -48,6 +48,12 @@ if [[ "${ADMIN_ENSURE:-0}" == "1" ]]; then
   npm run admin:ensure
 fi
 
+echo "==> Нормализация названий товаров (убрать приписку Resale Shopping)"
+npm run names:normalize
+
+echo "==> Синхронизация брендов из существующих товаров"
+npm run brands:sync
+
 echo "==> Нормализация SKU (префикс RS)"
 npm run sku:normalize
 

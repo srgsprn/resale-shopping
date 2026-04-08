@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { createProduct, updateProduct, type ProductActionState } from "@/app/admin/products/actions";
 import { slugifyLatin } from "@/lib/admin/slug";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 
 import { ImageUploadZone } from "@/components/admin/image-upload-zone";
 
@@ -37,8 +38,18 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
   const [state, formAction] = useFormState(actionFn, {} as ProductActionState);
 
   const [slug, setSlug] = useState(product?.slug ?? "");
+  const inferredBrandId =
+    product?.brandId ?? brands.find((b) => b.name.trim().toLowerCase() === (product?.brand ?? "").trim().toLowerCase())?.id ?? "";
   const [brand, setBrand] = useState(product?.brand ?? "");
+  const [brandId, setBrandId] = useState(inferredBrandId);
   const [name, setName] = useState(product?.name ?? "");
+  const [description, setDescription] = useState(product?.description ?? "");
+  const [seoTitle, setSeoTitle] = useState(product?.seoTitle ?? "");
+  const [seoDescription, setSeoDescription] = useState(product?.seoDescription ?? "");
+  const [h1, setH1] = useState(product?.h1 ?? "");
+  const [canonical, setCanonical] = useState(product?.canonical ?? "");
+  const [ogTitle, setOgTitle] = useState(product?.ogTitle ?? "");
+  const [ogDescription, setOgDescription] = useState(product?.ogDescription ?? "");
   const [images, setImages] = useState<Row[]>(() =>
     (product?.images?.length
       ? product.images.map((im) => ({ url: im.url, alt: im.alt ?? "", isMain: im.isMain }))
@@ -77,8 +88,22 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
 
   const suggestSlug = () => {
     const b = brand.trim() || "brand";
-    const n = name.trim() || "item";
+    const n = stripResaleShoppingSuffix(name).trim() || "item";
     setSlug(slugifyLatin(`${b}-${n}`));
+  };
+
+  const autofillSeo = () => {
+    const cleanName = stripResaleShoppingSuffix(name).trim();
+    const titleBase = [brand.trim(), cleanName].filter(Boolean).join(" ");
+    const fallbackDesc = (description || "").replace(/\s+/g, " ").trim();
+    const desc = fallbackDesc ? fallbackDesc.slice(0, 155) : `Купить ${titleBase} в premium resale каталоге.`;
+    setSeoTitle((v) => v || titleBase);
+    setSeoDescription((v) => v || desc);
+    setH1((v) => v || titleBase);
+    setOgTitle((v) => v || titleBase);
+    setOgDescription((v) => v || desc);
+    setCanonical((v) => v || `/product/${slug || slugifyLatin(`${brand}-${cleanName}`)}`);
+    toast.success("SEO заполнено автоматически");
   };
 
   return (
@@ -95,7 +120,7 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
               name="name"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(stripResaleShoppingSuffix(e.target.value))}
               className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm"
             />
           </div>
@@ -147,10 +172,11 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
             <label className="mb-1 block text-xs font-medium text-zinc-600">Бренд (справочник)</label>
             <select
               name="brandId"
-              defaultValue={product?.brandId ?? ""}
+              value={brandId}
               className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm"
               onChange={(e) => {
                 const id = e.target.value;
+                setBrandId(id);
                 const row = brands.find((b) => b.id === id);
                 if (row) setBrand(row.name);
               }}
@@ -257,38 +283,48 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
           <textarea
             name="description"
             rows={6}
-            defaultValue={product?.description ?? ""}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm"
           />
         </div>
       </section>
 
       <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-5 md:p-6 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-800">SEO</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-800">SEO</h2>
+          <button
+            type="button"
+            onClick={autofillSeo}
+            className="rounded-xl border border-[#c4b8a8] bg-[#faf8f5] px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-800"
+          >
+            Заполнить автоматически
+          </button>
+        </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
             <label className="mb-1 block text-xs font-medium text-zinc-600">SEO title</label>
-            <input name="seoTitle" defaultValue={product?.seoTitle ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <input name="seoTitle" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div className="md:col-span-2">
             <label className="mb-1 block text-xs font-medium text-zinc-600">SEO description</label>
-            <textarea name="seoDescription" rows={2} defaultValue={product?.seoDescription ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <textarea name="seoDescription" rows={2} value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">H1</label>
-            <input name="h1" defaultValue={product?.h1 ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <input name="h1" value={h1} onChange={(e) => setH1(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">Canonical</label>
-            <input name="canonical" defaultValue={product?.canonical ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <input name="canonical" value={canonical} onChange={(e) => setCanonical(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">OG title</label>
-            <input name="ogTitle" defaultValue={product?.ogTitle ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <input name="ogTitle" value={ogTitle} onChange={(e) => setOgTitle(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">OG description</label>
-            <input name="ogDescription" defaultValue={product?.ogDescription ?? ""} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <input name="ogDescription" value={ogDescription} onChange={(e) => setOgDescription(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
         </div>
       </section>

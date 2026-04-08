@@ -257,15 +257,23 @@ function CheckoutContent() {
                 <label htmlFor="messengerType" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
                   Мессенджер
                 </label>
-                <select
-                  id="messengerType"
-                  value={messengerType}
-                  onChange={(ev) => setMessengerType(ev.target.value as "telegram" | "max")}
-                  className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
-                >
-                  <option value="telegram">Telegram</option>
-                  <option value="max">MAX</option>
-                </select>
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base">
+                    {messengerType === "telegram" ? "✈️" : "💬"}
+                  </span>
+                  <select
+                    id="messengerType"
+                    value={messengerType}
+                    onChange={(ev) => setMessengerType(ev.target.value as "telegram" | "max")}
+                    className="w-full appearance-none rounded-2xl border border-[#d9d2c8] bg-white pl-11 pr-16 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                  >
+                    <option value="telegram">✈️ Telegram</option>
+                    <option value="max">💬 MAX</option>
+                  </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm">
+                    ▾
+                  </span>
+                </div>
               </div>
               <div>
                 <label htmlFor="messengerHandle" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">

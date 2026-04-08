@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 import { WishlistToggleButton } from "@/components/wishlist-toggle-button";
 
 type ProductCardProps = {
@@ -24,7 +25,7 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const displayName = decodeHtmlEntities(product.name);
+  const displayName = stripResaleShoppingSuffix(decodeHtmlEntities(product.name));
   const displayBrand = decodeHtmlEntities(product.brand);
   const metaBits = [
     product.conditionLabel,

@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { isStaffRole } from "@/lib/admin-role";
 import { getProductForAdmin, uniqueProductSlug } from "@/lib/admin/products-queries";
 import { slugifyLatin } from "@/lib/admin/slug";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 import { prisma } from "@/lib/prisma";
 
 import type { ProductStatus } from "@prisma/client";
@@ -62,7 +63,7 @@ export async function createProductFromFormData(formData: FormData): Promise<Pro
   const deny = await assertStaff();
   if (deny) return deny;
 
-  const name = (formData.get("name") as string)?.trim();
+  const name = stripResaleShoppingSuffix((formData.get("name") as string) || "");
   if (!name) return { error: "Укажите название" };
 
   const categoryId = (formData.get("categoryId") as string)?.trim();
@@ -148,7 +149,7 @@ export async function updateProductFromFormData(formData: FormData): Promise<Pro
   const existing = await getProductForAdmin(id);
   if (!existing) return { error: "Товар не найден" };
 
-  const name = (formData.get("name") as string)?.trim();
+  const name = stripResaleShoppingSuffix((formData.get("name") as string) || "");
   if (!name) return { error: "Укажите название" };
 
   const categoryId = (formData.get("categoryId") as string)?.trim();

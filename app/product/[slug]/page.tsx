@@ -10,6 +10,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { WishlistToggleButton } from "@/components/wishlist-toggle-button";
 import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
+import { stripResaleShoppingSuffix } from "@/lib/product-name";
 import { buildProductSeo } from "@/lib/product-seo";
 import { prisma } from "@/lib/prisma";
 
@@ -36,8 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   });
   if (!product) return {};
-  const displayName = decodeHtmlEntities(product.name);
+  const displayName = stripResaleShoppingSuffix(decodeHtmlEntities(product.name));
   const displayBrand = decodeHtmlEntities(product.brand);
+
+  const normalizedName = stripResaleShoppingSuffix(product.name);
 
   if (product.slug.startsWith("gift-card")) {
     return {
@@ -57,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const seo = buildProductSeo({
     slug: product.slug,
-    name: product.name,
+    name: normalizedName,
     shortName: product.shortName,
     brand: product.brand,
     categoryName: product.category.name,
@@ -109,7 +112,7 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
-  const displayName = decodeHtmlEntities(product.name);
+  const displayName = stripResaleShoppingSuffix(decodeHtmlEntities(product.name));
   const displayBrand = decodeHtmlEntities(product.brand);
   const condition = product.conditionLabel || "Отличное";
   const material = product.material || product.composition || "Уточняется";
@@ -118,7 +121,7 @@ export default async function ProductPage({ params }: Props) {
     ? null
     : buildProductSeo({
         slug: product.slug,
-        name: product.name,
+        name: stripResaleShoppingSuffix(product.name),
         shortName: product.shortName,
         brand: product.brand,
         categoryName: product.category.name,
