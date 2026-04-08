@@ -12,6 +12,7 @@
 #   RESTART_PM2=0      — не вызывать pm2 restart, даже если PM2 установлен
 #   SKIP_CLEAN_NEXT=1  — не удалять .next перед build (быстрее, но возможен старый кэш/404)
 #   ADMIN_ENSURE=1     — после migrate выполнить npm run admin:ensure (логин admin / пароль из .env или дефолт)
+#   REFRESH_ALFA_ATTRS=1 — после нормализаций запустить npm run attrs:refresh-alfa (долго: HTML с alfa-resale.ru по каждому товару)
 #
 set -euo pipefail
 
@@ -56,6 +57,11 @@ npm run brands:sync
 
 echo "==> Нормализация SKU (префикс RS)"
 npm run sku:normalize
+
+if [[ "${REFRESH_ALFA_ATTRS:-0}" == "1" ]]; then
+  echo "==> Обновление характеристик товаров с Alfa (REFRESH_ALFA_ATTRS=1 → attrs:refresh-alfa)"
+  npm run attrs:refresh-alfa
+fi
 
 if [[ "${RUN_ALFA_IMPORT:-0}" == "1" ]]; then
   echo "==> Импорт каталога (RUN_ALFA_IMPORT=1)"

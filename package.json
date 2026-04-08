@@ -15,6 +15,7 @@
     "sku:normalize": "node scripts/normalize-sku.cjs",
     "names:normalize": "node scripts/normalize-product-names.cjs",
     "brands:sync": "node scripts/sync-brands-from-products.cjs",
+    "attrs:refresh-alfa": "node scripts/refresh-product-attrs-from-alfa.mjs",
     "admin:ensure": "node scripts/ensure-admin.cjs",
     "db:import:woo": "node scripts/import-woocommerce.cjs",
     "db:sync:alfa": "node scripts/sync-alfa-site.mjs",
