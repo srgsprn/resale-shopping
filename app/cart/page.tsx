@@ -103,68 +103,107 @@ export default function CartPage() {
                 return (
                   <article
                     key={item.id}
-                    className="rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:items-center md:gap-5 md:p-5"
+                    className="rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:p-5"
                   >
-                  <div className="grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-3 md:contents">
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 transition hover:bg-[#f4f0ea]"
-                      aria-label="Удалить товар"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
-                        <path
-                          d="M4 7h16M9 7V5h6v2m-7 0 1 12h6l1-12"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-
-                  <Link
-                    href={`/product/${item.slug}`}
-                    className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-zinc-100 md:h-28 md:w-28"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.imageUrl || placeholder} alt="" className="h-full w-full object-cover" />
-                  </Link>
-
-                  <Link href={`/product/${item.slug}`} className="min-w-0 text-base font-medium text-zinc-900 hover:underline">
-                    {displayName}
-                  </Link>
-
-                  <p className="hidden justify-self-end text-right text-base font-semibold md:block md:text-lg">
-                    {formatMoney(item.priceMinor * item.quantity, item.currency)}
-                  </p>
-                  </div>
-
-                  <div className="justify-self-end md:col-span-1 md:justify-self-center">
-                    <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
+                    <div className="flex items-start gap-3 md:hidden">
                       <button
                         type="button"
-                        onClick={() => changeQty(item.id, -1)}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
-                        aria-label="Уменьшить количество"
+                        onClick={() => removeItem(item.id)}
+                        className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 transition hover:bg-[#f4f0ea]"
+                        aria-label="Удалить товар"
                       >
-                        −
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
+                          <path
+                            d="M4 7h16M9 7V5h6v2m-7 0 1 12h6l1-12"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
                       </button>
-                      <span className="min-w-6 text-center text-sm font-semibold tabular-nums text-zinc-900">{item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => changeQty(item.id, 1)}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
-                        aria-label="Увеличить количество"
-                      >
-                        +
-                      </button>
+                      <Link href={`/product/${item.slug}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-zinc-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.imageUrl || placeholder} alt="" className="h-full w-full object-cover" />
+                      </Link>
+                      <div className="min-w-0 flex-1">
+                        <Link href={`/product/${item.slug}`} className="line-clamp-2 text-base font-medium text-zinc-900 hover:underline">
+                          {displayName}
+                        </Link>
+                        <div className="mt-2 flex items-center justify-between gap-2">
+                          <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
+                            <button
+                              type="button"
+                              onClick={() => changeQty(item.id, -1)}
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                              aria-label="Уменьшить количество"
+                            >
+                              −
+                            </button>
+                            <span className="min-w-6 text-center text-sm font-semibold tabular-nums text-zinc-900">{item.quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => changeQty(item.id, 1)}
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                              aria-label="Увеличить количество"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <p className="text-sm font-semibold text-zinc-900">{formatMoney(item.priceMinor * item.quantity, item.currency)}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  <p className="col-start-2 col-span-3 mt-2 text-sm font-medium text-zinc-700 md:hidden">
-                    Стоимость: <span className="font-semibold text-zinc-900">{formatMoney(item.priceMinor * item.quantity, item.currency)}</span>
-                  </p>
+                    <div className="hidden md:grid md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:items-center md:gap-5">
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 transition hover:bg-[#f4f0ea]"
+                        aria-label="Удалить товар"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-4 w-4">
+                          <path
+                            d="M4 7h16M9 7V5h6v2m-7 0 1 12h6l1-12"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      <Link href={`/product/${item.slug}`} className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-zinc-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.imageUrl || placeholder} alt="" className="h-full w-full object-cover" />
+                      </Link>
+                      <Link href={`/product/${item.slug}`} className="min-w-0 text-base font-medium text-zinc-900 hover:underline">
+                        {displayName}
+                      </Link>
+                      <div className="justify-self-center">
+                        <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
+                          <button
+                            type="button"
+                            onClick={() => changeQty(item.id, -1)}
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                            aria-label="Уменьшить количество"
+                          >
+                            −
+                          </button>
+                          <span className="min-w-6 text-center text-sm font-semibold tabular-nums text-zinc-900">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => changeQty(item.id, 1)}
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#e6ddd2] bg-white text-zinc-700 hover:bg-[#f4f0ea]"
+                            aria-label="Увеличить количество"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <p className="justify-self-end text-right text-base font-semibold md:text-lg">
+                        {formatMoney(item.priceMinor * item.quantity, item.currency)}
+                      </p>
+                    </div>
                   </article>
                 );
               })}
