@@ -12,10 +12,16 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function AdminProductEditPage({ params }: Props) {
   const { id } = await params;
-  const [product, categories, brands] = await Promise.all([
+  const [product, categories, brands, productBrands] = await Promise.all([
     getProductForAdmin(id),
     prisma.category.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true } }),
     prisma.brand.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.product.findMany({
+      where: { brand: { not: "" } },
+      select: { brand: true },
+      distinct: ["brand"],
+      orderBy: { brand: "asc" },
+    }),
   ]);
 
   if (!product) notFound();
@@ -36,7 +42,18 @@ export default async function AdminProductEditPage({ params }: Props) {
           ← К списку
         </Link>
       </div>
-      <ProductForm mode="edit" categories={categories} brands={brands} product={product} />
+      <ProductForm
+        mode="edit"
+        categories={categories}
+        brands={[
+          ...brands,
+          ...productBrands
+            .map((r) => r.brand.trim())
+            .filter((name) => name && !brands.some((b) => b.name.toLowerCase() === name.toLowerCase()))
+            .map((name) => ({ id: `name:${name}`, name })),
+        ]}
+        product={product}
+      />
     </div>
   );
 }

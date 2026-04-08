@@ -44,6 +44,7 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
   const [brandId, setBrandId] = useState(inferredBrandId);
   const [name, setName] = useState(product?.name ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
+  const [conditionLabel, setConditionLabel] = useState(product?.conditionLabel ?? "");
   const [seoTitle, setSeoTitle] = useState(product?.seoTitle ?? "");
   const [seoDescription, setSeoDescription] = useState(product?.seoDescription ?? "");
   const [h1, setH1] = useState(product?.h1 ?? "");
@@ -95,8 +96,16 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
   const autofillSeo = () => {
     const cleanName = stripResaleShoppingSuffix(name).trim();
     const titleBase = [brand.trim(), cleanName].filter(Boolean).join(" ");
-    const fallbackDesc = (description || "").replace(/\s+/g, " ").trim();
-    const desc = fallbackDesc ? fallbackDesc.slice(0, 155) : `Купить ${titleBase} в premium resale каталоге.`;
+    const compactDesc = (description || "").replace(/\s+/g, " ").trim();
+    const conditionText = conditionLabel ? `Состояние: ${conditionLabel}.` : "Состояние подтверждено при приемке.";
+    const p1 = compactDesc
+      ? `${titleBase} — оригинальный лот из премиального resale с акцентом на подлинность, аккуратное хранение и корректное описание характеристик.`
+      : `${titleBase} — актуальный оригинальный лот из premium resale каталога с подтвержденной подлинностью и прозрачной историей состояния.`;
+    const p2 = `${conditionText} Перед публикацией товар проходит внутреннюю проверку, а в карточке фиксируются ключевые детали: материал, цвет, размер и комплектность.`;
+    const p3 = compactDesc
+      ? `Описание: ${compactDesc.slice(0, 260)}${compactDesc.length > 260 ? "..." : ""}`
+      : "Этот товар подойдет для базового и капсульного гардероба, легко сочетается с повседневными и вечерними образами и сохраняет высокую ликвидность на вторичном рынке.";
+    const desc = `${p1}\n\n${p2}\n\n${p3}`;
     setSeoTitle((v) => v || titleBase);
     setSeoDescription((v) => v || desc);
     setH1((v) => v || titleBase);
@@ -224,7 +233,8 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
             <label className="mb-1 block text-xs font-medium text-zinc-600">Состояние</label>
             <select
               name="conditionLabel"
-              defaultValue={product?.conditionLabel ?? ""}
+              value={conditionLabel}
+              onChange={(e) => setConditionLabel(e.target.value)}
               className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm"
             >
               <option value="">—</option>
@@ -308,7 +318,7 @@ export function ProductForm({ mode, categories, brands, product }: Props) {
           </div>
           <div className="md:col-span-2">
             <label className="mb-1 block text-xs font-medium text-zinc-600">SEO description</label>
-            <textarea name="seoDescription" rows={2} value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
+            <textarea name="seoDescription" rows={7} value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} className="w-full rounded-xl border border-[#d9d2c8] px-3 py-2 text-sm" />
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-zinc-600">H1</label>

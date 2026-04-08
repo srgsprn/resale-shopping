@@ -71,6 +71,10 @@ export async function createProductFromFormData(formData: FormData): Promise<Pro
 
   let brandId = (formData.get("brandId") as string)?.trim() || null;
   let brand = (formData.get("brand") as string)?.trim() || "";
+  if (brandId?.startsWith("name:")) {
+    brand = brandId.slice("name:".length).trim() || brand;
+    brandId = null;
+  }
   if (brandId) {
     const b = await prisma.brand.findUnique({ where: { id: brandId }, select: { name: true } });
     if (b) brand = b.name;
@@ -157,6 +161,10 @@ export async function updateProductFromFormData(formData: FormData): Promise<Pro
 
   let brandId = (formData.get("brandId") as string)?.trim() || null;
   let brand = (formData.get("brand") as string)?.trim() || "";
+  if (brandId?.startsWith("name:")) {
+    brand = brandId.slice("name:".length).trim() || brand;
+    brandId = null;
+  }
   if (brandId) {
     const b = await prisma.brand.findUnique({ where: { id: brandId }, select: { name: true } });
     if (b) brand = b.name;

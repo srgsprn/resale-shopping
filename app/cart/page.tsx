@@ -100,7 +100,7 @@ export default function CartPage() {
               {items.map((item) => (
                 <article
                   key={item.id}
-                  className="grid grid-cols-[auto_auto_minmax(0,1fr)_auto_auto] items-center gap-3 rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:gap-5 md:p-5"
+                  className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-3 rounded-[24px] border border-[#d9d2c8] bg-white p-4 md:grid-cols-[auto_auto_minmax(180px,1fr)_minmax(220px,1fr)_auto] md:gap-5 md:p-5"
                 >
                   <button
                     type="button"
@@ -131,7 +131,7 @@ export default function CartPage() {
                     {item.name}
                   </Link>
 
-                  <div className="inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1">
+                  <div className="col-span-3 mt-2 justify-self-center inline-flex items-center justify-center gap-2 rounded-full border border-[#d9d2c8] bg-[#faf8f5] px-2 py-1 md:col-span-1 md:mt-0">
                     <button
                       type="button"
                       onClick={() => changeQty(item.id, -1)}
@@ -151,7 +151,7 @@ export default function CartPage() {
                     </button>
                   </div>
 
-                  <p className="text-right text-base font-semibold md:text-lg">
+                  <p className="justify-self-end text-right text-base font-semibold md:text-lg">
                     {formatMoney(item.priceMinor * item.quantity, item.currency)}
                   </p>
                 </article>

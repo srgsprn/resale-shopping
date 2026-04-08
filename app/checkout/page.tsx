@@ -194,7 +194,7 @@ function CheckoutContent() {
         </Link>
       </nav>
 
-      <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
+      <div className="grid gap-10 lg:grid-cols-[1fr_460px]">
         <section>
           <h1 className="mb-8 mt-2 text-2xl font-bold tracking-tight text-zinc-900 md:text-3xl">Оформить заказ</h1>
           <form onSubmit={onSubmit} className="max-w-xl space-y-5">
@@ -257,22 +257,30 @@ function CheckoutContent() {
                 <label htmlFor="messengerType" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
                   Мессенджер
                 </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base">
-                    {messengerType === "telegram" ? "✈️" : "💬"}
-                  </span>
-                  <select
-                    id="messengerType"
-                    value={messengerType}
-                    onChange={(ev) => setMessengerType(ev.target.value as "telegram" | "max")}
-                    className="w-full appearance-none rounded-2xl border border-[#d9d2c8] bg-white pl-11 pr-16 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                <div className="flex items-center gap-2 rounded-2xl border border-[#d9d2c8] bg-white p-2">
+                  <button
+                    type="button"
+                    aria-label="Telegram"
+                    onClick={() => setMessengerType("telegram")}
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${messengerType === "telegram" ? "border-[#3f7fbe] bg-[#eef6ff]" : "border-[#d9d2c8] bg-white"}`}
                   >
-                    <option value="telegram">✈️ Telegram</option>
-                    <option value="max">💬 MAX</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5 text-[#229ED9]">
+                      <path d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z" fill="currentColor" opacity="0.95" />
+                      <path d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="MAX"
+                    onClick={() => setMessengerType("max")}
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${messengerType === "max" ? "border-[#3f7fbe] bg-[#eef6ff]" : "border-[#d9d2c8] bg-white"}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://max.ru/favicon.ico" alt="MAX" className="h-5 w-5 rounded-sm" />
+                  </button>
+                  <div className="ml-auto flex h-8 w-8 -translate-x-1 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm">
                     ▾
-                  </span>
+                  </div>
                 </div>
               </div>
               <div>
@@ -321,11 +329,11 @@ function CheckoutContent() {
           </form>
         </section>
 
-        <aside className="h-fit rounded-[28px] border border-[#d9d2c8] bg-[#faf8f5] p-6 lg:sticky lg:top-24">
+        <aside className="h-fit rounded-[28px] border border-[#d9d2c8] bg-[#faf8f5] p-6 md:p-7 lg:sticky lg:top-24">
           <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-700">Ваш заказ</h2>
           <ul className="mt-4 space-y-4">
             {items.map((item) => (
-              <li key={item.id} className="flex gap-3">
+              <li key={item.id} className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.imageUrl || "https://placehold.co/120x120/f4f4f5/71717a?text=+"}
@@ -334,10 +342,7 @@ function CheckoutContent() {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs uppercase tracking-wider text-zinc-500">{item.brand}</p>
-                  <p className="line-clamp-2 text-sm font-medium">{item.name}</p>
-                  <p className="text-xs text-zinc-600">
-                    {item.quantity} × {formatMoney(item.priceMinor, item.currency)}
-                  </p>
+                  <p className="line-clamp-2 text-sm font-medium leading-snug">{item.name}</p>
                 </div>
               </li>
             ))}

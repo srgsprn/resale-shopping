@@ -7,10 +7,23 @@ import { prisma } from "@/lib/prisma";
 import { ProductForm } from "@/components/admin/product-form";
 
 export default async function AdminProductAddPage() {
-  const [categories, brands] = await Promise.all([
+  const [categories, brands, productBrands] = await Promise.all([
     prisma.category.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true } }),
     prisma.brand.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.product.findMany({
+      where: { brand: { not: "" } },
+      select: { brand: true },
+      distinct: ["brand"],
+      orderBy: { brand: "asc" },
+    }),
   ]);
+  const merged = [
+    ...brands,
+    ...productBrands
+      .map((r) => r.brand.trim())
+      .filter((name) => name && !brands.some((b) => b.name.toLowerCase() === name.toLowerCase()))
+      .map((name) => ({ id: `name:${name}`, name })),
+  ];
 
   return (
     <div className="space-y-6">
@@ -26,7 +39,7 @@ export default async function AdminProductAddPage() {
           ← К списку
         </Link>
       </div>
-      <ProductForm mode="create" categories={categories} brands={brands} />
+      <ProductForm mode="create" categories={categories} brands={merged} />
     </div>
   );
 }
