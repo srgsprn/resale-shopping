@@ -34,10 +34,27 @@ function CheckoutContent() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [messengerType, setMessengerType] = useState<"telegram" | "max">("telegram");
-  const [messengerHandle, setMessengerHandle] = useState("");
+  const [messengerHandle, setMessengerHandle] = useState("@");
+  const [messengerOpen, setMessengerOpen] = useState(false);
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMessengerHandle((prev) => {
+      const trimmed = prev.trim();
+      if (messengerType === "telegram") {
+        if (!trimmed || trimmed === "+7") return "@";
+        if (trimmed.startsWith("@")) return trimmed;
+        if (trimmed.startsWith("+7")) return `@${trimmed.slice(2).replace(/^\D+/, "")}`;
+        return `@${trimmed.replace(/^@+/, "")}`;
+      }
+      const digits = trimmed.replace(/\D+/g, "");
+      if (!digits) return "+7";
+      if (digits.startsWith("7")) return `+${digits}`;
+      return `+7${digits}`;
+    });
+  }, [messengerType]);
 
   useEffect(() => {
     if (giftSlug) {
@@ -257,35 +274,62 @@ function CheckoutContent() {
                 <label htmlFor="messengerType" className="mb-1 block text-xs font-medium uppercase tracking-[0.12em] text-zinc-600">
                   Мессенджер
                 </label>
-                <div className="flex items-center gap-2 rounded-2xl border border-[#d9d2c8] bg-white p-2">
+                <div className="relative">
                   <button
+                    id="messengerType"
                     type="button"
-                    aria-label="Telegram"
-                    onClick={() => setMessengerType("telegram")}
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${messengerType === "telegram" ? "border-[#3f7fbe] bg-[#eef6ff]" : "border-[#d9d2c8] bg-white"}`}
+                    onClick={() => setMessengerOpen((v) => !v)}
+                    className="flex h-12 w-full items-center gap-2 rounded-2xl border border-[#d9d2c8] bg-white px-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                    aria-expanded={messengerOpen}
+                    aria-haspopup="listbox"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5 text-[#229ED9]">
-                      <path d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z" fill="currentColor" opacity="0.95" />
-                      <path d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z" fill="currentColor" />
-                    </svg>
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d9d2c8] bg-white">
+                      {messengerType === "telegram" ? (
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5 text-[#229ED9]">
+                          <path d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z" fill="currentColor" opacity="0.95" />
+                          <path d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z" fill="currentColor" />
+                        </svg>
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src="https://max.ru/favicon.ico" alt="MAX" className="h-5 w-5 rounded-sm" />
+                      )}
+                    </span>
+                    <span className="ml-auto flex h-8 w-8 -translate-x-1 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm">
+                      ▾
+                    </span>
                   </button>
-                  <button
-                    type="button"
-                    aria-label="MAX"
-                    onClick={() => setMessengerType("max")}
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border ${messengerType === "max" ? "border-[#3f7fbe] bg-[#eef6ff]" : "border-[#d9d2c8] bg-white"}`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://max.ru/favicon.ico" alt="MAX" className="h-5 w-5 rounded-sm" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMessengerType((v) => (v === "telegram" ? "max" : "telegram"))}
-                    className="ml-auto flex h-8 w-8 -translate-x-1 items-center justify-center rounded-full border border-[#d9d2c8] bg-white text-zinc-700 shadow-sm"
-                    aria-label="Переключить мессенджер"
-                  >
-                    ▾
-                  </button>
+                  {messengerOpen ? (
+                    <div className="absolute z-20 mt-2 w-full rounded-2xl border border-[#d9d2c8] bg-white p-2 shadow-lg">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMessengerType("telegram");
+                          setMessengerOpen(false);
+                        }}
+                        className="flex h-11 w-full items-center gap-2 rounded-xl px-2 hover:bg-[#f5f0e8]"
+                      >
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white">
+                          <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-5 w-5 text-[#229ED9]">
+                            <path d="M9.16 19.1 10.4 13.7 16.2 9.2c.35-.25.75-.2.58.35l-2.15 6.4c-.08.25-.32.45-.58.45L11 14.5l-1.96 1.6Z" fill="currentColor" opacity="0.95" />
+                            <path d="M19.6 4.8 4.9 10.7c-1.1.44-1.08 1.08-.2 1.34l3.95 1.23 7.88-6.07c.43-.31.82-.15.5.2l-6.1 7.25-.22 3.15c.42.16.72.1.98-.1l2.01-1.5 3.25 2.4c.6.33 1.1.16 1.26-.6L21 5.9c.23-1.03-.42-1.55-1.4-1.1Z" fill="currentColor" />
+                          </svg>
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMessengerType("max");
+                          setMessengerOpen(false);
+                        }}
+                        className="mt-1 flex h-11 w-full items-center gap-2 rounded-xl px-2 hover:bg-[#f5f0e8]"
+                      >
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d9d2c8] bg-white">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="https://max.ru/favicon.ico" alt="MAX" className="h-5 w-5 rounded-sm" />
+                        </span>
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div>
@@ -295,10 +339,24 @@ function CheckoutContent() {
                 <input
                   id="messengerHandle"
                   required
-                  placeholder={messengerType === "telegram" ? "@username" : "@max"}
+                  placeholder={messengerType === "telegram" ? "@username" : "+7XXXXXXXXXX"}
                   value={messengerHandle}
-                  onChange={(ev) => setMessengerHandle(ev.target.value)}
-                  className="w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
+                  onChange={(ev) => {
+                    const raw = ev.target.value;
+                    if (messengerType === "telegram") {
+                      const cleaned = raw.replace(/\s+/g, "").replace(/^@+/, "");
+                      setMessengerHandle(`@${cleaned}`);
+                    } else {
+                      const digits = raw.replace(/\D+/g, "");
+                      if (!digits) {
+                        setMessengerHandle("+7");
+                        return;
+                      }
+                      if (digits.startsWith("7")) setMessengerHandle(`+${digits}`);
+                      else setMessengerHandle(`+7${digits}`);
+                    }
+                  }}
+                  className="h-12 w-full rounded-2xl border border-[#d9d2c8] bg-white px-4 py-3 text-zinc-900 outline-none ring-zinc-400 focus:ring-2"
                 />
               </div>
             </div>

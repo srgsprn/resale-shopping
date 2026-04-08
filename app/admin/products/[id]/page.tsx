@@ -28,25 +28,27 @@ export default async function AdminProductEditPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Редактирование</h1>
-          <p className="mt-1 text-sm text-zinc-600">
-            {product.brand} {product.name}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={`/product/${product.slug}`}
-            className="rounded-full border border-[#c4b8a8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-800"
-          >
-            Перейти к товару
-          </Link>
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold text-zinc-900">Редактирование</h1>
+            <p className="mt-1 text-sm text-zinc-600">
+              {product.brand} {product.name}
+            </p>
+          </div>
           <Link
             href="/admin/products"
             className="text-sm font-medium text-zinc-700 underline-offset-2 hover:underline"
           >
             ← К списку
+          </Link>
+        </div>
+        <div className="flex justify-center">
+          <Link
+            href={`/product/${product.slug}`}
+            className="rounded-full border border-[#c4b8a8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-zinc-800"
+          >
+            Перейти к товару
           </Link>
         </div>
       </div>
