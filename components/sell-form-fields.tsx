@@ -279,7 +279,7 @@ export function SellFormFields({ onSent, bare }: Props) {
             <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-800">
               {(
                 [
-                  ["max", "MAX"],
+                  ["max", "Max"],
                   ["phone", "Телефон"],
                   ["telegram", "Telegram"],
                 ] as const

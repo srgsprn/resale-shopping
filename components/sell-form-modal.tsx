@@ -31,7 +31,7 @@ export function SellFormModal({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#2d2720]/45 p-4 pt-14 backdrop-blur-[2px] md:items-center md:pt-10">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#2d2720]/45 p-4 pt-14 backdrop-blur-[2px] md:pt-20">
       <button
         type="button"
         aria-label="Закрыть"
