@@ -76,6 +76,12 @@ export default async function CatalogPage({ searchParams }: Props) {
   const minMinor = Number.isFinite(minPrice) ? Math.max(0, minPrice) * 100 : undefined;
   const maxMinor = Number.isFinite(maxPrice) ? Math.max(0, maxPrice) * 100 : undefined;
   const discountOn = params.discount === "1";
+  const genderFilter =
+    params.gender === "women"
+      ? { contains: "жен", mode: "insensitive" as const }
+      : params.gender === "men"
+        ? { contains: "муж", mode: "insensitive" as const }
+        : undefined;
 
   const orderBy =
     params.sort === "price_asc"
@@ -90,8 +96,8 @@ export default async function CatalogPage({ searchParams }: Props) {
         status: { in: ["ACTIVE", "SOLD_OUT"] },
         ...catalogListingWhere(),
         brand: params.brand ? { equals: params.brand, mode: "insensitive" } : undefined,
-        gender: params.gender ? { equals: params.gender, mode: "insensitive" } : undefined,
-        color: params.color ? { equals: params.color, mode: "insensitive" } : undefined,
+        gender: genderFilter,
+        color: params.color ? { contains: params.color, mode: "insensitive" } : undefined,
         category: params.category ? { slug: params.category } : undefined,
         compareAtMinor: discountOn ? { gt: 0 } : undefined,
         priceMinor:
@@ -115,8 +121,18 @@ export default async function CatalogPage({ searchParams }: Props) {
   ]);
 
   const brands = [...new Set(products.map((p) => p.brand.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
-  const genders = [...new Set(products.map((p) => (p.gender || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
-  const colors = [...new Set(products.map((p) => (p.color || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const colors = [
+    "Бежевый",
+    "Белый",
+    "Голубой",
+    "Зеленый",
+    "Коричневый",
+    "Красный",
+    "Розовый",
+    "Серый",
+    "Синий",
+    "Черный",
+  ];
 
   return (
     <section className="space-y-6">
@@ -139,9 +155,9 @@ export default async function CatalogPage({ searchParams }: Props) {
             minName="minPrice"
             maxName="maxPrice"
             initialMin={Number.isFinite(minPrice) ? minPrice : 0}
-            initialMax={Number.isFinite(maxPrice) ? maxPrice : 500000}
+            initialMax={Number.isFinite(maxPrice) ? maxPrice : 8000000}
             lowerBound={0}
-            upperBound={500000}
+            upperBound={8000000}
           />
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Все категории</label>
@@ -167,7 +183,11 @@ export default async function CatalogPage({ searchParams }: Props) {
             <SelectField
               name="gender"
               defaultValue={params.gender || ""}
-              options={[{ value: "", label: "Любой" }, ...genders.map((gender) => ({ value: gender, label: gender }))]}
+              options={[
+                { value: "", label: "Любой" },
+                { value: "women", label: "Женский" },
+                { value: "men", label: "Мужской" },
+              ]}
             />
           </div>
           <div>
