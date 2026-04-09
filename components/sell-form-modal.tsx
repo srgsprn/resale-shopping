@@ -31,7 +31,7 @@ export function SellFormModal({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#2d2720]/45 p-4 pt-8 backdrop-blur-[2px] md:items-center md:pt-4">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#2d2720]/45 p-4 pt-14 backdrop-blur-[2px] md:items-center md:pt-10">
       <button
         type="button"
         aria-label="Закрыть"
@@ -42,7 +42,7 @@ export function SellFormModal({ open, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="sell-modal-title"
-        className="relative z-[101] w-full max-w-lg rounded-[24px] border border-[#d9d2c8] bg-[#faf8f5] p-6 shadow-[0_20px_50px_rgba(45,39,32,0.2)] md:max-w-xl md:p-8"
+        className="relative z-[101] w-full max-w-lg rounded-[28px] border border-[#d9d2c8] bg-[#faf8f5] p-6 shadow-[0_20px_50px_rgba(45,39,32,0.2)] md:max-w-xl md:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between gap-3">

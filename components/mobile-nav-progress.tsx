@@ -45,7 +45,7 @@ function MobileNavProgressInner() {
     <>
       <div className="pointer-events-none fixed inset-x-0 top-0 z-[95] hidden md:block" aria-live="polite">
         <div className={`h-[2px] w-full overflow-hidden bg-[#2d2720]/[0.07] transition-opacity duration-200 ${loading ? "opacity-100" : "opacity-0"}`}>
-          {loading ? <div className="mobile-nav-progress-bar h-full w-[24%] max-w-[260px] rounded-full bg-gradient-to-r from-[#8f6b42] via-[#d4af37] to-[#8f6b42]" /> : null}
+          {loading ? <div className="mobile-nav-progress-bar h-full w-full rounded-none bg-gradient-to-r from-[#8f6b42] via-[#d4af37] to-[#8f6b42]" /> : null}
         </div>
       </div>
 

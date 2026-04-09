@@ -27,10 +27,48 @@ export function SellFormFields({ onSent, bare }: Props) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+7");
   const [email, setEmail] = useState("");
-  const [contact, setContact] = useState<"whatsapp" | "phone" | "telegram">("phone");
+  const [contact, setContact] = useState<"max" | "phone" | "telegram">("phone");
   const [agree, setAgree] = useState(false);
+
+  const contactLabel = contact === "telegram" ? "Никнейм" : "Телефон";
+  const contactPlaceholder = contact === "telegram" ? "@username" : "+7";
+
+  const onContactValueChange = (raw: string) => {
+    if (contact === "telegram") {
+      const cleaned = raw.replace(/\s+/g, "").replace(/^@+/, "");
+      setPhone(`@${cleaned}`);
+      return;
+    }
+    const digits = raw.replace(/\D+/g, "");
+    if (!digits) {
+      setPhone("+7");
+      return;
+    }
+    if (digits.startsWith("7")) {
+      setPhone(`+${digits}`);
+      return;
+    }
+    setPhone(`+7${digits}`);
+  };
+
+  const onContactTypeChange = (next: "max" | "phone" | "telegram") => {
+    setContact(next);
+    setPhone((prev) => {
+      const trimmed = prev.trim();
+      if (next === "telegram") {
+        if (!trimmed || trimmed === "+7") return "@";
+        if (trimmed.startsWith("@")) return trimmed;
+        const fromPhone = trimmed.replace(/\D+/g, "");
+        return fromPhone ? `@${fromPhone}` : "@";
+      }
+      const digits = trimmed.replace(/\D+/g, "");
+      if (!digits) return "+7";
+      if (digits.startsWith("7")) return `+${digits}`;
+      return `+7${digits}`;
+    });
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -208,17 +246,17 @@ export function SellFormFields({ onSent, bare }: Props) {
           </div>
           <div>
             <label htmlFor="sell-phone" className={labelClass}>
-              Телефон <span className="text-red-600">*</span>
+              {contactLabel} <span className="text-red-600">*</span>
             </label>
             <input
               id="sell-phone"
-              type="tel"
+              type={contact === "telegram" ? "text" : "tel"}
               required
-              autoComplete="tel"
+              autoComplete={contact === "telegram" ? "off" : "tel"}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => onContactValueChange(e.target.value)}
               className={inputClass}
-              placeholder="+7 …"
+              placeholder={contactPlaceholder}
             />
           </div>
           <div>
@@ -241,7 +279,7 @@ export function SellFormFields({ onSent, bare }: Props) {
             <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-800">
               {(
                 [
-                  ["whatsapp", "WhatsApp"],
+                  ["max", "MAX"],
                   ["phone", "Телефон"],
                   ["telegram", "Telegram"],
                 ] as const
@@ -251,7 +289,7 @@ export function SellFormFields({ onSent, bare }: Props) {
                     type="radio"
                     name="sell-contact"
                     checked={contact === v}
-                    onChange={() => setContact(v)}
+                    onChange={() => onContactTypeChange(v)}
                     className="h-4 w-4 border-[#d9d2c8] text-[#a16f39]"
                   />
                   {lab}
