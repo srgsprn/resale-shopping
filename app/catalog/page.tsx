@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 
+import { CatalogPriceRange } from "@/components/catalog-price-range";
 import { ProductCard } from "@/components/product-card";
 import { catalogListingWhere } from "@/lib/catalog-listing-filter";
 import { buildPageSeo } from "@/lib/page-seo";
@@ -38,6 +39,35 @@ const sortOptions = [
   { value: "price_desc", label: "По убыванию цены" },
   { value: "price_asc", label: "По возрастанию цены" },
 ] as const;
+
+function SelectField({
+  name,
+  defaultValue,
+  options,
+}: {
+  name: string;
+  defaultValue: string;
+  options: Array<{ value: string; label: string }>;
+}) {
+  return (
+    <div className="relative">
+      <select
+        name={name}
+        defaultValue={defaultValue}
+        className="w-full appearance-none rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 pr-12 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-[#d4c6b2] bg-white px-2 py-1 text-[10px] text-zinc-600">
+        ▾
+      </span>
+    </div>
+  );
+}
 
 export default async function CatalogPage({ searchParams }: Props) {
   const params = await searchParams;
@@ -105,86 +135,48 @@ export default async function CatalogPage({ searchParams }: Props) {
               className="w-full rounded-xl border border-[#d8ccbb] bg-white px-3 py-2 text-sm outline-none focus:border-[#a57d58]"
             />
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-zinc-700">Цена от</label>
-              <input
-                name="minPrice"
-                defaultValue={params.minPrice || ""}
-                inputMode="numeric"
-                className="w-full rounded-xl border border-[#d8ccbb] bg-white px-3 py-2 text-sm outline-none focus:border-[#a57d58]"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-zinc-700">Цена до</label>
-              <input
-                name="maxPrice"
-                defaultValue={params.maxPrice || ""}
-                inputMode="numeric"
-                className="w-full rounded-xl border border-[#d8ccbb] bg-white px-3 py-2 text-sm outline-none focus:border-[#a57d58]"
-              />
-            </div>
-          </div>
-          <div className="h-1 rounded-full bg-[#e5d9ca]" />
+          <CatalogPriceRange
+            minName="minPrice"
+            maxName="maxPrice"
+            initialMin={Number.isFinite(minPrice) ? minPrice : 0}
+            initialMax={Number.isFinite(maxPrice) ? maxPrice : 500000}
+            lowerBound={0}
+            upperBound={500000}
+          />
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Все категории</label>
-            <select
+            <SelectField
               name="category"
               defaultValue={params.category || ""}
-              className="w-full rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
-            >
-              <option value="">Все категории</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: "", label: "Все категории" },
+                ...categories.map((category) => ({ value: category.slug, label: category.name })),
+              ]}
+            />
           </div>
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Бренд</label>
-            <select
+            <SelectField
               name="brand"
               defaultValue={params.brand || ""}
-              className="w-full rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
-            >
-              <option value="">Все бренды</option>
-              {brands.map((brand) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-            </select>
+              options={[{ value: "", label: "Все бренды" }, ...brands.map((brand) => ({ value: brand, label: brand }))]}
+            />
           </div>
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Пол</label>
-            <select
+            <SelectField
               name="gender"
               defaultValue={params.gender || ""}
-              className="w-full rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
-            >
-              <option value="">Любой</option>
-              {genders.map((gender) => (
-                <option key={gender} value={gender}>
-                  {gender}
-                </option>
-              ))}
-            </select>
+              options={[{ value: "", label: "Любой" }, ...genders.map((gender) => ({ value: gender, label: gender }))]}
+            />
           </div>
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Цвет</label>
-            <select
+            <SelectField
               name="color"
               defaultValue={params.color || ""}
-              className="w-full rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
-            >
-              <option value="">Любой</option>
-              {colors.map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
+              options={[{ value: "", label: "Любой" }, ...colors.map((color) => ({ value: color, label: color }))]}
+            />
           </div>
           <label className="flex items-center gap-2 text-sm text-zinc-800">
             <input type="checkbox" name="discount" value="1" defaultChecked={discountOn} className="h-4 w-4 rounded border-[#d9d2c8]" />
@@ -192,17 +184,11 @@ export default async function CatalogPage({ searchParams }: Props) {
           </label>
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-700">Сортировать по:</label>
-            <select
+            <SelectField
               name="sort"
               defaultValue={params.sort || "price_desc"}
-              className="w-full rounded-xl border border-[#d8ccbb] bg-gradient-to-b from-[#f7efe3] to-[#f2e6d6] px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[#a57d58]"
-            >
-              {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              options={sortOptions.map((option) => ({ value: option.value, label: option.label }))}
+            />
           </div>
           <button
             type="submit"
