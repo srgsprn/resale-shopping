@@ -64,20 +64,6 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="rounded-[24px] border border-[#d9d2c8] bg-white p-6 md:p-10">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">О нас в СМИ</h2>
-        <div className="mx-auto mt-5 grid max-w-4xl grid-cols-2 justify-items-center gap-4 md:grid-cols-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/64c2713bc83ae6fb270796c8_61e1ea92724df534c3ac7fdf_image-1024x576.png" alt="СМИ 1" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/Vc.ru-logo-e1746687239574.png" alt="СМИ 2" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/2cbd6d6fc7df101797d57dc818cd917d-e1746682360309.jpg" alt="СМИ 3" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://alfa-resale.ru/wp-content/uploads/2025/05/RBK_logo.svg-1024x273.png" alt="СМИ 4" className="h-16 w-full rounded-xl border border-[#d9d2c8] bg-white object-contain p-2" />
-        </div>
-      </section>
-
     </div>
   );
 }
