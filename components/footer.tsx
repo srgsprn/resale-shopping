@@ -43,18 +43,6 @@ export function Footer() {
             <li><a href="mailto:help@resale-shopping.ru">help@resale-shopping.ru</a></li>
             <li className="flex items-center gap-3">
               <a
-                href="https://max.ru/join/J1pA3IqKoZAqlMXSy6fNV6cgneaAxuPL_PECo3MX_qU"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="MAX"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3ede4] text-white ring-1 ring-[#d9d2c8] transition hover:bg-white"
-              >
-                {/* Иконка MAX (favicon с max.ru) */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://max.ru/favicon.ico" alt="" className="h-5 w-5 rounded-sm" />
-              </a>
-
-              <a
                 href="https://t.me/resaleshoppingg"
                 target="_blank"
                 rel="noreferrer"
