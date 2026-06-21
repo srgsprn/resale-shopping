@@ -94,15 +94,6 @@ export default function GiftCardsPage() {
           >
             Купить
           </button>
-
-          <a
-            href="/oferta-docs/dogovor-kupli-prodazhi.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="block text-center text-xs text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline"
-          >
-            Условия и регламент использования
-          </a>
         </div>
       </section>
     </div>

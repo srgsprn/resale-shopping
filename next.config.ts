@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  async redirects() {
+    return [{ source: "/oferta", destination: "/about", permanent: true }];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "alfa-resale.ru" },

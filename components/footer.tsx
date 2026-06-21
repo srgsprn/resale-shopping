@@ -10,7 +10,6 @@ const clientLinks = [
 const companyLinks = [
   ["О нас", "/about"],
   ["Гарантия подлинности", "/assurance"],
-  ["Оферта", "/oferta"],
   ["Бренды", "/brands"],
 ] as const;
 
