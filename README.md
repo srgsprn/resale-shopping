@@ -1,17 +1,146 @@
-# resale-shopping
+# Resale Shopping
 
-Next.js storefront for `resale-shopping.ru` with catalog, cart, checkout, Stripe, email notifications, and Prisma/PostgreSQL.
+**Полнофункциональный интернет-магазин премиального resale** — от каталога и корзины до оплаты, личного кабинета и админ-панели.
 
-## TL;DR For New Agent
+[![Live site](https://img.shields.io/badge/site-resale--shopping.ru-8B7355?style=for-the-badge)](https://resale-shopping.ru)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Prisma-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.prisma.io)
+[![Stripe](https://img.shields.io/badge/Stripe-payments-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com)
 
-- Open `PROJECT OVERVIEW.md` first for architecture and current state.
-- Main UI entrypoints: `app/page.tsx`, `components/header*.tsx`, `components/home-discounts-section.tsx`.
-- Checkout flow: `app/checkout/page.tsx` -> `app/api/checkout/route.ts` -> `app/api/stripe/webhook/route.ts`.
+> Продакшен-проект: [resale-shopping.ru](https://resale-shopping.ru) · репозиторий: [github.com/srgsprn/resale-shopping](https://github.com/srgsprn/resale-shopping)
 
-## Quick start
+---
+
+## О проекте
+
+**Resale Shopping** — e-commerce платформа для продажи брендовых вещей и аксессуаров в сегменте luxury resale. Проект разработан как полная миграция с WordPress/WooCommerce на современный full-stack стек с сохранением SEO, каталога и бизнес-процессов.
+
+Автор: **Sergei Suprun**
+
+| | |
+|---|---|
+| **Роль** | Full-stack разработка: архитектура, фронтенд, бэкенд, БД, деплой |
+| **Статус** | Production, активная разработка |
+| **Домен** | [resale-shopping.ru](https://resale-shopping.ru) |
+| **Коммитов** | 140+ |
+
+---
+
+## Что реализовано
+
+### Витрина и покупка
+
+- Каталог с фильтрами (цена, бренд, пол, цвет, категория)
+- Карточка товара с галереей, SEO-метаданными и статусами наличия
+- Корзина (client-side) с live-бейджем в шапке
+- Оформление заказа: форма клиента → создание заказа в БД → оплата Stripe
+- Wishlist, подарочные карты, информационные страницы
+- Адаптивный UI в премиальной эстетике (Tailwind CSS, Framer Motion)
+
+### Пользователи и админка
+
+- Регистрация и вход (NextAuth, OAuth Yandex)
+- Личный кабинет: профиль, адрес, история заказов
+- Админ-панель с ролевой моделью (`USER` → `ADMIN`)
+- Управление товарами, брендами, категориями, заказами, SEO-страницами
+- Загрузка изображений, CRUD через Server Actions
+
+### Интеграции и инфраструктура
+
+- **Stripe** — Checkout Session, webhook, статусы оплаты
+- **Resend** — транзакционные письма после заказа
+- **PostgreSQL + Prisma** — миграции, сиды, типобезопасные запросы
+- **VPS** — Nginx, SSL (Certbot), PM2, автоматизированные deploy-скрипты
+- Импорт и синхронизация каталога из legacy WordPress API
+
+---
+
+## Технологический стек
+
+| Слой | Технологии |
+|------|------------|
+| **Frontend** | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Framer Motion |
+| **Backend** | Next.js API Routes, Server Actions, Zod-валидация |
+| **База данных** | PostgreSQL, Prisma ORM |
+| **Auth** | NextAuth v5 (Credentials + Yandex OAuth) |
+| **Платежи** | Stripe (Checkout + Webhooks) |
+| **Email** | Resend / Nodemailer |
+| **DevOps** | PM2, Nginx, Certbot, bash-скрипты деплоя |
+
+---
+
+## Архитектура
+
+```mermaid
+flowchart LR
+    subgraph Client["Клиент"]
+        Browser[Браузер]
+    end
+
+    subgraph App["Next.js App"]
+        Pages[Страницы / SSR]
+        API[API Routes]
+        Admin[Админ-панель]
+    end
+
+    subgraph Services["Сервисы"]
+        DB[(PostgreSQL)]
+        Stripe[Stripe]
+        Email[Resend]
+    end
+
+    Browser --> Pages
+    Browser --> API
+    Admin --> API
+    API --> DB
+    API --> Stripe
+    API --> Email
+    Stripe -->|webhook| API
+```
+
+### Ключевой флоу оформления заказа
+
+```
+Корзина → Checkout (форма) → POST /api/checkout → Pending Order в БД
+    → Stripe Checkout Session → Оплата → Webhook → Order PAID → Email клиенту
+```
+
+---
+
+## Структура репозитория
+
+```
+resale-shopping/
+├── app/                  # Страницы (App Router) и API routes
+│   ├── catalog/          # Каталог с фильтрами
+│   ├── product/[slug]/   # Карточка товара
+│   ├── checkout/         # Оформление заказа
+│   ├── account/          # Личный кабинет
+│   ├── admin/            # Админ-панель
+│   └── api/              # REST: checkout, stripe, auth, products
+├── components/           # UI-компоненты (header, cart, filters, forms)
+├── lib/                  # Бизнес-логика: orders, stripe, email, cart
+├── prisma/               # Схема БД, миграции, seed
+├── scripts/              # Деплой, импорт каталога, утилиты
+└── public/               # Статика, изображения
+```
+
+Подробная техническая документация для разработчиков — в [`PROJECT OVERVIEW.md`](./PROJECT%20OVERVIEW.md).
+
+---
+
+## Быстрый старт (локально)
+
+**Требования:** Node.js 20+, PostgreSQL
 
 ```bash
+git clone https://github.com/srgsprn/resale-shopping.git
+cd resale-shopping
+
 cp .env.example .env
+# Заполните DATABASE_URL, AUTH_SECRET, Stripe и др.
+
 npm install
 npm run db:generate
 npm run db:migrate:dev
@@ -19,175 +148,73 @@ npm run db:seed
 npm run dev
 ```
 
-## Core scripts
+Приложение: [http://localhost:3000](http://localhost:3000)
+
+### Основные команды
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Dev-сервер |
+| `npm run build` | Production-сборка |
+| `npm run catalog:sync` | Синхронизация каталога |
+| `npm run deploy:vps:pull` | Pull + деплой на VPS |
+
+---
+
+## Деплой
+
+Проект развёрнут на VPS (Ubuntu): **Nginx** → **PM2** → **Next.js** на порту 3001, SSL через Let's Encrypt.
 
 ```bash
-# full catalog sync (scrape + import)
-npm run catalog:sync
-
-# production build
-npm run build
-npm start
+# На сервере
+bash scripts/vps-pull-and-deploy.sh
 ```
 
-## Catalog import options
+Скрипт выполняет `git pull`, `npm ci`, Prisma migrate, `next build` и `pm2 restart`.
 
-### 1) Public WordPress sync
+---
 
-If there is no legacy CSV/media export, use public sync:
+## Переменные окружения
 
-```bash
-npm run db:sync:alfa
-```
-
-### 2) WooCommerce CSV import (optional)
-
-```bash
-npm run db:import:woo -- data/woocommerce-products.csv
-```
-
-## Deploy (VPS)
-
-Команды **`npm run db:generate`** и **`npm run build`** нужно запускать **только в корне репозитория** (где лежит `package.json` с `"name": "resale-shopping"`), не из домашней папки `~`.
-
-### Standard update (рекомендуется)
-
-Из любого места на сервере, если репо лежит в `/root/resale-shopping` или `/var/www/resale-shopping`:
-
-```bash
-bash /root/resale-shopping/scripts/vps-pull-and-deploy.sh
-```
-
-Или явно указать каталог:
-
-```bash
-REPO_DIR=/var/www/resale-shopping bash /var/www/resale-shopping/scripts/vps-pull-and-deploy.sh
-```
-
-Либо вручную:
-
-```bash
-cd /root/resale-shopping
-git pull origin main
-# Первый деплой после миграции login / сброс пароля админа: добавьте ADMIN_ENSURE=1 один раз
-ADMIN_ENSURE=1 bash scripts/vps-deploy.sh
-# Дальше обычно:
-# bash scripts/vps-deploy.sh
-```
-
-Скрипт `scripts/vps-deploy.sh` делает `npm ci`, `prisma generate`, `migrate deploy`, `next build` и при наличии процесса **resale-shopping** в PM2 выполняет `pm2 restart`. Тяжёлый импорт каталога по умолчанию **выключен**; однократно: `RUN_ALFA_IMPORT=1 bash scripts/vps-deploy.sh`.
-
-Порт для приложения (например **3001**), как раньше:
-
-```bash
-PORT=3001 pm2 restart resale-shopping --update-env
-```
-
-### Prisma P3009: упала миграция `20260407120000_admin_schema_brand_seo_roles`
-
-Пока в `_prisma_migrations` висит **failed**, `migrate deploy` дальше не пойдёт. Из корня репо (с рабочим `.env`):
-
-```bash
-bash scripts/prisma-fix-p3009-admin-migration.sh
-```
-
-Скрипт откатывает запись о сбое, накатывает идемпотентный SQL из `scripts/repair-failed-migration-20260407120000.sql`, помечает миграцию применённой и снова вызывает `migrate deploy`. После этого снова `bash scripts/vps-deploy.sh`.
-
-### Учётка админа по логину
-
-После `prisma migrate deploy` один раз (или после смены пароля):
-
-```bash
-npm run admin:ensure
-```
-
-По умолчанию: логин **`admin`**, пароль **`ilovepringles`**, служебный email **`admin@resale-shopping.local`**. Задайте в `.env`: `ADMIN_LOGIN`, `ADMIN_PASSWORD`, при необходимости `ADMIN_EMAIL`.
-
-### Bootstrap from scratch
-
-```bash
-sudo bash scripts/vps-one-shot.sh
-```
-
-## Domain + SSL
-
-```bash
-cd ~/resale-shopping && git pull
-DOMAIN=resale-shopping.ru CERTBOT_EMAIL=you@example.com bash scripts/vps-nginx-ssl.sh
-```
-
-If you do not use `www`:
-
-```bash
-INCLUDE_WWW=0 DOMAIN=resale-shopping.ru CERTBOT_EMAIL=you@example.com bash scripts/vps-nginx-ssl.sh
-```
-
-## Почта (Resend): пошагово на VPS
-
-Сайт отправляет письма после оформления заказа через [Resend](https://resend.com/). Без API-ключа и **подтверждённого домена** письма клиентам не дойдут (или будут отклоняться API).
-
-### Шаг 1. Аккаунт и API-ключ
-
-1. Зайдите на [resend.com](https://resend.com/), создайте аккаунт.
-2. В панели: **API Keys** → **Create API Key**, скопируйте ключ вида `re_...`.
-3. На VPS в каталоге проекта откройте `.env` (тот же файл, что и для `DATABASE_URL`).
-
-### Шаг 2. Подключение домена `resale-shopping.ru`
-
-1. В Resend: **Domains** → **Add Domain** → укажите `resale-shopping.ru`.
-2. Resend покажет **DNS-записи** (обычно несколько TXT и иногда MX для bounce).
-3. В панели регистратора домена (где куплен `resale-shopping.ru`) добавьте эти записи **точно** как в инструкции Resend.
-4. Подождите распространения DNS (от нескольких минут до 24–48 ч) и нажмите **Verify** в Resend, пока статус не станет **Verified**.
-
-Без этого шага отправка с адреса `@resale-shopping.ru` будет отклоняться.
-
-### Шаг 3. Переменные в `.env` на сервере
-
-Добавьте или обновите строки (пример):
+Минимальный набор для production:
 
 ```env
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxx
+DATABASE_URL=postgresql://...
+NEXT_PUBLIC_SITE_URL=https://resale-shopping.ru
+AUTH_SECRET=...
 
-# Отправитель с подтверждённого домена (рекомендуется явно задать):
+STRIPE_SECRET_KEY=sk_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+RESEND_API_KEY=re_...
 RESEND_FROM=Resale Shopping <orders@resale-shopping.ru>
-
-# Дублирует смысл, если RESEND_FROM не задан — тоже поддерживается:
-ORDER_FROM_EMAIL=Resale Shopping <orders@resale-shopping.ru>
-
-# Куда клиент нажмёт «Ответить» (необязательно):
-ORDER_REPLY_TO_EMAIL=help@resale-shopping.ru
 ```
 
-Адрес в `RESEND_FROM` / `ORDER_FROM_EMAIL` должен быть **на том домене**, который вы верифицировали в Resend (например `orders@`, `noreply@` — как настроите в DNS/Resend).
+Полный список — в [`.env.example`](./.env.example).
 
-### Шаг 4. Перезапуск приложения
+---
 
-После сохранения `.env`:
+## Навыки, продемонстрированные в проекте
 
-```bash
-cd /root/resale-shopping
-# путь замените на ваш, если проект в другом месте
-npm run build
-PORT=3001 pm2 restart resale-shopping --update-env
-```
+- Проектирование и разработка **full-stack e-commerce** с нуля до production
+- **Next.js App Router**: SSR, API routes, middleware, Server Actions
+- Работа с **реляционной БД**: проектирование схемы, миграции, оптимизация запросов
+- Интеграция **платёжного провайдера** (Stripe) с webhook-обработкой
+- **Аутентификация и авторизация** с ролевой моделью
+- **DevOps**: деплой, SSL, process manager, bash-автоматизация
+- Миграция legacy-системы (WordPress) без потери данных и SEO
 
-`--update-env` нужен, чтобы PM2 подхватил новые переменные окружения.
+---
 
-### Шаг 5. Проверка
+## Контакты
 
-1. Оформите тестовый заказ с **реальным** почтовым ящиком.
-2. Смотрите логи: `pm2 logs resale-shopping` — при успехе будет строка вида `[email] Resend OK id=...`.
-3. В Resend: **Emails** / **Logs** — видно доставку и ошибки.
+**Sergei Suprun**
 
-Если писем нет — сначала смотрите логи Resend и PM2, чаще всего причина: домен не verified, неверный `from`, или нет `RESEND_API_KEY` в `.env` на сервере.
+- GitHub: [@srgsprn](https://github.com/srgsprn)
+- Email: [sergeysuprun@list.ru](mailto:sergeysuprun@list.ru)
+- Сайт проекта: [resale-shopping.ru](https://resale-shopping.ru)
 
-## Required env vars
+---
 
-- `DATABASE_URL`
-- `NEXT_PUBLIC_SITE_URL`
-- `STRIPE_SECRET_KEY`
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_WEBHOOK_SECRET`
-- `RESEND_API_KEY` (or SMTP vars)
-- `RESEND_FROM` or `ORDER_FROM_EMAIL` (verified domain in Resend for production mail)
-
+<sub>© Resale Shopping · MIT usage for portfolio review</sub>
