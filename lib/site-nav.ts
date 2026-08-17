@@ -34,6 +34,12 @@ export async function getSiteNavItems(): Promise<SiteNavItem[]> {
   ];
 }
 
+/** Шапка + контакты — для JSON-LD и быстрых ссылок в поиске. */
+export async function getSearchNavItems(): Promise<SiteNavItem[]> {
+  const items = await getSiteNavItems();
+  return [...items, { label: "Контакты", href: "/contacts" }];
+}
+
 export function siteNavJsonLd(items: SiteNavItem[]) {
   return {
     "@context": "https://schema.org",

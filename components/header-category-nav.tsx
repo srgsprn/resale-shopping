@@ -26,6 +26,9 @@ export async function HeaderCategoryNav() {
           </Link>
         ))}
       </div>
+      <Link href="/contacts" className="sr-only">
+        Контакты
+      </Link>
     </nav>
   );
 }
