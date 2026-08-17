@@ -3,20 +3,34 @@ import { SITE_URL } from "@/lib/site-seo";
 
 export type SiteNavItem = { label: string; href: string };
 
-/** Разделы для меню и быстрых ссылок в поиске (как у alfa-resale). */
+/** Разделы шапки — те же ссылки уходят в HTML и в быстрые ссылки поиска. */
 export async function getSiteNavItems(): Promise<SiteNavItem[]> {
-  const jewelry = await prisma.category.findFirst({
-    where: { isActive: true, OR: [{ slug: "jewelry" }, { name: { contains: "ювелир", mode: "insensitive" } }] },
-    select: { slug: true },
-  });
+  const [jewelry, watches] = await Promise.all([
+    prisma.category.findFirst({
+      where: {
+        isActive: true,
+        OR: [{ slug: "jewelry" }, { name: { contains: "ювелир", mode: "insensitive" } }],
+      },
+      select: { slug: true },
+    }),
+    prisma.category.findFirst({
+      where: {
+        isActive: true,
+        OR: [{ slug: "watches" }, { slug: "watch" }, { name: { contains: "час", mode: "insensitive" } }],
+      },
+      select: { slug: true },
+    }),
+  ]);
+
   const jewelryHref = jewelry ? `/catalog?category=${encodeURIComponent(jewelry.slug)}` : "/catalog";
+  const watchesHref = watches ? `/catalog?category=${encodeURIComponent(watches.slug)}` : "/catalog";
 
   return [
     { label: "Каталог", href: "/catalog" },
-    { label: "Ювелирные украшения", href: jewelryHref },
-    { label: "Бренды", href: "/brands" },
     { label: "Новинки", href: "/new" },
-    { label: "Контакты", href: "/contacts" },
+    { label: "Ювелирные украшения", href: jewelryHref },
+    { label: "Часы", href: watchesHref },
+    { label: "Подарочная карта", href: "/gift-cards" },
   ];
 }
 
