@@ -6,12 +6,15 @@ const clientLinks = [
   ["Как купить", "/pokupka"],
   ["Как продать", "/prodaja"],
   ["Доставка и возврат", "/delivery"],
+  ["Подарочная карта", "/gift-cards"],
 ] as const;
 
 const companyLinks = [
   ["О нас", "/about"],
   ["Гарантия подлинности", "/assurance"],
   ["Бренды", "/brands"],
+  ["Новинки", "/new"],
+  ["Контакты", "/contacts"],
 ] as const;
 
 export function Footer() {

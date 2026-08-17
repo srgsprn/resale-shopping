@@ -122,6 +122,12 @@ export const PAGE_SEO = {
       "Оставьте заявку, чтобы продать брендовые вещи в магазине resale. Оценка, проверка подлинности и публикация second hand одежды — менеджер свяжется с вами.",
     path: "/prodat",
   }),
+  contacts: pageMeta({
+    title: "Контакты магазина брендовых вещей resale",
+    description:
+      "Контакты Resale Shopping: напишите на help@resale-shopping.ru или в Telegram. Вопросы по брендовым вещам resale, заказам и продаже — ответим в рабочее время.",
+    path: "/contacts",
+  }),
   cart: pageMeta({
     title: "Корзина — Resale Shopping",
     description: "Корзина покупок магазина брендовых вещей resale. Проверьте лоты и перейдите к оформлению заказа.",

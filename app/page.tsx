@@ -15,6 +15,7 @@ import {
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
 import { prisma } from "@/lib/prisma";
 import { PAGE_SEO, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-seo";
+import { getSiteNavItems, siteNavJsonLd } from "@/lib/site-nav";
 import type { Prisma } from "@prisma/client";
 
 export const metadata: Metadata = PAGE_SEO.home;
@@ -48,6 +49,7 @@ export default async function HomePage() {
   });
 
   const latest = tasteCandidates.slice(0, 8);
+  const siteNav = await getSiteNavItems();
 
   return (
     <div className="space-y-12 pb-6 md:space-y-16 md:pb-8">
@@ -73,6 +75,7 @@ export default async function HomePage() {
               "query-input": "required name=search_term_string",
             },
           },
+          siteNavJsonLd(siteNav),
         ]}
       />
       <section className="overflow-hidden rounded-[24px] bg-[#dfd4c5] shadow-sm md:rounded-[28px]">
