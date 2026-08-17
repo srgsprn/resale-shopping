@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const clientLinks = [
+  ["Каталог", "/catalog"],
   ["Концепция", "/koncepcia"],
   ["Как купить", "/pokupka"],
   ["Как продать", "/prodaja"],

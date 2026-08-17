@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
+
 import { OpenSellFormButton } from "@/components/open-sell-form-button";
+import { RelatedSeoLinks } from "@/components/related-seo-links";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.prodaja;
 
 export default function SaleInPage() {
   return (
@@ -6,7 +12,7 @@ export default function SaleInPage() {
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr]">
           <div className="p-4 md:p-5">
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Как продать</h1>
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Как продать брендовые вещи</h1>
             <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
               Мы берем на себя операционную часть продажи: проверку, публикацию и сопровождение сделки до выплаты.
             </p>
@@ -49,6 +55,13 @@ export default function SaleInPage() {
           </article>
         ))}
       </section>
+      <RelatedSeoLinks
+        items={[
+          { href: "/prodat", label: "Оставить заявку" },
+          { href: "/assurance", label: "Гарантия подлинности" },
+          { href: "/catalog", label: "Каталог" },
+        ]}
+      />
     </div>
   );
 }

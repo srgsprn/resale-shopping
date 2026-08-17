@@ -401,7 +401,7 @@ function CheckoutContent() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.imageUrl || "https://placehold.co/120x120/f4f4f5/71717a?text=+"}
-                  alt=""
+                  alt={stripResaleShoppingSuffix(item.name)}
                   className="h-16 w-16 shrink-0 rounded-xl border border-white object-cover"
                 />
                 <div className="min-w-0 flex-1">

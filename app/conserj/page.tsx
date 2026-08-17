@@ -1,11 +1,16 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
+import { RelatedSeoLinks } from "@/components/related-seo-links";
 import {
   CONCIERGE_HERO_ALT,
   CONCIERGE_HERO_IMAGE,
   CONCIERGE_PAGE_TAIL,
   CONCIERGE_SHORT_COPY,
 } from "@/lib/concierge-assets";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.conserj;
 
 const STEPS: [string, string][] = [
   [
@@ -99,6 +104,13 @@ export default function ConserjPage() {
           </article>
         ))}
       </section>
+      <RelatedSeoLinks
+        items={[
+          { href: "/catalog", label: "Каталог" },
+          { href: "/assurance", label: "Гарантия подлинности" },
+          { href: "/pokupka", label: "Как купить" },
+        ]}
+      />
     </div>
   );
 }

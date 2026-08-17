@@ -5,8 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/api/stripe/webhook"],
+      disallow: ["/admin", "/admin/", "/api/", "/account", "/account/", "/checkout", "/cart", "/wishlist", "/auth/"],
     },
     sitemap: "https://resale-shopping.ru/sitemap.xml",
+    host: "https://resale-shopping.ru",
   };
 }

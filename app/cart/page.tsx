@@ -117,7 +117,7 @@ export default function CartPage() {
                       </button>
                       <Link href={`/product/${item.slug}`} className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-zinc-100">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.imageUrl || placeholder} alt="" className="h-full w-full object-cover" />
+                        <img src={item.imageUrl || placeholder} alt={displayName} className="h-full w-full object-cover" />
                       </Link>
                       <div className="min-w-0">
                         <div className="flex items-center justify-between gap-2">
@@ -148,7 +148,7 @@ export default function CartPage() {
                       </button>
                       <Link href={`/product/${item.slug}`} className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-zinc-100">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.imageUrl || placeholder} alt="" className="h-full w-full object-cover" />
+                        <img src={item.imageUrl || placeholder} alt={displayName} className="h-full w-full object-cover" />
                       </Link>
                       <Link href={`/product/${item.slug}`} className="min-w-0 text-base font-medium text-zinc-900 hover:underline">
                         {displayName}

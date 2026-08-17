@@ -1,10 +1,17 @@
+import type { Metadata } from "next";
+
+import { RelatedSeoLinks } from "@/components/related-seo-links";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.pokupka;
+
 export default function PurchaseInfoPage() {
   return (
     <div className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-3 md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
           <div className="p-4 md:p-5">
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Как купить</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Как купить брендовые вещи resale</h1>
             <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-800 md:text-sm">
               Путь покупки выстроен так же, как на премиальных resale-платформах: прозрачные карточки товара, понятное
               оформление заказа и предсказуемая доставка.
@@ -40,6 +47,13 @@ export default function PurchaseInfoPage() {
           </article>
         ))}
       </section>
+      <RelatedSeoLinks
+        items={[
+          { href: "/catalog", label: "Каталог" },
+          { href: "/delivery", label: "Доставка и возврат" },
+          { href: "/assurance", label: "Гарантия подлинности" },
+        ]}
+      />
     </div>
   );
 }

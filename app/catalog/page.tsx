@@ -5,21 +5,8 @@ import type { Metadata } from "next";
 import { CatalogPriceRange } from "@/components/catalog-price-range";
 import { ProductCard } from "@/components/product-card";
 import { catalogListingWhere } from "@/lib/catalog-listing-filter";
-import { buildPageSeo } from "@/lib/page-seo";
 import { prisma } from "@/lib/prisma";
-
-const seo = buildPageSeo({
-  pageType: "category",
-  topic: "каталог люксовых вещей",
-  titleName: "Каталог",
-  details: { category: "Каталог" },
-});
-
-export const metadata: Metadata = {
-  title: seo.title,
-  description: seo.description,
-  alternates: { canonical: "/catalog" },
-};
+import { pageMeta, PAGE_SEO } from "@/lib/site-seo";
 
 type Props = {
   searchParams: Promise<{
@@ -34,6 +21,57 @@ type Props = {
     maxPrice?: string;
   }>;
 };
+
+function hasExtraCatalogFilters(params: Awaited<Props["searchParams"]>) {
+  return Boolean(
+    params.q ||
+      params.color ||
+      params.gender ||
+      params.discount ||
+      params.minPrice ||
+      params.maxPrice ||
+      (params.sort && params.sort !== "price_desc") ||
+      (params.brand && params.category),
+  );
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const extra = hasExtraCatalogFilters(params);
+
+  if (params.category && !params.brand && !extra) {
+    const category = await prisma.category.findFirst({
+      where: { slug: params.category, isActive: true },
+      select: { name: true, slug: true },
+    });
+    if (category) {
+      return pageMeta({
+        title: `${category.name}: брендовые вещи resale`.slice(0, 58),
+        description: `Купите ${category.name.toLowerCase()} — брендовые вещи resale и second hand одежду люкс-брендов. Проверка подлинности, актуальные лоты — оформите заказ в магазине.`,
+        path: `/catalog?category=${encodeURIComponent(category.slug)}`,
+        keywords: [category.name, "купить брендовые вещи resale"],
+      });
+    }
+  }
+
+  if (params.brand && !params.category && !extra) {
+    return pageMeta({
+      title: `${params.brand}: брендовые вещи resale — магазин`,
+      description: `Купите брендовые вещи ${params.brand} resale: оригиналы и second hand одежда с проверкой подлинности. Смотрите лоты в каталоге и оформите заказ онлайн.`,
+      path: `/catalog?brand=${encodeURIComponent(params.brand)}`,
+      keywords: [params.brand, "купить брендовые вещи resale"],
+    });
+  }
+
+  if (extra) {
+    return {
+      ...PAGE_SEO.catalog,
+      robots: { index: false, follow: true },
+    };
+  }
+
+  return PAGE_SEO.catalog;
+}
 
 const sortOptions = [
   { value: "price_desc", label: "По убыванию цены" },
@@ -137,8 +175,19 @@ export default async function CatalogPage({ searchParams }: Props) {
   return (
     <section className="space-y-6">
       <h1 className="text-3xl font-semibold">
-        Каталог{params.brand ? `: ${params.brand}` : ""}
+        {params.category
+          ? `${categories.find((c) => c.slug === params.category)?.name || "Каталог"}: брендовые вещи resale`
+          : params.brand
+            ? `${params.brand}: брендовые вещи resale`
+            : "Каталог брендовых вещей resale"}
       </h1>
+      <p className="max-w-3xl text-sm leading-relaxed text-zinc-600">
+        {params.category
+          ? `Купите ${(categories.find((c) => c.slug === params.category)?.name || "лоты").toLowerCase()} — брендовые вещи resale и second hand одежду с проверкой подлинности.`
+          : params.brand
+            ? `Купите брендовые вещи ${params.brand} resale: актуальные лоты second hand одежды и аксессуаров в нашем магазине.`
+            : "Купите брендовые вещи resale в каталоге: сумки, одежда и аксессуары люкс-брендов. Second hand брендовая одежда с проверкой подлинности."}
+      </p>
 
       <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
         <form className="h-fit space-y-4 rounded-[26px] border border-[#d9d2c8] bg-[#faf8f5] p-4 md:p-5 lg:sticky lg:top-24">

@@ -15,18 +15,22 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+/** Каноникал не задаём здесь: иначе все URL наследуют главную. */
 export const metadata: Metadata = {
   metadataBase: new URL("https://resale-shopping.ru"),
   title: {
-    default: "resale-shopping.ru | Premium Resale",
-    template: "%s | resale-shopping.ru",
+    default: "Купить брендовые вещи resale — магазин Resale Shopping",
+    template: "%s",
   },
-  description: "Каталог брендовых вещей и аксессуаров в эстетике premium resale.",
-  alternates: {
-    canonical: "/",
-  },
+  description:
+    "Купите брендовые вещи resale и second hand брендовую одежду люкс-домов. Проверка подлинности, каталог сумок и аксессуаров — оформите заказ онлайн.",
   verification: {
     google: "rIFnYV6dHfsMOGbbIWCmg9ZgXNXD_pQEl7fdg42Tx6c",
+  },
+  openGraph: {
+    siteName: "Resale Shopping",
+    locale: "ru_RU",
+    type: "website",
   },
 };
 

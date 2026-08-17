@@ -1,20 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { buildPageSeo } from "@/lib/page-seo";
+import { RelatedSeoLinks } from "@/components/related-seo-links";
+import { PAGE_SEO } from "@/lib/site-seo";
 
-const seo = buildPageSeo({
-  pageType: "brand",
-  topic: "люксовые бренды и оригинальные вещи",
-  titleName: "Бренды",
-  details: { brand: "Люксовые бренды" },
-});
-
-export const metadata: Metadata = {
-  title: seo.title,
-  description: seo.description,
-  alternates: { canonical: "/brands" },
-};
+export const metadata: Metadata = PAGE_SEO.brands;
 
 const groupedBrands: Array<{ letter: string; brands: string[] }> = [
   { letter: "a", brands: ["Adidas", "Alaia", "Amina Muaddi"] },
@@ -40,7 +30,7 @@ export default function BrandsPage() {
     <section className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="p-5 md:p-6">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Бренды</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Бренды люксовой одежды resale</h1>
           <p className="mt-2 max-w-2xl text-xs leading-relaxed text-zinc-800 md:text-sm">
             Мы работаем с люксовыми брендами и регулярно обновляем ассортимент новыми поступлениями.
           </p>
@@ -76,6 +66,13 @@ export default function BrandsPage() {
           </section>
         ))}
       </div>
+      <RelatedSeoLinks
+        items={[
+          { href: "/catalog", label: "Каталог брендовых вещей" },
+          { href: "/new", label: "Новинки" },
+          { href: "/assurance", label: "Гарантия подлинности" },
+        ]}
+      />
     </section>
   );
 }

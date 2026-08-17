@@ -19,7 +19,7 @@ export function Header() {
           >
             <Image
               src="/resale-icon.png"
-              alt="Resale shopping"
+              alt="Логотип магазина брендовых вещей Resale Shopping"
               fill
               sizes="48px"
               className="object-cover"

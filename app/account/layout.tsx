@@ -1,7 +1,11 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
 import { auth } from "@/auth";
 import { AccountSidebar } from "@/components/account-sidebar";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.account;
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();

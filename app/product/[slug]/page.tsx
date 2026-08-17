@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { JsonLd } from "@/components/json-ld";
 import { ProductConditionScale } from "@/components/product-condition-scale";
 import { ProductGallery } from "@/components/product-gallery";
 import { WishlistToggleButton } from "@/components/wishlist-toggle-button";
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       priceMinor: true,
       currency: true,
       category: { select: { name: true, slug: true } },
+      images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true } },
     },
   });
   if (!product) return {};
@@ -45,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (product.slug.startsWith("gift-card")) {
     return {
       title: displayName,
-      description: `Подарочная карта Resale Shopping — ${displayBrand}. Номинал ${formatMoney(product.priceMinor, product.currency)}.`,
+      description: `Подарочная карта Resale Shopping — ${displayBrand}. Номинал ${formatMoney(product.priceMinor, product.currency)}. Купите сертификат на брендовые вещи resale.`,
       keywords: ["подарочная карта", "сертификат Resale Shopping", "люкс ресейл"],
       alternates: { canonical: `/product/${slug}` },
       openGraph: {
@@ -54,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url: `/product/${slug}`,
         locale: "ru_RU",
         type: "website",
+        images: product.images[0]?.url ? [{ url: product.images[0].url }] : undefined,
       },
     };
   }
@@ -74,7 +77,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   return {
-    title: { absolute: `${seo.metaTitle} | resale-shopping.ru` },
+    title: { absolute: seo.metaTitle },
     description: seo.metaDescription,
     keywords: seo.keywords,
     alternates: { canonical: `/product/${slug}` },
@@ -84,6 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `/product/${slug}`,
       locale: "ru_RU",
       type: "website",
+      images: product.images[0]?.url ? [{ url: product.images[0].url }] : undefined,
     },
   };
 }
@@ -156,8 +160,52 @@ export default async function ProductPage({ params }: Props) {
     imageUrl: product.images[0]?.url,
   };
 
+  const availability =
+    product.status === "ACTIVE"
+      ? "https://schema.org/InStock"
+      : product.status === "SOLD_OUT"
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/OutOfStock";
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: displayName,
+    image: product.images.map((img) => img.url),
+    description: seo?.metaDescription || displayName,
+    sku: product.sku || product.slug,
+    brand: { "@type": "Brand", name: displayBrand },
+    category: product.category.name,
+    offers: {
+      "@type": "Offer",
+      url: `https://resale-shopping.ru/product/${product.slug}`,
+      priceCurrency: product.currency,
+      price: (product.priceMinor / 100).toFixed(2),
+      availability,
+      itemCondition: "https://schema.org/UsedCondition",
+      seller: { "@type": "Organization", name: "Resale Shopping" },
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: "https://resale-shopping.ru/" },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: "https://resale-shopping.ru/catalog" },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category.name,
+        item: `https://resale-shopping.ru/catalog?category=${encodeURIComponent(product.category.slug)}`,
+      },
+      { "@type": "ListItem", position: 4, name: displayName },
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={[productJsonLd, breadcrumbJsonLd]} />
       <nav
         className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-600 md:text-sm"
         aria-label="Хлебные крошки"

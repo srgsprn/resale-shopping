@@ -1,9 +1,11 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 import { HomeDiscountsSection } from "@/components/home-discounts-section";
+import { JsonLd } from "@/components/json-ld";
 import { ProductCard } from "@/components/product-card";
 import {
   CONCIERGE_HERO_ALT,
@@ -12,7 +14,10 @@ import {
 } from "@/lib/concierge-assets";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
 import { prisma } from "@/lib/prisma";
+import { PAGE_SEO, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-seo";
 import type { Prisma } from "@prisma/client";
+
+export const metadata: Metadata = PAGE_SEO.home;
 
 /** Не показываем на главной в «Скидки» / «Красиво и со вкусом». */
 const HOME_EXCLUDED_SLUGS = ["chanel-classic-flap-black", "louis-vuitton-capucines"];
@@ -46,6 +51,30 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12 pb-6 md:space-y-16 md:pb-8">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: `${SITE_URL}/resale-icon.png`,
+            email: SITE_EMAIL,
+            sameAs: ["https://t.me/resaleshoppingg"],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE_NAME,
+            url: SITE_URL,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${SITE_URL}/catalog?q={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          },
+        ]}
+      />
       <section className="overflow-hidden rounded-[24px] bg-[#dfd4c5] shadow-sm md:rounded-[28px]">
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,46%)] lg:items-stretch">
           <div className="order-2 flex flex-col justify-center px-5 py-10 text-balance md:px-10 md:py-14 lg:order-1 lg:px-12 lg:py-16 xl:px-14">
@@ -53,7 +82,7 @@ export default async function HomePage() {
               Магазин брендовых сумок, одежды и аксессуаров с премиальной ресейл-эстетикой
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-zinc-700 md:text-base">
-              Отобранные лоты, бережная подача и внимание к деталям.
+              Купите брендовые вещи resale: отобранные лоты, бережная подача и внимание к деталям.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
               <Link

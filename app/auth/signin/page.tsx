@@ -1,8 +1,12 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { auth } from "@/auth";
+import { PAGE_SEO } from "@/lib/site-seo";
 
 import { AccountAuthForms } from "./account-auth-forms";
+
+export const metadata: Metadata = PAGE_SEO.signin;
 
 export const dynamic = "force-dynamic";
 

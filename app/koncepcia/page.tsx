@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+import { RelatedSeoLinks } from "@/components/related-seo-links";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.concepcia;
+
 const conceptCards = [
   {
     title: "Как продавать",
@@ -22,7 +29,7 @@ export default function ConceptPage() {
     <div className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="p-5 md:p-6">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Концепция</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">Концепция магазина брендовых вещей</h1>
           <p className="mt-2 max-w-2xl text-xs leading-relaxed text-zinc-800 md:text-sm">
             Три опорных направления сервиса: продажа, покупка и строгая аутентификация каждого лота.
           </p>
@@ -41,6 +48,13 @@ export default function ConceptPage() {
           </article>
         ))}
       </div>
+      <RelatedSeoLinks
+        items={[
+          { href: "/pokupka", label: "Как купить" },
+          { href: "/prodaja", label: "Как продать" },
+          { href: "/assurance", label: "Аутентификация" },
+        ]}
+      />
     </div>
   );
 }

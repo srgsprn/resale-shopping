@@ -1,10 +1,17 @@
+import type { Metadata } from "next";
+
+import { RelatedSeoLinks } from "@/components/related-seo-links";
+import { PAGE_SEO } from "@/lib/site-seo";
+
+export const metadata: Metadata = PAGE_SEO.assurance;
+
 export default function AssurancePage() {
   return (
     <div className="space-y-8">
       <section className="overflow-hidden rounded-[24px] border border-[#d9d2c8] bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5]">
         <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
           <div className="p-6 md:p-9">
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Гарантия подлинности</h1>
+            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Гарантия подлинности брендовых вещей</h1>
             <p className="mt-3 text-sm leading-relaxed text-zinc-800 md:text-base">
               Мы глубоко уважаем ваше доверие и придаем огромное значение обеспечению подлинности всех товаров на нашей
               платформе. В работе используются современные методики аутентификации, включая сервисы, признанные во всем
@@ -43,6 +50,14 @@ export default function AssurancePage() {
           <li>Профессиональная служба поддержки помогает при спорных ситуациях и вопросах по проверке.</li>
         </ul>
       </section>
+
+      <RelatedSeoLinks
+        items={[
+          { href: "/catalog", label: "Каталог" },
+          { href: "/pokupka", label: "Как купить" },
+          { href: "/about", label: "О компании" },
+        ]}
+      />
 
     </div>
   );
