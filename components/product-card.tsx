@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ProductImage } from "@/components/product-image";
 import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
 import { stripResaleShoppingSuffix } from "@/lib/product-name";
@@ -40,18 +41,19 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className="group overflow-hidden rounded-2xl border border-[#d9d2c8] bg-white transition hover:shadow-lg">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={product.images[0]?.url || "https://placehold.co/800x800/f4f4f5/18181b?text=Resale"}
+          <ProductImage
+            src={product.images[0]?.url}
             alt={product.images[0]?.alt || displayName}
-            className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            className="object-cover transition duration-300 group-hover:scale-[1.02]"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 280px"
           />
           {product.images[1]?.url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <ProductImage
               src={product.images[1].url}
               alt={product.images[1].alt || `${displayName} фото 2`}
-              className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 group-hover:opacity-100"
+              className="object-cover opacity-0 transition duration-300 group-hover:opacity-100"
+              sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 280px"
+              loading="lazy"
             />
           ) : null}
         </div>

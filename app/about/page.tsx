@@ -1,9 +1,10 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 
 import { RelatedSeoLinks } from "@/components/related-seo-links";
 import { PAGE_SEO } from "@/lib/site-seo";
+
+/** ISR: статическая страница «О нас». */
+export const revalidate = 300;
 
 export const metadata: Metadata = PAGE_SEO.about;
 

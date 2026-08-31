@@ -56,9 +56,14 @@ function revalidateCatalog(slug?: string) {
   revalidatePath("/admin/products");
   revalidatePath("/catalog");
   revalidatePath("/");
+  revalidatePath("/about");
   revalidateTag("home", "max");
   revalidateTag("catalog", "max");
-  if (slug) revalidatePath(`/product/${slug}`);
+  revalidateTag("product", "max");
+  if (slug) {
+    revalidatePath(`/product/${slug}`);
+    revalidateTag(`product-${slug}`, "max");
+  }
 }
 
 export async function createProductFromFormData(formData: FormData): Promise<ProductMutationResult> {

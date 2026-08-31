@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,11 +7,14 @@ import { JsonLd } from "@/components/json-ld";
 import { ProductConditionScale } from "@/components/product-condition-scale";
 import { ProductGallery } from "@/components/product-gallery";
 import { WishlistToggleButton } from "@/components/wishlist-toggle-button";
+import { getCachedProductBySlug, getCachedProductMetaBySlug } from "@/lib/cached-product";
 import { decodeHtmlEntities } from "@/lib/html-entities";
 import { formatMoney } from "@/lib/money";
 import { stripResaleShoppingSuffix } from "@/lib/product-name";
 import { buildProductSeo } from "@/lib/product-seo";
-import { prisma } from "@/lib/prisma";
+
+/** ISR: карточка товара обновляется каждые 120 сек. */
+export const revalidate = 120;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,23 +22,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    select: {
-      slug: true,
-      name: true,
-      shortName: true,
-      brand: true,
-      conditionLabel: true,
-      color: true,
-      material: true,
-      gender: true,
-      priceMinor: true,
-      currency: true,
-      category: { select: { name: true, slug: true } },
-      images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true } },
-    },
-  });
+  const product = await getCachedProductMetaBySlug(slug);
   if (!product) return {};
   const displayName = stripResaleShoppingSuffix(decodeHtmlEntities(product.name));
   const displayBrand = decodeHtmlEntities(product.brand);
@@ -104,13 +89,7 @@ function InfoBlock({ label, value }: { label: string; value: string }) {
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
 
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { sortOrder: "asc" } },
-      category: true,
-    },
-  });
+  const product = await getCachedProductBySlug(slug);
 
   if (!product) {
     notFound();

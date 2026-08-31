@@ -146,6 +146,10 @@ model Product {
   @@index([isFeatured])
   @@index([brand])
   @@index([createdAt])
+  @@index([priceMinor])
+  @@index([status, priceMinor])
+  @@index([status, createdAt])
+  @@index([categoryId, status])
 }
 
 model ProductImage {

@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "alfa-resale.ru" },
+      { protocol: "https", hostname: "resale-shopping.ru" },
+      { protocol: "https", hostname: "www.resale-shopping.ru" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "https", hostname: "fastimport.ru" },
