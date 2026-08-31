@@ -12,10 +12,10 @@ import {
 } from "@/lib/concierge-assets";
 import { getHomePageData } from "@/lib/cached-home";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
-import { PAGE_REVALIDATE_SECONDS } from "@/lib/isr";
 import { PAGE_SEO, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-seo";
 
-export const revalidate = PAGE_REVALIDATE_SECONDS;
+/** ISR: обновление HTML главной каждые 60 сек (литерал — требование Next.js). */
+export const revalidate = 60;
 
 export const metadata: Metadata = PAGE_SEO.home;
 
