@@ -47,7 +47,7 @@ export function Footer() {
             <li><a href="mailto:help@resale-shopping.ru">help@resale-shopping.ru</a></li>
             <li className="flex items-center gap-3">
               <a
-                href="https://t.me/resaleshoppingg"
+                href="https://t.me/shopping_resale_rus"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Telegram"
@@ -72,7 +72,7 @@ export function Footer() {
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em]">Telegram</h3>
           <p className="mb-3 text-sm text-zinc-700">Подписчики канала первыми видят новые лоты.</p>
           <a
-            href="https://t.me/resaleshoppingg"
+            href="https://t.me/shopping_resale_rus"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-[#229ED9] px-4 py-2 text-xs uppercase tracking-[0.14em] text-white transition hover:bg-[#1D8FCC]"

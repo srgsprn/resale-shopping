@@ -29,8 +29,8 @@ export default function ContactsPage() {
         <article className="rounded-2xl border border-[#d9d2c8] bg-white p-5">
           <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-900">Telegram</h2>
           <p className="mt-2 text-sm text-zinc-700">
-            <a href="https://t.me/resaleshoppingg" target="_blank" rel="noreferrer" className="underline-offset-4 hover:underline">
-              @resaleshoppingg
+            <a href="https://t.me/shopping_resale_rus" target="_blank" rel="noreferrer" className="underline-offset-4 hover:underline">
+              @shopping_resale_rus
             </a>
           </p>
         </article>

@@ -33,7 +33,7 @@ export default async function HomePage() {
             url: SITE_URL,
             logo: `${SITE_URL}/resale-icon.png`,
             email: SITE_EMAIL,
-            sameAs: ["https://t.me/resaleshoppingg"],
+            sameAs: ["https://t.me/shopping_resale_rus"],
           },
           {
             "@context": "https://schema.org",
