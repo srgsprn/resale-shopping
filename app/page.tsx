@@ -96,7 +96,7 @@ export default async function HomePage() {
             src={CONCIERGE_HERO_IMAGE}
             alt=""
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-110 object-cover object-center blur-[3px]"
+            className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-105 object-cover object-center opacity-90"
           />
           <div
             aria-hidden

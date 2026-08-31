@@ -24,7 +24,7 @@ export function MobileScrollToTop() {
       type="button"
       aria-label="Наверх страницы"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed z-[45] flex h-11 w-11 items-center justify-center rounded-full border border-[#c9b89c] bg-[#faf8f5]/95 text-zinc-800 shadow-[0_4px_14px_rgba(45,39,32,0.12)] backdrop-blur-sm transition hover:border-[#a16f39] hover:bg-white hover:text-zinc-900 md:hidden"
+      className="fixed z-[45] flex h-11 w-11 items-center justify-center rounded-full border border-[#c9b89c] bg-[#faf8f5] text-zinc-800 shadow-[0_4px_14px_rgba(45,39,32,0.12)] transition hover:border-[#a16f39] hover:bg-white hover:text-zinc-900 md:hidden"
       style={{
         bottom: "max(1.25rem, env(safe-area-inset-bottom, 0px))",
         right: "max(1rem, env(safe-area-inset-right, 0px))",

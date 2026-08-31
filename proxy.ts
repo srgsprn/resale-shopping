@@ -77,5 +77,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/admin/:path*",
+    { source: "/:path*", has: [{ type: "host", value: "alfa-resale.ru" }] },
+    { source: "/:path*", has: [{ type: "host", value: "www.alfa-resale.ru" }] },
+  ],
 };

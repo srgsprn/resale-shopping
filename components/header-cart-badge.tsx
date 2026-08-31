@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "framer-motion";
 
 function cartCount(): number {
   try {
@@ -65,15 +64,12 @@ export function HeaderCartBadge() {
       {cartIcon}
 
       {count > 0 ? (
-        <motion.span
+        <span
           key={popKey}
-          className="absolute right-0 top-0 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#7c5430] px-1 text-[9px] font-semibold leading-none text-[#f6f3ef]"
-          initial={{ scale: 0.85, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.25 }}
+          className="absolute right-0 top-0 flex h-[18px] min-w-[18px] animate-[cart-pop_0.25s_ease-out] items-center justify-center rounded-full bg-[#7c5430] px-1 text-[9px] font-semibold leading-none text-[#f6f3ef]"
         >
           {count > 99 ? "99+" : count}
-        </motion.span>
+        </span>
       ) : null}
     </Link>
   );
