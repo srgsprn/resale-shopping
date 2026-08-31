@@ -1,27 +1,17 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 
 import { CatalogPriceRange } from "@/components/catalog-price-range";
 import { ProductCard } from "@/components/product-card";
-import { catalogListingWhere } from "@/lib/catalog-listing-filter";
+import { getCatalogPageData } from "@/lib/cached-catalog";
+import type { CatalogSearchParams } from "@/lib/catalog-query";
+import { PAGE_REVALIDATE_SECONDS } from "@/lib/isr";
 import { prisma } from "@/lib/prisma";
 import { pageMeta, PAGE_SEO } from "@/lib/site-seo";
-import type { Prisma } from "@prisma/client";
+
+export const revalidate = PAGE_REVALIDATE_SECONDS;
 
 type Props = {
-  searchParams: Promise<{
-    category?: string;
-    q?: string;
-    sort?: string;
-    brand?: string;
-    gender?: string;
-    color?: string;
-    discount?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    page?: string;
-  }>;
+  searchParams: Promise<CatalogSearchParams>;
 };
 
 function hasExtraCatalogFilters(params: Awaited<Props["searchParams"]>) {
@@ -80,51 +70,7 @@ const sortOptions = [
   { value: "price_asc", label: "По возрастанию цены" },
 ] as const;
 
-const PAGE_SIZE = 48;
-
-function buildCatalogWhere(params: Awaited<Props["searchParams"]>): Prisma.ProductWhereInput {
-  const minPrice = Number.parseInt(params.minPrice || "", 10);
-  const maxPrice = Number.parseInt(params.maxPrice || "", 10);
-  const minMinor = Number.isFinite(minPrice) ? Math.max(0, minPrice) * 100 : undefined;
-  const maxMinor = Number.isFinite(maxPrice) ? Math.max(0, maxPrice) * 100 : undefined;
-  const discountOn = params.discount === "1";
-  const genderFilter =
-    params.gender === "women"
-      ? { contains: "жен", mode: "insensitive" as const }
-      : params.gender === "men"
-        ? { contains: "муж", mode: "insensitive" as const }
-        : undefined;
-
-  return {
-    status: { in: ["ACTIVE", "SOLD_OUT"] },
-    ...catalogListingWhere(),
-    brand: params.brand ? { equals: params.brand, mode: "insensitive" as const } : undefined,
-    gender: genderFilter,
-    color: params.color ? { contains: params.color, mode: "insensitive" as const } : undefined,
-    category: params.category ? { slug: params.category } : undefined,
-    compareAtMinor: discountOn ? { gt: 0 } : undefined,
-    priceMinor:
-      minMinor != null || maxMinor != null
-        ? {
-            ...(minMinor != null ? { gte: minMinor } : {}),
-            ...(maxMinor != null ? { lte: maxMinor } : {}),
-          }
-        : undefined,
-    OR: params.q
-      ? [
-          { name: { contains: params.q, mode: "insensitive" as const } },
-          { brand: { contains: params.q, mode: "insensitive" as const } },
-        ]
-      : undefined,
-  };
-}
-
-function catalogOrderBy(sort?: string) {
-  if (sort === "price_asc") return { priceMinor: "asc" as const };
-  return { priceMinor: "desc" as const };
-}
-
-function catalogPageHref(params: Awaited<Props["searchParams"]>, page: number) {
+function catalogPageHref(params: CatalogSearchParams, page: number) {
   const sp = new URLSearchParams();
   if (params.q) sp.set("q", params.q);
   if (params.category) sp.set("category", params.category);
@@ -174,32 +120,9 @@ export default async function CatalogPage({ searchParams }: Props) {
   const minPrice = Number.parseInt(params.minPrice || "", 10);
   const maxPrice = Number.parseInt(params.maxPrice || "", 10);
   const discountOn = params.discount === "1";
-  const where = buildCatalogWhere(params);
-  const orderBy = catalogOrderBy(params.sort);
-
-  const total = await prisma.product.count({ where });
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const requestedPage = Math.max(1, Number.parseInt(params.page || "1", 10) || 1);
-  const page = Math.min(requestedPage, totalPages);
 
-  const [products, categories, brandRows] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
-      orderBy,
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-    }),
-    prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
-    prisma.product.findMany({
-      where: { status: { in: ["ACTIVE", "SOLD_OUT"] }, ...catalogListingWhere() },
-      select: { brand: true },
-      distinct: ["brand"],
-      orderBy: { brand: "asc" },
-    }),
-  ]);
-
-  const brands = brandRows.map((row) => row.brand.trim()).filter(Boolean);
+  const { products, total, page, totalPages, categories, brands } = await getCatalogPageData(params, requestedPage);
   const colors = [
     "Бежевый",
     "Белый",

@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { auth } from "@/auth";
 import { isStaffRole } from "@/lib/admin-role";
@@ -56,6 +56,8 @@ function revalidateCatalog(slug?: string) {
   revalidatePath("/admin/products");
   revalidatePath("/catalog");
   revalidatePath("/");
+  revalidateTag("home", "max");
+  revalidateTag("catalog", "max");
   if (slug) revalidatePath(`/product/${slug}`);
 }
 

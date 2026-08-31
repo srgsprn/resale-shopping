@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,44 +10,17 @@ import {
   CONCIERGE_HERO_IMAGE,
   CONCIERGE_SHORT_COPY,
 } from "@/lib/concierge-assets";
+import { getHomePageData } from "@/lib/cached-home";
 import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_ALT } from "@/lib/hero-assets";
-import { prisma } from "@/lib/prisma";
+import { PAGE_REVALIDATE_SECONDS } from "@/lib/isr";
 import { PAGE_SEO, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site-seo";
-import { getSearchNavItems, siteNavJsonLd } from "@/lib/site-nav";
-import type { Prisma } from "@prisma/client";
+
+export const revalidate = PAGE_REVALIDATE_SECONDS;
 
 export const metadata: Metadata = PAGE_SEO.home;
 
-/** Не показываем на главной в «Скидки» / «Красиво и со вкусом». */
-const HOME_EXCLUDED_SLUGS = ["chanel-classic-flap-black", "louis-vuitton-capucines"];
-
-const homeCatalogWhere: Pick<Prisma.ProductWhereInput, "AND"> = {
-  AND: [
-    { slug: { notIn: HOME_EXCLUDED_SLUGS } },
-    { NOT: { slug: { startsWith: "gift-card" } } },
-    { images: { some: {} } },
-  ],
-};
-
 export default async function HomePage() {
-  const discountCandidates = await prisma.product.findMany({
-    where: { status: "ACTIVE", ...homeCatalogWhere },
-    include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    take: 24,
-  });
-
-  const featured = discountCandidates.slice(0, 8);
-
-  const tasteCandidates = await prisma.product.findMany({
-    where: { status: { in: ["ACTIVE", "SOLD_OUT"] }, ...homeCatalogWhere },
-    include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
-    orderBy: { createdAt: "desc" },
-    take: 24,
-  });
-
-  const latest = tasteCandidates.slice(0, 8);
-  const searchNav = await getSearchNavItems();
+  const { featured, latest, searchNavJsonLd: navJsonLd } = await getHomePageData();
 
   return (
     <div className="space-y-12 pb-6 md:space-y-16 md:pb-8">
@@ -75,7 +46,7 @@ export default async function HomePage() {
               "query-input": "required name=search_term_string",
             },
           },
-          siteNavJsonLd(searchNav),
+          navJsonLd,
         ]}
       />
       <section className="overflow-hidden rounded-[24px] bg-[#dfd4c5] shadow-sm md:rounded-[28px]">
@@ -119,7 +90,6 @@ export default async function HomePage() {
       </div>
 
       <section className="w-full overflow-hidden rounded-[24px] border border-[#d9d2c8] shadow-sm">
-        {/* Мобила: фото на весь блок + лёгкий blur, текст поверх */}
         <div className="relative min-h-[min(56vw,280px)] w-full overflow-hidden md:hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -150,7 +120,6 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Десктоп: ~×1.5 к предыдущему компакту; фото на всю высоту ряда */}
         <div className="hidden gap-0 bg-gradient-to-r from-[#eee4d8] via-[#e8d9c6] to-[#decbb5] md:grid md:grid-cols-[1.35fr_0.65fr] md:items-stretch">
           <div className="flex flex-col justify-center px-5 py-4 md:px-6 md:py-5">
             <h2 className="text-xl font-semibold tracking-tight text-zinc-900 lg:text-2xl">Консьерж сервис</h2>
