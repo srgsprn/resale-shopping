@@ -4,7 +4,6 @@ import { CatalogPriceRange } from "@/components/catalog-price-range";
 import { ProductCard } from "@/components/product-card";
 import { getCatalogPageData } from "@/lib/cached-catalog";
 import type { CatalogSearchParams } from "@/lib/catalog-query";
-import { PAGE_REVALIDATE_SECONDS } from "@/lib/isr";
 import { prisma } from "@/lib/prisma";
 import { pageMeta, PAGE_SEO } from "@/lib/site-seo";
 
