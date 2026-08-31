@@ -41,3 +41,14 @@ a {
   animation: mobile-nav-progress-slide 1.05s ease-in-out infinite;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
 }
+
+@keyframes splash-out {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
