@@ -7,8 +7,6 @@ import type { CatalogSearchParams } from "@/lib/catalog-query";
 import { prisma } from "@/lib/prisma";
 import { pageMeta, PAGE_SEO } from "@/lib/site-seo";
 
-export const revalidate = PAGE_REVALIDATE_SECONDS;
-
 type Props = {
   searchParams: Promise<CatalogSearchParams>;
 };
