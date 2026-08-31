@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/product-card";
 import { catalogListingWhere } from "@/lib/catalog-listing-filter";
 import { prisma } from "@/lib/prisma";
 import { pageMeta, PAGE_SEO } from "@/lib/site-seo";
+import type { Prisma } from "@prisma/client";
 
 type Props = {
   searchParams: Promise<{
@@ -19,6 +20,7 @@ type Props = {
     discount?: string;
     minPrice?: string;
     maxPrice?: string;
+    page?: string;
   }>;
 };
 
@@ -78,6 +80,66 @@ const sortOptions = [
   { value: "price_asc", label: "По возрастанию цены" },
 ] as const;
 
+const PAGE_SIZE = 48;
+
+function buildCatalogWhere(params: Awaited<Props["searchParams"]>): Prisma.ProductWhereInput {
+  const minPrice = Number.parseInt(params.minPrice || "", 10);
+  const maxPrice = Number.parseInt(params.maxPrice || "", 10);
+  const minMinor = Number.isFinite(minPrice) ? Math.max(0, minPrice) * 100 : undefined;
+  const maxMinor = Number.isFinite(maxPrice) ? Math.max(0, maxPrice) * 100 : undefined;
+  const discountOn = params.discount === "1";
+  const genderFilter =
+    params.gender === "women"
+      ? { contains: "жен", mode: "insensitive" as const }
+      : params.gender === "men"
+        ? { contains: "муж", mode: "insensitive" as const }
+        : undefined;
+
+  return {
+    status: { in: ["ACTIVE", "SOLD_OUT"] },
+    ...catalogListingWhere(),
+    brand: params.brand ? { equals: params.brand, mode: "insensitive" as const } : undefined,
+    gender: genderFilter,
+    color: params.color ? { contains: params.color, mode: "insensitive" as const } : undefined,
+    category: params.category ? { slug: params.category } : undefined,
+    compareAtMinor: discountOn ? { gt: 0 } : undefined,
+    priceMinor:
+      minMinor != null || maxMinor != null
+        ? {
+            ...(minMinor != null ? { gte: minMinor } : {}),
+            ...(maxMinor != null ? { lte: maxMinor } : {}),
+          }
+        : undefined,
+    OR: params.q
+      ? [
+          { name: { contains: params.q, mode: "insensitive" as const } },
+          { brand: { contains: params.q, mode: "insensitive" as const } },
+        ]
+      : undefined,
+  };
+}
+
+function catalogOrderBy(sort?: string) {
+  if (sort === "price_asc") return { priceMinor: "asc" as const };
+  return { priceMinor: "desc" as const };
+}
+
+function catalogPageHref(params: Awaited<Props["searchParams"]>, page: number) {
+  const sp = new URLSearchParams();
+  if (params.q) sp.set("q", params.q);
+  if (params.category) sp.set("category", params.category);
+  if (params.brand) sp.set("brand", params.brand);
+  if (params.gender) sp.set("gender", params.gender);
+  if (params.color) sp.set("color", params.color);
+  if (params.discount) sp.set("discount", params.discount);
+  if (params.minPrice) sp.set("minPrice", params.minPrice);
+  if (params.maxPrice) sp.set("maxPrice", params.maxPrice);
+  if (params.sort && params.sort !== "price_desc") sp.set("sort", params.sort);
+  if (page > 1) sp.set("page", String(page));
+  const qs = sp.toString();
+  return qs ? `/catalog?${qs}` : "/catalog";
+}
+
 function SelectField({
   name,
   defaultValue,
@@ -111,54 +173,33 @@ export default async function CatalogPage({ searchParams }: Props) {
   const params = await searchParams;
   const minPrice = Number.parseInt(params.minPrice || "", 10);
   const maxPrice = Number.parseInt(params.maxPrice || "", 10);
-  const minMinor = Number.isFinite(minPrice) ? Math.max(0, minPrice) * 100 : undefined;
-  const maxMinor = Number.isFinite(maxPrice) ? Math.max(0, maxPrice) * 100 : undefined;
   const discountOn = params.discount === "1";
-  const genderFilter =
-    params.gender === "women"
-      ? { contains: "жен", mode: "insensitive" as const }
-      : params.gender === "men"
-        ? { contains: "муж", mode: "insensitive" as const }
-        : undefined;
+  const where = buildCatalogWhere(params);
+  const orderBy = catalogOrderBy(params.sort);
 
-  const orderBy =
-    params.sort === "price_asc"
-      ? { priceMinor: "asc" as const }
-      : params.sort === "price_desc"
-        ? { priceMinor: "desc" as const }
-        : { priceMinor: "desc" as const };
+  const total = await prisma.product.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const requestedPage = Math.max(1, Number.parseInt(params.page || "1", 10) || 1);
+  const page = Math.min(requestedPage, totalPages);
 
-  const [products, categories] = await Promise.all([
+  const [products, categories, brandRows] = await Promise.all([
     prisma.product.findMany({
-      where: {
-        status: { in: ["ACTIVE", "SOLD_OUT"] },
-        ...catalogListingWhere(),
-        brand: params.brand ? { equals: params.brand, mode: "insensitive" } : undefined,
-        gender: genderFilter,
-        color: params.color ? { contains: params.color, mode: "insensitive" } : undefined,
-        category: params.category ? { slug: params.category } : undefined,
-        compareAtMinor: discountOn ? { gt: 0 } : undefined,
-        priceMinor:
-          minMinor != null || maxMinor != null
-            ? {
-                ...(minMinor != null ? { gte: minMinor } : {}),
-                ...(maxMinor != null ? { lte: maxMinor } : {}),
-              }
-            : undefined,
-        OR: params.q
-          ? [
-              { name: { contains: params.q, mode: "insensitive" } },
-              { brand: { contains: params.q, mode: "insensitive" } },
-            ]
-          : undefined,
-      },
+      where,
       include: { images: { orderBy: { sortOrder: "asc" }, take: 2 } },
       orderBy,
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
     }),
     prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
+    prisma.product.findMany({
+      where: { status: { in: ["ACTIVE", "SOLD_OUT"] }, ...catalogListingWhere() },
+      select: { brand: true },
+      distinct: ["brand"],
+      orderBy: { brand: "asc" },
+    }),
   ]);
 
-  const brands = [...new Set(products.map((p) => p.brand.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const brands = brandRows.map((row) => row.brand.trim()).filter(Boolean);
   const colors = [
     "Бежевый",
     "Белый",
@@ -268,12 +309,54 @@ export default async function CatalogPage({ searchParams }: Props) {
         </form>
 
         <div className="space-y-4">
-          <p className="text-sm text-zinc-600">Найдено товаров: {products.length}</p>
+          <p className="text-sm text-zinc-600">
+            Найдено товаров: {total}
+            {totalPages > 1 ? ` · страница ${page} из ${totalPages}` : ""}
+          </p>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
+          {totalPages > 1 ? (
+            <nav className="flex flex-wrap items-center justify-center gap-2 pt-2" aria-label="Страницы каталога">
+              {page > 1 ? (
+                <a
+                  href={catalogPageHref(params, page - 1)}
+                  className="rounded-full border border-[#d9d2c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 hover:bg-[#f2ebe2]"
+                >
+                  ← Назад
+                </a>
+              ) : null}
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                const start = Math.max(1, Math.min(page - 3, totalPages - 6));
+                const p = start + i;
+                if (p > totalPages) return null;
+                return (
+                  <a
+                    key={p}
+                    href={catalogPageHref(params, p)}
+                    aria-current={p === page ? "page" : undefined}
+                    className={`min-w-[2.5rem] rounded-full border px-3 py-2 text-center text-xs font-semibold ${
+                      p === page
+                        ? "border-[#6b5344] bg-[#e8dcc8] text-zinc-900"
+                        : "border-[#d9d2c8] bg-white text-zinc-700 hover:bg-[#f2ebe2]"
+                    }`}
+                  >
+                    {p}
+                  </a>
+                );
+              })}
+              {page < totalPages ? (
+                <a
+                  href={catalogPageHref(params, page + 1)}
+                  className="rounded-full border border-[#d9d2c8] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-zinc-800 hover:bg-[#f2ebe2]"
+                >
+                  Далее →
+                </a>
+              ) : null}
+            </nav>
+          ) : null}
         </div>
       </div>
     </section>
